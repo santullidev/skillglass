@@ -1,0 +1,130 @@
+'use client'
+
+import Link from 'next/link'
+import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
+import { useCart } from '@/lib/cart-context'
+
+function CartIcon() {
+  const { totalItems } = useCart()
+  
+  return (
+    <Link href="/carrito" className="relative group text-on-surface hover:text-primary transition-colors duration-300 flex items-center justify-center p-2">
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="square" strokeLinejoin="miter" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+      </svg>
+      {totalItems > 0 && (
+        <span 
+          className="absolute -top-1 -right-1 bg-primary text-on-primary w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
+          style={{ fontFamily: 'var(--font-label)' }}
+        >
+          {totalItems > 9 ? '9+' : totalItems}
+        </span>
+      )}
+    </Link>
+  )
+}
+
+export default function Navbar() {
+  const pathname = usePathname()
+  const [scrolled, setScrolled] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Don't render Navbar in the studio - must be after hooks
+  if (pathname?.startsWith('/studio')) return null
+
+  const links = [
+    { href: '/colecciones', label: 'Colecciones' },
+    { href: '/#proceso', label: 'Proceso' },
+    { href: '/#piezas', label: 'Piezas Únicas' },
+  ]
+
+  return (
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? 'glass-panel shadow-lg'
+          : 'bg-transparent'
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 lg:h-20">
+          {/* Logo */}
+          <Link href="/" className="group flex items-center gap-2">
+            <span
+              className="text-lg lg:text-xl tracking-[0.25em] font-semibold text-on-surface"
+              style={{ fontFamily: 'var(--font-label)' }}
+            >
+              SKILGLASS
+            </span>
+          </Link>
+
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-8">
+            {links.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="text-on-surface-variant hover:text-on-surface text-sm tracking-wide transition-colors duration-300"
+                style={{ fontFamily: 'var(--font-label)' }}
+              >
+                {link.label}
+              </Link>
+            ))}
+            
+            {/* Cart Icon Desktop */}
+            <CartIcon />
+          </div>
+
+          <div className="flex items-center gap-4 md:hidden">
+            {/* Cart Icon Mobile */}
+            <CartIcon />
+            {/* Mobile Toggle */}
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="text-on-surface p-2"
+              aria-label="Menú"
+            >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={1.5}
+            >
+              {mobileOpen ? (
+                <path strokeLinecap="square" d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="square" d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
+        </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {mobileOpen && (
+          <div className="md:hidden pb-6 pt-2 border-t border-outline-variant/20">
+            {links.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                className="block py-3 text-on-surface-variant hover:text-on-surface text-sm tracking-wide transition-colors"
+                style={{ fontFamily: 'var(--font-label)' }}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    </nav>
+  )
+}
