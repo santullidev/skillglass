@@ -9,16 +9,16 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@portabletext/react": "latest",
-    "@sanity/image-url": "latest",
-    "@sanity/vision": "latest",
-    "mercadopago": "latest",
-    "next": "latest",
-    "next-sanity": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "sanity": "latest",
-    "styled-components": "latest"
+    "@portabletext/react": "^7.1.0",
+    "@sanity/image-url": "^1.1.0",
+    "@sanity/vision": "^3.71.0",
+    "mercadopago": "^2.12.0",
+    "next": "15.1.0",
+    "next-sanity": "^9.8.0",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "sanity": "^3.71.0",
+    "styled-components": "^6.3.12"
   },
   "devDependencies": {
     "@sanity/client": "^7.20.0",

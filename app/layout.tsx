@@ -53,6 +53,7 @@ import { CartProvider } from "@/lib/cart-context";
 import { client } from "@/lib/sanity";
 import { SETTINGS_QUERY } from "@/lib/queries";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import StyledComponentsRegistry from "@/lib/registry";
 
 export default async function RootLayout({
   children,
@@ -67,12 +68,14 @@ export default async function RootLayout({
       className={`${notoSerif.variable} ${manrope.variable} ${spaceGrotesk.variable}`}
     >
       <body className="min-h-screen flex flex-col antialiased">
-        <CartProvider>
-          <Navbar />
-          <main className="flex-grow">{children}</main>
-          <Footer settings={settings} />
-          <FloatingWhatsApp phone={settings?.telefono} />
-        </CartProvider>
+        <StyledComponentsRegistry>
+          <CartProvider>
+            <Navbar />
+            <main className="flex-grow">{children}</main>
+            <Footer settings={settings} />
+            <FloatingWhatsApp phone={settings?.telefono} />
+          </CartProvider>
+        </StyledComponentsRegistry>
       </body>
     </html>
   );
