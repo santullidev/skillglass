@@ -9,7 +9,7 @@ interface FloatingWhatsAppProps {
 
 export default function FloatingWhatsApp({ phone }: FloatingWhatsAppProps) {
   const [isVisible, setIsVisible] = useState(false)
-  const finalPhone = phone || process.env.NEXT_PUBLIC_WHATSAPP_NUMERO
+  const finalPhone = phone
 
   useEffect(() => {
     const toggleVisibility = () => {

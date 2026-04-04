@@ -4,7 +4,7 @@ interface Props {
 }
 
 export default function WhatsAppButton({ producto, phone }: Props) {
-  const telefono = phone || process.env.NEXT_PUBLIC_WHATSAPP_NUMERO
+  const telefono = phone
   const mensaje = encodeURIComponent(
     `Hola! Me interesa el producto: *${producto}*. ¿Podés darme más info?`
   )
