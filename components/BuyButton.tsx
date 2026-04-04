@@ -43,7 +43,7 @@ export default function BuyButton({ nombre, precio, slug }: Props) {
         {loading ? 'Redirigiendo a pago...' : 'Comprar ahora'}
       </span>
       {/* Caustic glow on hover */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-primary-container via-primary/5 to-primary-container" />
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-linear-to-r from-primary-container via-primary/5 to-primary-container" />
     </button>
   )
 }

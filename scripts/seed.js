@@ -1,3 +1,5 @@
+/* eslint-disable */
+import fs from 'fs';
 const { createClient } = require('@sanity/client')
 const crypto = require('crypto')
 

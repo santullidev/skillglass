@@ -20,7 +20,7 @@ export default function CollectionCard({ coleccion }: Props) {
   return (
     <Link
       href={`/colecciones/${coleccion.slug}`}
-      className="group block relative w-full aspect-[4/5] bg-surface-container-lowest overflow-hidden border border-outline-variant/20 hover:border-primary/50 transition-colors duration-500"
+      className="group block relative w-full aspect-4/5 bg-surface-container-lowest overflow-hidden border border-outline-variant/20 hover:border-primary/50 transition-colors duration-500"
     >
       {/* Background Image */}
       <Image
@@ -28,11 +28,11 @@ export default function CollectionCard({ coleccion }: Props) {
         alt={coleccion.nombre}
         fill
         className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-700 ease-out"
-        sizes="(max-width: 768px) 100vw, 50vw"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       />
       
       {/* Overlay gradient for readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
+      <div className="absolute inset-0 bg-linear-to-t from-surface via-surface/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
 
       {/* Content */}
       <div className="absolute bottom-0 left-0 right-0 p-8 flex flex-col items-center text-center">

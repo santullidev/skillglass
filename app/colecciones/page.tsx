@@ -9,6 +9,16 @@ export const revalidate = 60 // Revalidate every minute
 export const metadata: Metadata = {
   title: 'Colecciones | SKILGLASS',
   description: 'Explora nuestras colecciones exclusivas de joyería en vitrofusión. Piezas capturadas en el instante exacto de la luz molten.',
+  openGraph: {
+    title: 'Colecciones de Joyería de Autor | SKILGLASS',
+    description: 'Series limitadas esculpidas al fuego, capturando la fluidez del cristal.',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Colecciones | SKILGLASS',
+    description: 'Joyas esculpidas por el fuego, capturando la fluidez del cristal.',
+  },
 }
 
 export default async function ColeccionesPage() {
@@ -32,7 +42,7 @@ export default async function ColeccionesPage() {
 
         {/* Collections Grid */}
         {colecciones.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-outline-variant/20 border border-outline-variant/20">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-outline-variant/20 border border-outline-variant/20">
             {colecciones.map((coleccion) => (
               <CollectionCard key={coleccion._id} coleccion={coleccion} />
             ))}

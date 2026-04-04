@@ -149,9 +149,10 @@ export default async function Home() {
                     alt={alquimia.producto.nombre}
                     fill
                     className="object-cover relative z-10 shadow-2xl shadow-black/50"
+                    sizes="(max-width: 1024px) 100vw, 40vw"
                   />
                 ) : (
-                  <div className="absolute inset-0 bg-surface-container flex items-center justify-center relative z-10">
+                  <div className="absolute inset-0 bg-surface-container flex items-center justify-center z-10">
                     <span className="text-on-surface-variant font-serif">Muestra de Cristal</span>
                   </div>
                 )}
@@ -396,6 +397,7 @@ export default async function Home() {
                   alt="Proceso de vitrofusión"
                   fill
                   className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                 />
               ) : (
                 /* Fallback: fondo con efecto horno */
@@ -543,10 +545,12 @@ export default async function Home() {
         <div className="grid grid-cols-2 md:grid-cols-4 w-full">
           {[1, 2, 3, 4].map((i) => (
             <a key={i} href="#" className="group relative aspect-square overflow-hidden bg-surface-container-lowest border border-outline-variant/5">
-              <img 
+              <Image 
                 src={`https://placehold.co/600x600/170f10/a9c7ff?text=IG+POST+0${i}&font=Playfair+Display`} 
                 alt={`Instagram placeholder ${i}`}
+                fill
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 opacity-60 mix-blend-lighten"
+                sizes="(max-width: 768px) 50vw, 25vw"
               />
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col items-center justify-center gap-4">
                 <svg className="w-8 h-8 text-on-primary" fill="currentColor" viewBox="0 0 24 24">

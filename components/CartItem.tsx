@@ -12,17 +12,18 @@ export default function CartItemLine({ item, onUpdateQuantity, onRemove }: Props
   return (
     <div className="flex flex-col sm:flex-row gap-6 py-6 border-b border-outline-variant/20 group">
       {/* Image */}
-      <div className="relative w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 bg-surface-container-low iridescent-edge overflow-hidden">
+      <div className="relative w-24 h-24 sm:w-32 sm:h-32 shrink-0 bg-surface-container-low iridescent-edge overflow-hidden">
         <Image
           src={item.imagenUrl || '/product-necklace.png'}
           alt={item.nombre}
           fill
           className="object-cover"
+          sizes="(max-width: 640px) 96px, 128px"
         />
       </div>
 
       {/* Info */}
-      <div className="flex-grow flex flex-col justify-between">
+      <div className="grow flex flex-col justify-between">
         <div className="flex justify-between items-start gap-4">
           <div>
             <h3 className="text-lg text-on-surface mb-1" style={{ fontFamily: 'var(--font-display)' }}>

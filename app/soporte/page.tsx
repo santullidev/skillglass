@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { client } from '@/lib/sanity'
 import { SOPORTE_QUERY } from '@/lib/queries'
-import { PortableText } from '@portabletext/react'
+import { PortableText, PortableTextComponents } from '@portabletext/react'
 
 export const revalidate = 60
 
@@ -10,9 +10,26 @@ export const metadata = {
   description: 'Centro de atención al cliente, cuidados del cristal y tiempos de envío de nuestra joyería de soplado a la flama.',
 }
 
+interface Seccion {
+  id?: string
+  titulo: string
+  contenido: import('@portabletext/react').PortableTextProps['value']
+}
+
+interface FAQ {
+  pregunta: string
+  respuesta: string
+}
+
+interface SoporteData {
+  titulo?: string
+  subtitulo?: string
+  secciones?: Seccion[]
+  faqs?: FAQ[]
+}
+
 // Custom components for Portable Text to keep the editorial style
-// Custom components for Portable Text to keep the editorial style
-const ptComponents: any = {
+const ptComponents: PortableTextComponents = {
   block: {
     normal: ({children}: {children?: React.ReactNode}) => <p className="mb-6">{children}</p>,
   },
@@ -33,7 +50,7 @@ const ptComponents: any = {
 }
 
 export default async function SoportePage() {
-  const data = await client.fetch(SOPORTE_QUERY)
+  const data: SoporteData = await client.fetch(SOPORTE_QUERY)
 
   // Fallbacks if no CMS data yet
   const titulo = data?.titulo || '¿Cómo podemos ayudarte?'
@@ -65,7 +82,7 @@ export default async function SoportePage() {
       {/* ── SECCIONES DINÁMICAS ────────────────────────────── */}
       <section className="max-w-4xl mx-auto px-6 lg:px-8">
         <div className="space-y-16">
-          {secciones.map((sec: {id?: string, titulo: string, contenido: any}, i: number) => (
+          {secciones.map((sec: Seccion, i: number) => (
             <div key={i} id={sec.id} className="border-t border-outline-variant/20 pt-12">
               <h2 
                 className="text-3xl text-on-surface mb-8"
@@ -92,7 +109,7 @@ export default async function SoportePage() {
                 Preguntas Frecuentes
               </h2>
               <div className="grid gap-8">
-                {faqs.map((faq: {pregunta: string, respuesta: string}, i: number) => (
+                {faqs.map((faq: FAQ, i: number) => (
                   <div key={i} className="bg-surface-container-lowest p-8 border border-outline-variant/10 group hover:border-primary/30 transition-colors">
                     <h3 className="text-lg text-on-surface mb-4 font-serif italic flex items-center gap-3">
                       <span className="text-primary group-hover:scale-125 transition-transform">?</span>

@@ -1,4 +1,4 @@
-import { client } from '@/lib/sanity'
+import { client, urlFor } from '@/lib/sanity'
 import { COLECCION_BY_SLUG_QUERY } from '@/lib/queries'
 import { notFound } from 'next/navigation'
 import type { Coleccion } from '@/types/producto'
@@ -22,6 +22,18 @@ export async function generateMetadata({
   return {
     title: `${coleccion.nombre} | Colección SKILGLASS`,
     description: coleccion.descripcion || `Explora las piezas únicas de la colección ${coleccion.nombre}.`,
+    openGraph: {
+      title: `${coleccion.nombre} | Colección SKILGLASS`,
+      description: coleccion.descripcion || `Series limitadas de piezas capturadas en el instante exacto de la luz molten.`,
+      images: coleccion.imagenes?.[0]
+        ? [urlFor(coleccion.imagenes[0]).width(1200).height(630).url()]
+        : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${coleccion.nombre} | Colección SKILGLASS`,
+      description: coleccion.descripcion || `Joyas esculpidas por el fuego.`,
+    },
   }
 }
 

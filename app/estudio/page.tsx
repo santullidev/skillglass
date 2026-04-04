@@ -13,10 +13,13 @@ export default function EstudioPage() {
       <section className="relative h-[80vh] w-full mt-24">
         {/* Placeholder: Video/Imagen de un soplete en acción, macro de cristal fundiéndose */}
         <div className="absolute inset-0 bg-surface-container-lowest">
-          <img 
+          <Image 
             src="https://placehold.co/1920x1080/1a1215/e8def8?text=STUDIO+HERO\n(Macro+Torch+Shot)&font=Playfair+Display" 
             alt="Estudio Skilglass Hero"
+            fill
             className="w-full h-full object-cover opacity-50 mix-blend-screen"
+            priority
+            sizes="100vw"
           />
         </div>
         <div className="absolute inset-0 bg-linear-to-t from-surface via-surface/40 to-transparent" />
@@ -78,20 +81,24 @@ export default function EstudioPage() {
 
             {/* Feature Image 1 */}
             <div className="bg-surface col-span-1 md:col-span-2 relative overflow-hidden h-[400px]">
-              <img 
+              <Image 
                 src="https://placehold.co/1200x800/100a0b/a9c7ff?text=Glass+Rods+Close+Up&font=Playfair+Display" 
                 alt="Varillas de cristal"
+                fill
                 className="w-full h-full object-cover mix-blend-screen opacity-70"
+                sizes="(max-width: 768px) 100vw, 66vw"
               />
               <div className="absolute inset-0 bg-linear-to-t from-surface via-transparent to-transparent" />
             </div>
 
             {/* Feature Image 2 */}
             <div className="bg-surface col-span-1 md:col-span-2 relative overflow-hidden h-[400px]">
-              <img 
+              <Image 
                 src="https://placehold.co/1200x800/220c11/e8def8?text=Flameworking+Torch&font=Playfair+Display" 
                 alt="Soplete de vidrio"
+                fill
                 className="w-full h-full object-cover mix-blend-screen opacity-80"
+                sizes="(max-width: 768px) 100vw, 66vw"
               />
               <div className="absolute inset-0 bg-linear-to-r from-surface via-transparent to-transparent" />
             </div>

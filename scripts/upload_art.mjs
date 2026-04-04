@@ -1,10 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import { createClient } from 'next-sanity';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const client = createClient({
   projectId: "obhj76tx",

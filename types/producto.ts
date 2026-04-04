@@ -105,3 +105,28 @@ export interface HomeConfig {
   // Legacy
   seccionNarrativa?: SeccionNarrativa
 }
+
+export interface Settings {
+  email?: string
+  telefono?: string
+  direccion?: string
+  instagram?: string
+}
+
+export interface SoporteSeccion {
+  id: string
+  titulo: string
+  contenido: string
+}
+
+export interface FAQ {
+  pregunta: string
+  respuesta: string
+}
+
+export interface SoporteConfig {
+  titulo: string
+  subtitulo?: string
+  secciones: SoporteSeccion[]
+  faqs: FAQ[]
+}

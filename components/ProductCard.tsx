@@ -44,9 +44,11 @@ export default function ProductCard({ producto, variant = 'normal', index = 0 }:
           src={imagenUrl}
           alt={producto.nombre}
           fill
-          className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          priority={index < 2}
+          className="object-cover transition-transform duration-1200 ease-out group-hover:scale-105"
+          sizes={isFeatured 
+            ? "(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 66vw" 
+            : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
+          priority={index < 2 || isFeatured}
         />
 
         {/* Iridescent edge */}

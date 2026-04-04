@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 export default function CarritoPage() {
-  const { items, updateQuantity, removeItem, totalPrice, totalItems } = useCart()
+  const { items, updateQuantity, removeItem, totalPrice } = useCart()
   const [isProcessing, setIsProcessing] = useState(false)
 
   const handleCheckout = async () => {
@@ -55,7 +55,7 @@ export default function CarritoPage() {
           <span className="block border border-outline-variant/30 text-on-surface py-4 px-8 tracking-wide uppercase hover:border-primary/50 transition-colors bg-surface/50 backdrop-blur-sm" style={{ fontFamily: 'var(--font-label)' }}>
             Explorar Colecciones
           </span>
-          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-transparent via-primary/5 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-linear-to-r from-transparent via-primary/5 to-transparent pointer-events-none" />
         </Link>
       </div>
     )
@@ -140,7 +140,7 @@ export default function CarritoPage() {
             >
               <span className="relative z-10">{isProcessing ? 'PROCESANDO...' : 'PROCEDER AL PAGO'}</span>
               {!isProcessing && (
-                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-transparent via-primary/5 to-transparent shadow-[inset_0_0_15px_rgba(207,184,179,0.2)]" />
+                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-linear-to-r from-transparent via-primary/5 to-transparent shadow-[inset_0_0_15px_rgba(207,184,179,0.2)]" />
               )}
             </button>
 

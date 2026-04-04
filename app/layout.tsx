@@ -26,6 +26,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://skilglass.vercel.app'),
   title: {
     default: "SKILGLASS | Maestría de la Luz Molten",
     template: "%s | SKILGLASS",
@@ -46,6 +47,16 @@ export const metadata: Metadata = {
       "Joyas esculpidas por el fuego, capturando la fluidez del cristal en su estado más puro y eterno.",
     type: "website",
     locale: "es_AR",
+    siteName: "SKILGLASS",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SKILGLASS | Maestría de la Luz Molten",
+    description: "Joyas esculpidas por el fuego, capturando la fluidez del cristal.",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
@@ -71,7 +82,7 @@ export default async function RootLayout({
         <StyledComponentsRegistry>
           <CartProvider>
             <Navbar />
-            <main className="flex-grow">{children}</main>
+            <main className="grow">{children}</main>
             <Footer settings={settings} />
             <FloatingWhatsApp phone={settings?.telefono} />
           </CartProvider>

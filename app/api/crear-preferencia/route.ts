@@ -5,12 +5,24 @@ const client = new MercadoPagoConfig({
   accessToken: process.env.MP_ACCESS_TOKEN || '',
 })
 
+interface CartItem {
+  id?: string
+  slug?: string
+  nombre?: string
+  title?: string
+  precio?: number
+  unit_price?: number
+  cantidad?: number
+  imagenUrl?: string
+  picture_url?: string
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     
     // Acepta { items: [...] } del carrito o los datos de 1 producto del botón viejo
-    const requestItems = body.items || [
+    const requestItems: CartItem[] = body.items || [
       {
         nombre: body.nombre,
         precio: body.precio,
@@ -21,7 +33,7 @@ export async function POST(req: NextRequest) {
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
 
-    const mpItems = requestItems.map((item: any) => ({
+    const mpItems = requestItems.map((item: CartItem) => ({
       id: item.id || item.slug || 'N/A',
       title: item.nombre || item.title || 'Producto SKILGLASS',
       quantity: Number(item.cantidad || 1),

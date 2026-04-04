@@ -4,8 +4,17 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { urlFor } from '@/lib/sanity'
 
+interface SanityImage {
+  _key?: string
+  _type?: 'image'
+  asset: {
+    _ref: string
+    _type: 'reference'
+  }
+}
+
 interface Props {
-  images: any[]
+  images: SanityImage[]
   alt: string
 }
 
@@ -38,6 +47,7 @@ export default function ImageCarousel({ images, alt }: Props) {
         fill
         className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         priority={currentIndex === 0}
+        sizes="(max-width: 1024px) 100vw, 50vw"
       />
 
       {images.length > 1 && (

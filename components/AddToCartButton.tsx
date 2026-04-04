@@ -51,7 +51,7 @@ export default function AddToCartButton({ id, nombre, slug, precio, imagenUrl }:
       </span>
       {/* Caustic glow on hover */}
       {!added && (
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-transparent via-primary/5 to-transparent" />
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-linear-to-r from-transparent via-primary/5 to-transparent" />
       )}
     </button>
   )

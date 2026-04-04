@@ -30,13 +30,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   // Hydrate from localStorage
   useEffect(() => {
-    try {
-      const storedCart = localStorage.getItem('skilglass-cart')
-      if (storedCart) {
-        setItems(JSON.parse(storedCart))
+    const storedCart = localStorage.getItem('skilglass-cart')
+    if (storedCart) {
+      try {
+        const parsed = JSON.parse(storedCart)
+        if (Array.isArray(parsed)) {
+          setItems(parsed)
+        }
+      } catch (error) {
+        console.error('Failed to parse cart from local storage:', error)
+        localStorage.removeItem('skilglass-cart') // Reset corrupted state
       }
-    } catch (error) {
-      console.error('Failed to load cart from local storage:', error)
     }
     setIsMounted(true)
   }, [])

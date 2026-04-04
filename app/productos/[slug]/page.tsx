@@ -32,9 +32,17 @@ export async function generateMetadata({
     title: `${producto.nombre} | SKILGLASS`,
     description: producto.descripcion || `Adquiere ${producto.nombre}, una joya única de autor. Vitrofusión SKILGLASS.`,
     openGraph: {
+      title: `${producto.nombre} | SKILGLASS`,
+      description: producto.descripcion || `Pieza única de joyería artesanal esculpida al fuego.`,
       images: producto.imagenes?.[0]
         ? [urlFor(producto.imagenes[0]).width(1200).height(630).url()]
         : [],
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${producto.nombre} | SKILGLASS`,
+      description: producto.descripcion || `Joyas esculpidas por el fuego.`,
     },
   }
 }
@@ -106,7 +114,7 @@ export default async function ProductDetailPage({
           </div>
 
           {/* Technical Specs Bento-style */}
-          <div className="grid grid-cols-2 gap-[1px] bg-outline-variant/20 border border-outline-variant/20 mb-12 text-sm" style={{ fontFamily: 'var(--font-label)' }}>
+          <div className="grid grid-cols-2 gap-px bg-outline-variant/20 border border-outline-variant/20 mb-12 text-sm" style={{ fontFamily: 'var(--font-label)' }}>
             <div className="bg-surface p-4 flex flex-col gap-1 hover:bg-surface-container transition-colors">
               <span className="text-outline-variant text-[10px] tracking-widest uppercase">Técnica</span>
               <span className="text-on-surface">Fusión 820°C</span>
@@ -186,7 +194,7 @@ export default async function ProductDetailPage({
       </div>
       
       {/* Divider */}
-      <div className="w-full h-px bg-gradient-to-r from-transparent via-outline-variant/30 to-transparent my-24" />
+      <div className="w-full h-px bg-linear-to-r from-transparent via-outline-variant/30 to-transparent my-24" />
 
       {/* Quote */}
       <div className="max-w-3xl mx-auto text-center">

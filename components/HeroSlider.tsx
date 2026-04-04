@@ -2,11 +2,21 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { urlFor } from '@/lib/sanity'
 import type { HeroMetadata } from '@/types/producto'
 
+interface SanityImage {
+  _key?: string
+  _type?: 'image'
+  asset: {
+    _ref: string
+    _type: 'reference'
+  }
+}
+
 interface Props {
-  images?: any[]
+  images?: SanityImage[]
   metadata?: HeroMetadata
   title?: string
   subtitle?: string
@@ -40,6 +50,7 @@ export default function HeroSlider({ images, metadata, title, subtitle }: Props)
                 i === index ? 'opacity-60 z-10' : 'opacity-0 z-0'
               }`}
               priority={i === 0}
+              sizes="100vw"
             />
           ))
         ) : (
@@ -107,18 +118,18 @@ export default function HeroSlider({ images, metadata, title, subtitle }: Props)
         </p>
 
         {/* High-Impact CTA Button */}
-        <a
+        <Link
           href="/colecciones"
           className="group relative inline-flex items-center justify-center border border-primary/60 bg-surface-container/30 backdrop-blur-xl text-on-surface py-5 px-10 uppercase tracking-[0.3em] text-sm transition-all duration-500 overflow-hidden shadow-[0_0_40px_rgba(var(--color-primary-rgb),0.15)] hover:shadow-[0_0_60px_rgba(var(--color-primary-rgb),0.4)] hover:border-primary"
           style={{ fontFamily: 'var(--font-label)' }}
         >
           <div className="absolute inset-0 bg-primary/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
-          <div className="absolute top-0 inset-x-0 h-[1px] bg-linear-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+          <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
           <span className="relative z-10 font-bold group-hover:text-primary transition-colors flex items-center gap-4">
             Explorar Colecciones
             <span className="text-primary text-lg group-hover:translate-x-2 transition-transform duration-300">→</span>
           </span>
-        </a>
+        </Link>
       </div>
 
       {/* Slide Indicators */}
