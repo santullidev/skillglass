@@ -77,14 +77,14 @@ export default async function Home() {
 
       {/* ── COLECCIONES ───────────────────────────────────────── */}
       {config?.coleccionesDestacadas && config.coleccionesDestacadas.length > 0 && (
-        <section id="colecciones" className="py-24 lg:py-40 px-6 lg:px-8 max-w-360 mx-auto w-full relative">
+        <section id="colecciones" className="py-24 lg:py-40 px-6 lg:px-8 max-w-360 mx-auto w-full relative bg-surface-deep">
           <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8 relative z-10">
             <div>
-              <p className="text-[10px] tracking-[0.4em] text-primary uppercase mb-6" style={{ fontFamily: 'var(--font-label)' }}>
+              <p className="text-[10px] tracking-[0.5em] text-gold uppercase mb-6 font-bold" style={{ fontFamily: 'var(--font-label)' }}>
                 COLECCIONES
               </p>
               <h2
-                className="text-5xl lg:text-6xl xl:text-7xl text-on-surface max-w-2xl leading-none"
+                className="text-5xl lg:text-7xl xl:text-8xl text-on-surface max-w-2xl leading-none"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
                 {tituloColecciones}
@@ -92,17 +92,17 @@ export default async function Home() {
             </div>
             <Link
               href="/colecciones"
-              className="group inline-flex items-center gap-3 text-[10px] tracking-[0.3em] text-primary uppercase border-b border-primary/30 pb-2 hover:border-primary transition-all duration-300"
+              className="group inline-flex items-center gap-3 text-[10px] tracking-[0.4em] text-gold uppercase border-b border-gold/30 pb-2 hover:border-gold transition-all duration-500"
               style={{ fontFamily: 'var(--font-label)' }}
             >
-              Ver Todas las Colecciones
-              <span className="group-hover:translate-x-2 transition-transform duration-300">→</span>
+              Explorar Series
+              <span className="group-hover:translate-x-2 transition-transform duration-500">→</span>
             </Link>
           </div>
           {/* Glass framing line */}
-          <div className="w-full h-px bg-linear-to-r from-outline-variant/5 via-outline-variant/30 to-outline-variant/5 mb-12" />
+          <div className="w-full h-px bg-linear-to-r from-outline-gold/5 via-outline-gold/40 to-outline-gold/5 mb-12" />
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
             {config.coleccionesDestacadas.map((coleccion) => (
               <CollectionCard key={coleccion._id} coleccion={coleccion} />
             ))}
@@ -112,26 +112,27 @@ export default async function Home() {
 
       {/* ── PIEZA DESTACADA (ALQUIMIA) ────────────────────────── */}
       {alquimia?.activo && (
-        <section className="py-24 lg:py-40 bg-surface-lowest relative overflow-hidden border-y border-outline-variant/10">
-          {/* Ambient Glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] bg-tertiary/10 blur-[150px] mix-blend-screen pointer-events-none" />
+        <section className="py-24 lg:py-40 bg-surface relative overflow-hidden border-y border-outline-gold/10">
+          {/* Radial Refraction: Violeta/Dorado simulating light through glass */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[100vw] bg-[radial-gradient(circle,rgba(201,168,76,0.08)_0%,rgba(131,56,236,0.05)_30%,transparent_70%)] blur-[100px] mix-blend-screen pointer-events-none" />
           
           <div className="max-w-360 mx-auto px-6 lg:px-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
 
-              {/* Izquierda: Fichas técnicas (High Tech Style) */}
+              {/* Izquierda: Fichas técnicas (Editorial Tech Plate) */}
               <div className="lg:col-span-3 order-2 lg:order-1">
-                <div className="flex flex-col gap-16 border-l pl-8 border-outline-variant/30">
+                <div className="flex flex-col gap-10">
                   {alquimiaSpecs.map((spec, i) => (
-                    <div key={i} className="flex flex-col gap-3 relative group">
-                      <div className="absolute -left-[33px] top-1/2 -translate-y-1/2 w-4 h-px bg-primary/50 group-hover:bg-primary transition-colors" />
+                    <div key={i} className="flex flex-col gap-2 p-5 border border-outline-gold/20 bg-surface-lowest/40 backdrop-blur-md relative group hover:border-gold/50 transition-all duration-500">
+                      <div className="absolute top-0 left-0 w-4 h-px bg-gold/50" />
+                      <div className="absolute top-0 left-0 w-px h-4 bg-gold/50" />
                       <span
-                        className="text-[9px] tracking-[0.4em] text-primary/60 font-bold uppercase"
+                        className="text-[9px] tracking-[0.5em] text-gold mb-1 font-bold uppercase"
                         style={{ fontFamily: 'var(--font-label)' }}
                       >
                         {spec.label}
                       </span>
-                      <span className="text-3xl text-on-surface font-serif italic text-shadow-sm group-hover:text-primary transition-colors duration-500">
+                      <span className="text-3xl text-on-surface font-serif italic group-hover:text-gold transition-colors duration-500">
                         {spec.valor}
                       </span>
                     </div>
@@ -162,26 +163,24 @@ export default async function Home() {
 
               {/* Derecha: Narrativa */}
               <div className="lg:col-span-4 order-3 lg:pl-10">
-                <p className="text-[10px] tracking-[0.4em] text-primary uppercase mb-8" style={{ fontFamily: 'var(--font-label)' }}>
+                <p className="text-[10px] tracking-[0.5em] text-gold font-bold uppercase mb-8" style={{ fontFamily: 'var(--font-label)' }}>
                   {alquimiaEtiqueta}
                 </p>
                 <h3
-                  className="text-5xl lg:text-6xl text-on-surface mb-10 leading-[1.1]"
+                  className="text-5xl lg:text-7xl text-on-surface mb-10 leading-[1.1]"
                   style={{ fontFamily: 'var(--font-display)' }}
                 >
                   {alquimia.producto?.nombre || 'La Alquimia del Cristal'}
                 </h3>
-                <p className="text-on-surface/70 font-serif leading-relaxed text-lg mb-12">
+                <p className="text-on-surface-variant font-serif leading-relaxed text-lg mb-12">
                   {alquimia.producto?.descripcion || 'Una exhibición de la maravilla del cristal. Esta pieza requirió mantener un pulso inquebrantable frente a la flama viva, resolviendo su propia geometría orgánica antes del enfriamiento final.'}
                 </p>
                 {alquimia.producto && (
                   <Link
                     href={`/productos/${alquimia.producto.slug}`}
-                    className="group inline-flex border border-outline-variant/50 text-on-surface py-4 px-8 uppercase tracking-[0.3em] text-[10px] hover:border-primary transition-all duration-500 overflow-hidden relative bg-surface-lowest"
-                    style={{ fontFamily: 'var(--font-label)' }}
+                    className="btn-luxury group"
                   >
-                    <div className="absolute inset-x-0 bottom-0 h-full bg-surface-container origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-out z-0" />
-                    <span className="relative z-10 font-bold group-hover:text-primary transition-colors">
+                    <span className="relative z-10 font-bold group-hover:text-surface-deep transition-colors">
                       Inspeccionar Obra
                     </span>
                   </Link>
@@ -194,19 +193,19 @@ export default async function Home() {
 
       {/* ── FRASE EDITORIAL ───────────────────────────────────── */}
       {mostrarFrase && (
-        <section className="py-32 lg:py-48 bg-surface-lowest relative overflow-hidden flex items-center justify-center">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--color-primary)_0%,transparent_50%)] opacity-5 blur-[120px] pointer-events-none" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[80%] text-[400px] text-surface-container opacity-20 font-serif leading-none select-none pointer-events-none">
+        <section className="py-20 lg:py-28 bg-surface-deep relative overflow-hidden flex items-center justify-center">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,168,76,0.1)_0%,transparent_60%)] blur-[120px] pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[80%] text-[400px] text-surface-container opacity-10 font-serif leading-none select-none pointer-events-none">
             &ldquo;
           </div>
           
           <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
-            <p className="text-2xl md:text-3xl lg:text-4xl leading-[1.6] text-on-surface/90 font-serif italic drop-shadow-lg text-balance">
+            <p className="text-2xl md:text-3xl lg:text-4xl leading-[1.6] text-gradient-gold font-serif italic drop-shadow-2xl text-balance animate-in fade-in slide-in-from-bottom-8 duration-1000">
               {frase}
             </p>
-            <div className="mt-16 inline-flex flex-col items-center gap-4">
-              <span className="w-px h-12 bg-primary/50" />
-              <span className="text-[10px] tracking-[0.5em] text-primary/80 uppercase" style={{ fontFamily: 'var(--font-label)' }}>SKILGLASS</span>
+            <div className="mt-12 inline-flex flex-col items-center gap-4 animate-in fade-in zoom-in duration-1000 delay-500">
+              <span className="w-px h-12 bg-gold/40 shadow-[0_0_10px_rgba(201,168,76,0.5)]" />
+              <span className="text-[10px] tracking-[0.6em] text-gold font-bold uppercase" style={{ fontFamily: 'var(--font-label)' }}>SKILGLASS</span>
             </div>
           </div>
         </section>
@@ -235,13 +234,13 @@ export default async function Home() {
                 {config.seccionNarrativa.features.map((feature, i) => (
                   <div key={i} className="bg-surface p-10 hover:bg-surface-container transition-all duration-500 group">
                     <span
-                      className="text-primary/40 text-xs font-bold mb-8 block"
+                      className="text-gold/60 text-[10px] font-bold mb-8 block tracking-[0.4em]"
                       style={{ fontFamily: 'var(--font-label)' }}
                     >
                       0{i + 1} {'//'}
                     </span>
                     <h4
-                      className="text-xl text-on-surface mb-4 group-hover:text-primary transition-colors"
+                      className="text-xl text-on-surface mb-4 group-hover:text-gold transition-colors"
                       style={{ fontFamily: 'var(--font-display)' }}
                     >
                       {feature.titulo}
@@ -258,116 +257,62 @@ export default async function Home() {
       )}
 
       {/* ── PRODUCTOS DESTACADOS ──────────────────────────────── */}
-      <section id="piezas" className="py-32 lg:py-48 overflow-hidden relative">
-        <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-outline-variant/30 to-transparent" />
+      <section id="piezas" className="py-32 lg:py-48 bg-surface-lowest overflow-hidden relative">
+        <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-gold/20 to-transparent" />
         
         {/* Section Header — editorial, off-center */}
         <div className="max-w-360 mx-auto px-6 lg:px-8 mb-24">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-12">
             <div className="relative">
-              <div className="absolute -left-6 top-2 bottom-0 w-px bg-primary/30 hidden md:block" />
+              <div className="absolute -left-6 top-2 bottom-0 w-px bg-gold/30 hidden md:block" />
               <p
-                className="text-[10px] tracking-[0.4em] text-primary uppercase mb-6"
+                className="text-[10px] tracking-[0.5em] text-gold font-bold uppercase mb-6"
                 style={{ fontFamily: 'var(--font-label)' }}
               >
                 Sala de exposición
               </p>
               <h2
-                className="text-6xl lg:text-8xl text-on-surface leading-none tracking-tight"
+                className="text-6xl lg:text-9xl text-on-surface leading-none tracking-tight"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
                 {tituloPiezas}
               </h2>
             </div>
-            <div className="lg:max-w-sm lg:pb-3 border-l border-outline-variant/20 pl-6">
-              <p className="text-on-surface/70 font-serif italic text-lg leading-relaxed mb-6">
+            <div className="lg:max-w-sm lg:pb-3 border-l border-outline-gold/20 pl-6">
+              <p className="text-on-surface-variant font-serif italic text-xl leading-relaxed mb-8">
                 Joyería que nace de la pura destreza térmica. Un catálogo donde el asombro artesanal se encuentra con la fluidez del cristal soplado a la flama.
               </p>
               <Link
                 href="/productos"
-                className="group inline-flex items-center gap-3 text-[9px] tracking-[0.3em] text-on-surface uppercase border-b border-primary/30 pb-2 hover:border-primary transition-all duration-300"
+                className="group inline-flex items-center gap-3 text-[10px] tracking-[0.4em] text-gold font-bold uppercase border-b border-gold/30 pb-2 hover:border-gold transition-all duration-500"
                 style={{ fontFamily: 'var(--font-label)' }}
               >
-                Ingresar al catálogo completo
-                <span className="text-primary group-hover:translate-x-2 transition-transform duration-300">→</span>
+                Catálogo Flameworking
+                <span className="text-gold group-hover:translate-x-2 transition-transform duration-500">→</span>
               </Link>
             </div>
           </div>
         </div>
 
-        {/* Bento Grid — Chunks asimétricos alternantes */}
-        {productos.length > 0 && (() => {
-          // Agrupar en chunks de 3
-          const chunks: Producto[][] = []
-          for (let i = 0; i < productos.length; i += 3) {
-            chunks.push(productos.slice(i, i + 3))
-          }
-
-          return (
-            <div className="max-w-360 mx-auto px-6 lg:px-8">
-              <div className="border border-outline-variant/10 divide-y divide-outline-variant/10 shadow-2xl shadow-black/20">
-              {chunks.map((chunk, chunkIdx) => {
-                const isReversed = chunkIdx % 2 === 1
-                const offset = chunkIdx * 3
-
-                // 1 producto: full ancho featured
-                if (chunk.length === 1) return (
-                  <div key={chunkIdx}>
-                    <ProductCard producto={chunk[0]} index={offset} variant="featured" />
-                  </div>
-                )
-
-                // 2 productos: mitad y mitad
-                if (chunk.length === 2) return (
-                  <div key={chunkIdx} className="grid grid-cols-1 md:grid-cols-2 divide-x divide-outline-variant/10">
-                    <ProductCard producto={chunk[0]} index={offset} variant="tall" />
-                    <ProductCard producto={chunk[1]} index={offset + 1} variant="tall" />
-                  </div>
-                )
-
-                // 3 productos: asimétrico 8+4 / 4+8 alternado
-                // "stacked" = h-[35vh] × 2 = 70vh = featured height
-                const featured = isReversed ? chunk[2] : chunk[0]
-                const s1 = isReversed ? chunk[0] : chunk[1]
-                const s2 = isReversed ? chunk[1] : chunk[2]
-                const fi = isReversed ? offset + 2 : offset
-                const s1i = isReversed ? offset : offset + 1
-                const s2i = isReversed ? offset + 1 : offset + 2
-
+        {/* Editorial Grid: 1st featured (2 cols), rest 3 columns */}
+        {productos.length > 0 && (
+          <div className="max-w-360 mx-auto px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-px bg-outline-gold/10 border border-outline-gold/10">
+              {productos.map((producto, idx) => {
+                const isFirst = idx === 0
                 return (
-                  <div key={chunkIdx} className="grid grid-cols-1 md:grid-cols-12 divide-x divide-outline-variant/10">
-                    {isReversed ? (
-                      <>
-                        {/* Stack izquierdo */}
-                        <div className="md:col-span-4 divide-y divide-outline-variant/10">
-                          <ProductCard producto={s1} index={s1i} variant="stacked" />
-                          <ProductCard producto={s2} index={s2i} variant="stacked" />
-                        </div>
-                        {/* Featured derecho */}
-                        <div className="md:col-span-8">
-                          <ProductCard producto={featured} index={fi} variant="featured" />
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        {/* Featured izquierdo */}
-                        <div className="md:col-span-8">
-                          <ProductCard producto={featured} index={fi} variant="featured" />
-                        </div>
-                        {/* Stack derecho */}
-                        <div className="md:col-span-4 divide-y divide-outline-variant/10">
-                          <ProductCard producto={s1} index={s1i} variant="stacked" />
-                          <ProductCard producto={s2} index={s2i} variant="stacked" />
-                        </div>
-                      </>
-                    )}
+                  <div key={producto._id} className={`${isFirst ? 'md:col-span-6 lg:col-span-8' : 'md:col-span-3 lg:col-span-4'}`}>
+                    <ProductCard 
+                      producto={producto} 
+                      index={idx} 
+                      variant={isFirst ? 'featured' : 'normal'} 
+                    />
                   </div>
                 )
               })}
-              </div>
             </div>
-          )
-        })()}
+          </div>
+        )}
 
         {/* Tagline footer */}
         <div className="max-w-7xl mx-auto px-6 lg:px-8 mt-12 flex items-center gap-6">
@@ -427,7 +372,7 @@ export default async function Home() {
             <div className="flex flex-col justify-center px-10 lg:px-16 xl:px-20 py-20 lg:py-24">
               {/* Etiqueta */}
               <p
-                className="text-[10px] tracking-[0.5em] text-primary uppercase mb-6"
+                className="text-[10px] tracking-[0.5em] text-gold font-bold uppercase mb-6"
                 style={{ fontFamily: 'var(--font-label)' }}
               >
                 {procesoEtiqueta}
@@ -435,7 +380,7 @@ export default async function Home() {
 
               {/* Título grande */}
               <h2
-                className="text-5xl lg:text-6xl xl:text-7xl text-on-surface leading-none mb-10"
+                className="text-5xl lg:text-7xl xl:text-8xl text-on-surface leading-none mb-10"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
                 {procesoTitulo}

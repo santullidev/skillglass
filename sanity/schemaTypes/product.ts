@@ -48,5 +48,19 @@ export const productSchema = defineType({
       type: 'boolean',
       initialValue: false,
     }),
+    defineField({
+      name: 'categoria',
+      title: 'Categoría',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Anillos', value: 'anillos' },
+          { title: 'Aros', value: 'aros' },
+          { title: 'Brazaletes', value: 'brazaletes' },
+          { title: 'Dijes', value: 'dijes' },
+          { title: 'Otros', value: 'otros' },
+        ],
+      },
+    }),
   ],
 })

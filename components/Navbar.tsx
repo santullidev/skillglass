@@ -40,6 +40,7 @@ export default function Navbar() {
   if (pathname?.startsWith('/studio')) return null
 
   const links = [
+    { href: '/productos', label: 'Productos' },
     { href: '/colecciones', label: 'Colecciones' },
     { href: '/#proceso', label: 'Proceso' },
     { href: '/#piezas', label: 'Piezas Únicas' },
@@ -47,22 +48,23 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
         scrolled
-          ? 'glass-panel shadow-lg'
+          ? 'glass-panel shadow-2xl'
           : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <Link href="/" className="group flex items-center gap-2">
+          <Link href="/" className="group flex flex-col items-center">
             <span
-              className="text-lg lg:text-xl tracking-[0.25em] font-semibold text-on-surface"
+              className="text-lg lg:text-xl tracking-[0.3em] font-medium text-gold transition-all duration-500 group-hover:tracking-[0.35em]"
               style={{ fontFamily: 'var(--font-label)' }}
             >
               SKILGLASS
             </span>
+            <div className="w-0 group-hover:w-full h-px bg-linear-to-r from-transparent via-gold/50 to-transparent transition-all duration-700" />
           </Link>
 
           {/* Desktop Nav */}
@@ -108,22 +110,60 @@ export default function Navbar() {
         </div>
         </div>
 
-        {/* Mobile Menu */}
-        {mobileOpen && (
-          <div className="md:hidden pb-6 pt-2 border-t border-outline-variant/20">
-            {links.map((link) => (
+        {/* Mobile Menu Overlay */}
+        <div 
+          className={`fixed inset-0 z-[100] bg-surface-deep/98 backdrop-blur-2xl md:hidden transition-all duration-700 ease-in-out ${
+            mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
+        >
+          {/* Header inside mobile menu */}
+          <div className="flex items-center justify-between h-16 px-6 border-b border-outline-variant/10">
+            <span
+              className="text-lg tracking-[0.3em] font-medium text-gold"
+              style={{ fontFamily: 'var(--font-label)' }}
+            >
+              SKILGLASS
+            </span>
+            <button
+              onClick={() => setMobileOpen(false)}
+              className="text-gold p-2 hover:rotate-90 transition-transform duration-500"
+              aria-label="Cerrar Menú"
+            >
+              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                <path strokeLinecap="square" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Links Container */}
+          <div className="flex flex-col items-center justify-center h-[calc(100vh-64px)] gap-10 px-6">
+            {links.map((link, i) => (
               <Link
                 key={link.label}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="block py-3 text-on-surface-variant hover:text-on-surface text-sm tracking-wide transition-colors"
-                style={{ fontFamily: 'var(--font-label)' }}
+                className={`text-3xl sm:text-4xl text-center text-on-surface hover:text-gold transition-all duration-500 tracking-wider flex flex-col items-center group ${
+                  mobileOpen ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                }`}
+                style={{ 
+                  fontFamily: 'var(--font-display)',
+                  transitionDelay: `${i * 100}ms`
+                }}
               >
+                <span className="italic font-light text-gold/40 text-xs tracking-[0.5em] mb-2 group-hover:text-gold transition-colors">0{i + 1}</span>
                 {link.label}
+                <div className="w-0 group-hover:w-full h-px bg-gold/30 mt-4 transition-all duration-700" />
               </Link>
             ))}
+            
+            {/* Mobile Footer in Menu */}
+            <div className="mt-12 pt-12 border-t border-outline-variant/10 w-full text-center">
+              <p className="text-[10px] tracking-[0.4em] text-outline-variant/60 uppercase" style={{ fontFamily: 'var(--font-label)' }}>
+                Vitrofusión de Autor · Buenos Aires
+              </p>
+            </div>
           </div>
-        )}
+        </div>
       </div>
     </nav>
   )

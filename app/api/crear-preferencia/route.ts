@@ -52,6 +52,12 @@ export async function POST(req: NextRequest) {
           failure: `${baseUrl}/pago/error`,
           pending: `${baseUrl}/pago/pendiente`,
         },
+        auto_return: 'approved',
+        notification_url: `${baseUrl}/api/webhook/mercadopago`,
+        external_reference: `order_${Date.now()}`,
+        metadata: {
+          items: mpItems.map(item => ({ id: item.id, title: item.title }))
+        }
       },
     })
 

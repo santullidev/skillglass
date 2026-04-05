@@ -161,6 +161,35 @@ export default async function ProductDetailPage({
             />
           </div>
 
+          {/* Sello de Autenticidad / Pieza Única */}
+          <div className="mb-12 p-8 border border-gold/30 bg-surface-deep relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 blur-[40px] rounded-full" />
+            <div className="relative z-10 flex flex-col gap-6">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] tracking-[0.5em] text-gold font-bold uppercase" style={{ fontFamily: 'var(--font-label)' }}>
+                  Certificado de Unicidad
+                </span>
+                <span className="text-gold/40 text-[10px]" style={{ fontFamily: 'var(--font-label)' }}>
+                  № {producto._id.slice(-4).toUpperCase()}
+                </span>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h4 className="text-2xl text-on-surface font-serif italic">Pieza Única e Irrepetible</h4>
+                <p className="text-sm text-on-surface-variant leading-relaxed">
+                  Esta obra ha sido esculpida mediante transformación térmica directa. Debido a la naturaleza orgánica del cristal fundido, las tensiones moleculares y la gravedad han dictado una forma final que es técnicamente imposible de replicar con exactitud.
+                </p>
+              </div>
+              <div className="pt-4 border-t border-gold/10 flex items-center justify-between">
+                <span className="text-[9px] tracking-[0.2em] text-gold/60 uppercase" style={{ fontFamily: 'var(--font-label)' }}>Estudio Skilglass Ar</span>
+                <div className="flex gap-1">
+                  {[1,2,3].map(i => <span key={i} className="w-1 h-1 bg-gold rounded-full opacity-40" />)}
+                </div>
+              </div>
+            </div>
+            {/* Background texture simulation */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
+          </div>
+
           <div className="mb-12 flex flex-col items-start gap-4 p-6 bg-surface-container-low border border-outline-variant/10">
             {/* Flame Drop Icon */}
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="text-primary/80">

@@ -9,6 +9,7 @@ export const PRODUCTOS_QUERY = defineQuery(`
     descripcion,
     disponible,
     esEdicionLimitada,
+    categoria,
     imagenes
   }
 `)

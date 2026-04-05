@@ -7,36 +7,44 @@
 /* --- Design Tokens --- */
 :root {
   /* Surfaces */
-  --surface: #220d10;
-  --surface-dim: #220d10;
+  --surface: #1a0a0d;
+  --surface-deep: #0d0608;
+  --surface-dim: #1a0a0d;
   --surface-bright: #4c3235;
-  --surface-container-lowest: #1c080b;
-  --surface-container-low: #2b1518;
-  --surface-container: #30191c;
+  --surface-container-lowest: #080305;
+  --surface-container-low: #1c080b;
+  --surface-container: #2b1518;
   --surface-container-high: #3b2326;
   --surface-container-highest: #472e30;
 
-  /* Primary (Baltic Blue) */
+  /* Accents (Luxury Gold & Copper) */
+  --gold: #c9a84c;
+  --gold-glow: rgba(201, 168, 76, 0.3);
+  --copper: #b87333;
+  --on-gold: #0d0608;
+
+  /* Primary (Baltic Blue - kept for functional elements like success/buttons) */
   --primary: #a9c7ff;
   --primary-container: #00234b;
   --on-primary: #003062;
   --on-primary-container: #688bc5;
 
-  /* Secondary (Dusty Rose) */
-  --secondary: #e9b9cf;
-  --secondary-container: #623e50;
-  --on-secondary: #462637;
+  /* Secondary (Gold highlight) */
+  --secondary: #c9a84c;
+  --secondary-container: #4a3b1a;
+  --on-secondary: #0d0608;
 
-  /* Tertiary (Warm Glow) */
-  --tertiary: #ffb2b9;
-  --tertiary-container: #480c18;
-  --on-tertiary: #591a24;
+  /* Tertiary (Copper highlight) */
+  --tertiary: #b87333;
+  --tertiary-container: #48200c;
+  --on-tertiary: #ffffff;
 
   /* Neutrals */
   --on-surface: #ffdadc;
   --on-surface-variant: #d9c1c2;
   --outline: #a18c8d;
   --outline-variant: #534344;
+  --outline-gold: rgba(201, 168, 76, 0.2);
 
   /* Error */
   --error: #ffb4ab;
@@ -53,32 +61,23 @@
   --font-label: var(--font-space-grotesk), 'Space Grotesk', monospace;
 }
 
-@theme inline {
+@theme {
   --color-surface: var(--surface);
+  --color-surface-deep: var(--surface-deep);
   --color-surface-dim: var(--surface-dim);
-  --color-surface-container-lowest: var(--surface-container-lowest);
-  --color-surface-container-low: var(--surface-container-low);
-  --color-surface-container: var(--surface-container);
-  --color-surface-container-high: var(--surface-container-high);
-  --color-surface-container-highest: var(--surface-container-highest);
+  --color-gold: var(--gold);
+  --color-copper: var(--copper);
   --color-primary: var(--primary);
-  --color-primary-container: var(--primary-container);
-  --color-on-primary: var(--on-primary);
   --color-secondary: var(--secondary);
   --color-tertiary: var(--tertiary);
-  --color-tertiary-container: var(--tertiary-container);
   --color-on-surface: var(--on-surface);
   --color-on-surface-variant: var(--on-surface-variant);
   --color-outline: var(--outline);
   --color-outline-variant: var(--outline-variant);
-  --color-error: var(--error);
-  --color-error-container: var(--error-container);
-  --color-inverse-surface: var(--inverse-surface);
-  --color-inverse-on-surface: var(--inverse-on-surface);
 
-  --font-display: var(--font-noto-serif), 'Noto Serif', Georgia, serif;
-  --font-body: var(--font-manrope), 'Manrope', system-ui, sans-serif;
-  --font-label: var(--font-space-grotesk), 'Space Grotesk', monospace;
+  --font-display: var(--font-noto-serif), "Noto Serif", Georgia, serif;
+  --font-body: var(--font-manrope), "Manrope", system-ui, sans-serif;
+  --font-label: var(--font-space-grotesk), "Space Grotesk", monospace;
 }
 
 /* --- Base Styles --- */
@@ -91,7 +90,7 @@ html {
 }
 
 body {
-  background-color: var(--surface);
+  background-color: var(--surface-deep);
   color: var(--on-surface);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
@@ -129,23 +128,69 @@ p {
 
 /* --- Links --- */
 a {
-  color: var(--primary);
+  color: var(--gold);
   text-decoration: none;
-  transition: color 0.3s ease, opacity 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 a:hover {
-  opacity: 0.8;
+  color: var(--on-surface);
 }
 
 /* --- Utility Classes --- */
 
 /* Glassmorphism panel */
 .glass-panel {
-  background: rgba(48, 25, 28, 0.6);
+  background: rgba(13, 6, 8, 0.6);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(83, 67, 68, 0.2);
+  border: 1px solid rgba(201, 168, 76, 0.15);
+}
+
+/* Luxury Glass Card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(201, 168, 76, 0.4);
+  box-shadow: 0 0 30px rgba(201, 168, 76, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Text Gradient Alquimia */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #FFFFFF 0%, #C9A84C 60%, #B87333 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Luxury Button */
+.btn-luxury {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 1rem 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-size: 0.75rem;
+  font-family: var(--font-label);
+  font-weight: 700;
+  transition: all 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-luxury:hover {
+  background: var(--gold);
+  color: var(--surface-deep);
 }
 
 /* Ghost border — the razor edge of cut glass */
@@ -216,4 +261,26 @@ a:hover {
 ::selection {
   background: rgba(169, 199, 255, 0.3);
   color: var(--on-surface);
+}
+
+/* --- Utilities --- */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Mobile Typo Refinement */
+@media (max-width: 768px) {
+  h1 {
+    font-size: clamp(2rem, 8vw, 3rem);
+    line-height: 1.2;
+  }
+  h2 {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+  }
 }
