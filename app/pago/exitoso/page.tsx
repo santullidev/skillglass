@@ -1,11 +1,18 @@
-import Link from 'next/link'
-import type { Metadata } from 'next'
+'use client'
 
-export const metadata: Metadata = {
-  title: '¡Pago Exitoso!',
-}
+import Link from 'next/link'
+import { useEffect } from 'react'
+import { useCart } from '@/lib/cart-context'
 
 export default function PagoExitoso() {
+  const { clearCart } = useCart()
+
+  // ✅ Limpiar el carrito al llegar a la página de éxito
+  useEffect(() => {
+    clearCart()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <div className="min-h-screen flex items-center justify-center px-6 pt-20">
       <div className="max-w-md w-full text-center">

@@ -57,9 +57,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const existingItemIndex = currentItems.findIndex((item) => item.id === newItem.id)
       
       if (existingItemIndex > -1) {
-        const updatedItems = [...currentItems]
-        updatedItems[existingItemIndex].cantidad += 1
-        return updatedItems
+        // Para piezas únicas de vitrofusión, no permitimos más de 1 unidad
+        return currentItems
       }
       
       return [...currentItems, { ...newItem, cantidad: 1 }]
@@ -72,6 +71,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const updateQuantity = (id: string, cantidad: number) => {
     if (cantidad < 1) return
+    // Para piezas únicas de vitrofusión, bloqueamos cantidad > 1
+    if (cantidad > 1) return
     
     setItems((currentItems) =>
       currentItems.map((item) =>
