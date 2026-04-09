@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
         items: mpItems,
         back_urls: {
           success: `${resolvedBaseUrl}/pago/exitoso`,
-          failure: `${resolvedBaseUrl}/pago/error`,
+          failure: `${resolvedBaseUrl}/carrito`,
           pending: `${resolvedBaseUrl}/pago/pendiente`,
         },
         auto_return: 'approved',

@@ -1,11 +1,29 @@
+'use client'
+
+import { useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import type { Metadata } from 'next'
 
-export const metadata: Metadata = {
-  title: 'Error en el Pago | SKILGLASS',
-}
+function PagoErrorContent() {
+  const searchParams = useSearchParams()
+  const status = searchParams.get('collection_status') || searchParams.get('status')
 
-export default function PagoError() {
+  useEffect(() => {
+    // Si no hay params o el status es 'cancelled' (abandono), redirigir al carrito
+    if (!status || status === 'cancelled' || status === 'null') {
+      window.location.replace('/carrito')
+    }
+  }, [status])
+
+  // Si estamos en proceso de redirección, no mostramos nada
+  if (!status || status === 'cancelled' || status === 'null') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-surface-deep">
+        <div className="w-8 h-8 border-2 border-error/20 border-t-error rounded-full animate-spin" />
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center text-center px-6 pt-20 relative overflow-hidden">
       {/* Background Glow */}
@@ -50,5 +68,17 @@ export default function PagoError() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function PagoError() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-surface-deep">
+        <div className="w-8 h-8 border-2 border-error/20 border-t-error rounded-full animate-spin" />
+      </div>
+    }>
+      <PagoErrorContent />
+    </Suspense>
   )
 }
