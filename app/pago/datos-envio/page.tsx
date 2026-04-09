@@ -236,19 +236,27 @@ export default function DatosEnvioPage() {
             {/* Provincia */}
             <div className="space-y-2">
               <label className="text-[10px] tracking-widest uppercase opacity-70">Provincia *</label>
-              <select 
-                required 
-                name="provincia" 
-                value={formData.provincia} 
-                onChange={handleInputChange} 
-                onBlur={() => validateField('provincia', formData.provincia)}
-                className={`w-full bg-surface-container-low border ${errors.provincia ? 'border-primary' : 'border-outline-variant/20'} p-4 text-sm focus:outline-none focus:border-primary/50 transition-colors cursor-pointer appearance-none`}
-              >
-                <option value="">Seleccionar Provincia...</option>
-                {PROVINCIAS_ARGENTINA.map(p => (
-                  <option key={p} value={p}>{p}</option>
-                ))}
-              </select>
+              <div className="relative group">
+                <select 
+                  required 
+                  name="provincia" 
+                  value={formData.provincia} 
+                  onChange={handleInputChange} 
+                  onBlur={() => validateField('provincia', formData.provincia)}
+                  className={`w-full bg-[#1c080b] text-[#ffdadc] border ${errors.provincia ? 'border-primary' : 'border-outline-variant/20'} p-4 text-sm focus:outline-none focus:border-primary/50 transition-colors cursor-pointer appearance-none pr-10`}
+                >
+                  <option value="" className="bg-[#1c080b] text-[#ffdadc]">Seleccionar Provincia...</option>
+                  {PROVINCIAS_ARGENTINA.map(p => (
+                    <option key={p} value={p} className="bg-[#1c080b] text-[#ffdadc]">{p}</option>
+                  ))}
+                </select>
+                {/* Custom arrow for improved contrast and UX */}
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-50 group-focus-within:opacity-100 transition-opacity">
+                  <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
               {errors.provincia && <p className="text-[10px] text-primary italic lowercase tracking-wider">{errors.provincia}</p>}
             </div>
 
