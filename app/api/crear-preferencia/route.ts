@@ -63,10 +63,22 @@ export async function POST(req: NextRequest) {
 
     const shippingData = body.shippingData || {}
 
-    // Validar email en el servidor
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (shippingData.email && !emailRegex.test(shippingData.email)) {
-      return NextResponse.json({ error: 'Email inválido' }, { status: 400 })
+    // ✅ FIX 5: Validación robusta del lado servidor
+    const validateServerField = (name: string, value: any) => {
+      const v = String(value || '').trim()
+      if (name === 'nombre') return v.length >= 3 && /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/.test(v) && v.split(' ').length >= 2
+      if (name === 'email') return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
+      if (name === 'telefono') return v.replace(/\D/g, '').length >= 10
+      if (name === 'codigoPostal') return /^\d{4}([A-Z]{3})?$/.test(v)
+      if (name === 'provincia' || name === 'ciudad' || name === 'direccion') return v.length >= 2
+      return true
+    }
+
+    const requiredFields = ['nombre', 'email', 'telefono', 'provincia', 'ciudad', 'codigoPostal', 'direccion']
+    for (const field of requiredFields) {
+      if (!validateServerField(field, shippingData[field])) {
+        return NextResponse.json({ error: `Campo inválido o faltante: ${field}` }, { status: 400 })
+      }
     }
 
     const preference = new Preference(client)
