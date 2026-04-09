@@ -3,11 +3,35 @@
 import { useCart } from '@/lib/cart-context'
 import CartItemLine from '@/components/CartItem'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function CarritoPage() {
   const { items, updateQuantity, removeItem, totalPrice } = useCart()
   const [isProcessing, setIsProcessing] = useState(false)
+
+  // ✅ FIX: Resetear isProcessing si el usuario vuelve desde MP con "atrás"
+  useEffect(() => {
+    const handlePageShow = (e: PageTransitionEvent) => {
+      // persisted = true significa que viene del bfcache (navegación hacia atrás)
+      if (e.persisted) {
+        setIsProcessing(false)
+      }
+    }
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        setIsProcessing(false)
+      }
+    }
+
+    window.addEventListener('pageshow', handlePageShow)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    return () => {
+      window.removeEventListener('pageshow', handlePageShow)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
+  }, [])
 
   const handleCheckout = async () => {
     try {
