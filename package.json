@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@mercadopago/sdk-react": "^1.0.7",
     "@portabletext/react": "3.2.1",
     "@sanity/image-url": "1.1.0",
     "@sanity/vision": "3.70.0",
@@ -23,15 +24,15 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/estree": "^1.0.6",
+    "@types/follow-redirects": "^1.14.4",
+    "@types/hast": "^3.0.4",
+    "@types/json-schema": "^7.0.15",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/estree": "^1.0.6",
-    "@types/hast": "^3.0.4",
-    "@types/json-schema": "^7.0.15",
     "@types/unist": "^3.0.3",
     "@types/use-sync-external-store": "^0.0.6",
-    "@types/follow-redirects": "^1.14.4",
     "dotenv": "^17.4.0",
     "eslint": "^9",
     "eslint-config-next": "15.1.0",
