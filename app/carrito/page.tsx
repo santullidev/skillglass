@@ -6,20 +6,25 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { initMercadoPago, Wallet } from '@mercadopago/sdk-react'
 
-// Inicializar MP con tu public key
-if (typeof window !== 'undefined') {
-  initMercadoPago(process.env.NEXT_PUBLIC_MP_PUBLIC_KEY!)
-}
-
 export default function CarritoPage() {
   const { items, updateQuantity, removeItem, totalPrice } = useCart()
   const [preferenceId, setPreferenceId] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [mpReady, setMpReady] = useState(false)
+
+  // Inicializar MP dentro de useEffect
+  useEffect(() => {
+    const key = process.env.NEXT_PUBLIC_MP_PUBLIC_KEY
+    if (key) {
+      initMercadoPago(key, { locale: 'es-AR' })
+      setMpReady(true)
+    }
+  }, [])
 
   // Sincronizar preferencia con el carrito
   useEffect(() => {
-    if (items.length === 0) {
-      setPreferenceId(null)
+    if (!mpReady || items.length === 0) {
+      if (items.length === 0) setPreferenceId(null)
       return
     }
 
@@ -48,7 +53,7 @@ export default function CarritoPage() {
     // Pequeño timeout para evitar múltiples llamadas rápidas si el usuario cambia cantidades seguido
     const timeout = setTimeout(crearPreferencia, 500)
     return () => clearTimeout(timeout)
-  }, [items])
+  }, [items, mpReady])
 
   // FIX: Resetear estado si el usuario vuelve desde MP con "atrás"
   // (Aunque con Wallet esto es menos crítico, es bueno mantenerlo)
@@ -162,8 +167,8 @@ export default function CarritoPage() {
                   <Wallet 
                     initialization={{ preferenceId }} 
                     customization={{
-                      texts: { valueProp: 'smart_option' },
-                      visual: {
+                      valueProp: 'practicality',
+                      customStyle: {
                         buttonBackground: 'default',
                         borderRadius: '6px',
                       }
