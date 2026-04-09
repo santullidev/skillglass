@@ -144,9 +144,11 @@ export default async function ProductDetailPage({
                   imagenUrl={firstImageUrl}
                 />
                 <BuyButton 
+                  id={producto._id}
                   nombre={producto.nombre}
                   precio={producto.precio}
                   slug={producto.slug}
+                  imagenUrl={firstImageUrl}
                 />
               </>
             ) : (

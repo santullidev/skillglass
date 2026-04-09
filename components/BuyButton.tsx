@@ -1,33 +1,40 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useCart } from '@/lib/cart-context'
 
 interface Props {
+  id: string
   nombre: string
   precio: number
   slug: string
+  imagenUrl: string
 }
 
-export default function BuyButton({ nombre, precio, slug }: Props) {
+export default function BuyButton({ id, nombre, precio, slug, imagenUrl }: Props) {
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
+  const { addItem } = useCart()
 
   const handleComprar = async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/crear-preferencia', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, precio, slug }),
+      // 1. Agregar al carrito (si no está ya)
+      addItem({
+        id,
+        nombre,
+        slug,
+        precio,
+        imagenUrl,
+        referencia: `Ref: SKG-${id.substring(0, 4).toUpperCase()} // Directo`
       })
 
-      const data = await res.json()
-
-      if (data.url) {
-        window.location.href = data.url
-      }
+      // 2. Redirigir al flujo de envío
+      router.push('/pago/datos-envio')
+      
     } catch (error) {
-      console.error(error)
-    } finally {
+      console.error('Error al iniciar compra directa:', error)
       setLoading(false)
     }
   }
@@ -40,7 +47,7 @@ export default function BuyButton({ nombre, precio, slug }: Props) {
       style={{ fontFamily: 'var(--font-label)' }}
     >
       <span className="relative z-10 tracking-wide text-sm uppercase">
-        {loading ? 'Redirigiendo a pago...' : 'Comprar ahora'}
+        {loading ? 'Preparando envío...' : 'Comprar ahora'}
       </span>
       {/* Caustic glow on hover */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-linear-to-r from-primary-container via-primary/5 to-primary-container" />
