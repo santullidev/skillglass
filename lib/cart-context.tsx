@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react'
 
 export interface CartItem {
   id: string
@@ -52,7 +52,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [items, isMounted])
 
-  const addItem = (newItem: Omit<CartItem, 'cantidad'>) => {
+  const addItem = useCallback((newItem: Omit<CartItem, 'cantidad'>) => {
     setItems((currentItems) => {
       const existingItemIndex = currentItems.findIndex((item) => item.id === newItem.id)
       
@@ -63,13 +63,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       
       return [...currentItems, { ...newItem, cantidad: 1 }]
     })
-  }
+  }, [])
 
-  const removeItem = (id: string) => {
+  const removeItem = useCallback((id: string) => {
     setItems((currentItems) => currentItems.filter((item) => item.id !== id))
-  }
+  }, [])
 
-  const updateQuantity = (id: string, cantidad: number) => {
+  const updateQuantity = useCallback((id: string, cantidad: number) => {
     if (cantidad < 1) return
     // Para piezas únicas de vitrofusión, bloqueamos cantidad > 1
     if (cantidad > 1) return
@@ -79,12 +79,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
         item.id === id ? { ...item, cantidad } : item
       )
     )
-  }
+  }, [])
 
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setItems([])
     localStorage.removeItem('skilglass-cart')
-  }
+  }, [])
 
   const totalItems = items.reduce((total, item) => total + item.cantidad, 0)
   const totalPrice = items.reduce((total, item) => total + item.precio * item.cantidad, 0)

@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useCart } from '@/lib/cart-context'
 import Link from 'next/link'
 
-export default function PagoExitoso() {
+function PagoExitosoContent() {
   const { clearCart } = useCart()
   const searchParams = useSearchParams()
   
@@ -67,5 +67,17 @@ export default function PagoExitoso() {
         </Link>
       </div>
     </div>
+  )
+}
+
+export default function PagoExitoso() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-surface-deep">
+        <div className="w-8 h-8 border-2 border-gold/20 border-t-gold rounded-full animate-spin" />
+      </div>
+    }>
+      <PagoExitosoContent />
+    </Suspense>
   )
 }
