@@ -61,6 +61,8 @@ export async function POST(req: NextRequest) {
       picture_url: item.imagenUrl || item.picture_url,
     }))
 
+    const shippingData = body.shippingData || {}
+
     const preference = new Preference(client)
     const response = await preference.create({
       body: {
@@ -73,9 +75,19 @@ export async function POST(req: NextRequest) {
         auto_return: 'approved',
         notification_url: `${resolvedBaseUrl}/api/webhook/mercadopago`,
         external_reference: `order_${Date.now()}`,
-        // ✅ FIX 4: Metadata completo con quantity y unit_price
-        // El webhook usa esto para reconstruir el pedido con datos correctos
+        // Payer information if available
+        payer: {
+          name: shippingData.nombre,
+          email: shippingData.email,
+          phone: {
+            number: shippingData.telefono,
+          },
+        },
+        // ✅ Metadata completo con items y datos de envío
         metadata: {
+          shipping_data: {
+            ...shippingData
+          },
           items: mpItems.map((item) => ({
             id: item.id,
             title: item.title,

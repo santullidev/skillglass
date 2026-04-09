@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import MercadoPagoConfig, { Payment } from 'mercadopago'
 import { backendClient } from '@/lib/sanity'
 import { createHmac } from 'crypto'
+import { sendOrderEmails } from '@/lib/email-service'
 
 // ✅ FIX 1: Validar env vars al inicio
 const accessToken = process.env.MP_ACCESS_TOKEN
@@ -19,6 +20,17 @@ interface MetadataItem {
   title: string
   quantity: number
   unit_price: number
+}
+
+interface ShippingData {
+  nombre: string
+  email: string
+  telefono: string
+  provincia: string
+  ciudad: string
+  direccion: string
+  codigoPostal: string
+  notas?: string
 }
 
 // ✅ FIX 2b: Función para validar la firma de MP
@@ -99,17 +111,48 @@ export async function POST(req: NextRequest) {
       await backendClient.create({
         _type: 'pedido',
         idMercadoPago: id,
-        referenciaExterna: externalReference || 'N/A', // ✅ FIX 4: ahora se persiste
+        referenciaExterna: externalReference || 'N/A',
         montoTotal: paymentData.transaction_amount,
         estado: 'approved',
         productos: items.map((item: MetadataItem) => ({
           id: item.id,
           nombre: item.title,
-          cantidad: item.quantity ?? 1,        // ✅ FIX 6: usa el dato real
-          precio: item.unit_price ?? 0,        // ✅ FIX 7: precio individual correcto
+          cantidad: item.quantity ?? 1,
+          precio: item.unit_price ?? 0,
         })),
+        cliente: {
+          nombre: paymentData.payer?.first_name 
+            ? `${paymentData.payer.first_name} ${paymentData.payer.last_name || ''}`.trim()
+            : paymentData.metadata?.shipping_data?.nombre || 'Cliente MP',
+          email: paymentData.payer?.email || paymentData.metadata?.shipping_data?.email,
+          telefono: String(paymentData.payer?.phone?.number || paymentData.metadata?.shipping_data?.telefono || ''),
+        },
+        envio: paymentData.metadata?.shipping_data || {
+          nombre: 'N/A',
+          direccion: 'N/A',
+          ciudad: 'N/A',
+          provincia: 'N/A',
+          codigoPostal: 'N/A'
+        },
+        estadoEnvio: 'pendiente',
         fecha: new Date().toISOString(),
       })
+
+      // ✅ FIX 9: Enviar Notificaciones por Email
+      const shippingData: ShippingData = paymentData.metadata?.shipping_data || {}
+      await sendOrderEmails({
+        orderId: String(id),
+        customerName: paymentData.metadata?.shipping_data?.nombre || paymentData.payer?.first_name || 'Cliente',
+        customerEmail: paymentData.metadata?.shipping_data?.email || paymentData.payer?.email || '',
+        totalAmount: paymentData.transaction_amount || 0,
+        items: items.map(i => ({ nombre: i.title, cantidad: i.quantity, precio: i.unit_price })),
+        shippingData: {
+          direccion: shippingData.direccion || 'N/A',
+          ciudad: shippingData.ciudad || 'N/A',
+          provincia: shippingData.provincia || 'N/A',
+          codigoPostal: shippingData.codigoPostal || 'N/A',
+        }
+      }).catch(err => console.error('Error al enviar emails después del pedido:', err))
 
       // ✅ FIX 8: Marcar productos como no disponibles con fallback por slug
       for (const item of items) {

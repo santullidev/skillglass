@@ -3,83 +3,9 @@
 import { useCart } from '@/lib/cart-context'
 import CartItemLine from '@/components/CartItem'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
-import { initMercadoPago, Wallet } from '@mercadopago/sdk-react'
 
 export default function CarritoPage() {
   const { items, updateQuantity, removeItem, totalPrice } = useCart()
-  const [preferenceId, setPreferenceId] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [mpReady, setMpReady] = useState(false)
-
-  // Inicializar MP dentro de useEffect
-  useEffect(() => {
-    const key = process.env.NEXT_PUBLIC_MP_PUBLIC_KEY
-    if (key) {
-      initMercadoPago(key, { locale: 'es-AR' })
-      setMpReady(true)
-    }
-  }, [])
-
-  // Sincronizar preferencia con el carrito
-  useEffect(() => {
-    if (!mpReady || items.length === 0) {
-      if (items.length === 0) setPreferenceId(null)
-      return
-    }
-
-    const crearPreferencia = async () => {
-      setIsLoading(true)
-      try {
-        const response = await fetch('/api/crear-preferencia', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ items }),
-        })
-
-        const data = await response.json()
-        if (data.id) {
-          setPreferenceId(data.id)
-        }
-      } catch (error) {
-        console.error('Error al crear preferencia:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    // Pequeño timeout para evitar múltiples llamadas rápidas si el usuario cambia cantidades seguido
-    const timeout = setTimeout(crearPreferencia, 500)
-    return () => clearTimeout(timeout)
-  }, [items, mpReady])
-
-  // FIX: Resetear estado si el usuario vuelve desde MP con "atrás"
-  // (Aunque con Wallet esto es menos crítico, es bueno mantenerlo)
-  useEffect(() => {
-    const handlePageShow = (e: PageTransitionEvent) => {
-      // persisted = true significa que viene del bfcache
-      if (e.persisted) {
-        setIsLoading(false)
-      }
-    }
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        setIsLoading(false)
-      }
-    }
-
-    window.addEventListener('pageshow', handlePageShow)
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-
-    return () => {
-      window.removeEventListener('pageshow', handlePageShow)
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-    }
-  }, [])
-
   if (items.length === 0) {
     return (
       <div className="min-h-screen pt-32 pb-24 px-6 relative overflow-hidden flex flex-col items-center justify-center text-center">
@@ -156,30 +82,18 @@ export default function CarritoPage() {
               </div>
             </div>
 
-            {/* Mercado Pago Official Wallet Component */}
-            <div className="mt-10 min-h-[48px]">
-              {isLoading ? (
-                <div className="w-full bg-[#FFE600] flex items-center justify-center py-3.5 px-6 rounded-[6px] shadow-sm animate-pulse">
-                  <div className="w-5 h-5 border-2 border-[#001D47]/20 border-t-[#001D47] rounded-full animate-spin" />
-                </div>
-              ) : preferenceId ? (
-                <div className="wallet-container transition-all duration-300">
-                  <Wallet 
-                    initialization={{ preferenceId }} 
-                    customization={{
-                      valueProp: 'practicality',
-                      customStyle: {
-                        buttonBackground: 'default',
-                        borderRadius: '6px',
-                      }
-                    }}
-                  />
-                </div>
-              ) : (
-                <div className="w-full bg-[#FFE600]/20 flex items-center justify-center py-3.5 px-6 rounded-[6px] border border-dashed border-[#FFE600]/50">
-                   <span className="text-[10px] tracking-[0.2em] uppercase text-[#001D47]/50">Iniciando Pago...</span>
-                </div>
-              )}
+            {/* Botón para continuar al envío en lugar del Wallet inmediato */}
+            <div className="mt-10">
+              <Link
+                href="/pago/datos-envio"
+                className="w-full bg-on-surface text-surface py-4 px-6 rounded-[6px] shadow-sm flex items-center justify-center gap-3 transition-all hover:bg-on-surface/90 font-bold tracking-widest uppercase text-xs"
+                style={{ fontFamily: 'var(--font-label)' }}
+              >
+                Continuar con el Envío
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </Link>
             </div>
 
             <div className="mt-6 flex items-center justify-center gap-4 text-outline-variant text-[10px] tracking-widest uppercase">

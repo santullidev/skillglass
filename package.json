@@ -19,6 +19,7 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-is": "19.0.0",
+    "resend": "^6.10.0",
     "sanity": "^3.71.0",
     "styled-components": "6.1.15"
   },
