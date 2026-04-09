@@ -97,7 +97,7 @@ export default function HeroSlider({ images, metadata, title, subtitle }: Props)
 
         {/* Título Principal */}
         <h1 
-          className="text-5xl md:text-8xl lg:text-9xl mb-4 md:mb-6 leading-[1.3] md:leading-[1.5] pb-6 md:pb-12 overflow-visible text-gradient-gold drop-shadow-2xl"
+          className="text-5xl md:text-8xl lg:text-9xl mb-4 md:mb-6 leading-[1.3] md:leading-normal pb-6 md:pb-12 overflow-visible text-gradient-gold drop-shadow-2xl"
           style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 10vw, 8rem)' }}
         >
           {title ? title.split('\n').map((line, i) => (

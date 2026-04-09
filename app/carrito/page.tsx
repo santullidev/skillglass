@@ -22,6 +22,7 @@ export default function CarritoPage() {
       })
 
       const data = await response.json()
+      console.log('Respuesta API:', data)
       
       if (data.url) {
         window.location.href = data.url

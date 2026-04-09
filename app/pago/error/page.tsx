@@ -2,39 +2,50 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Error en el Pago',
+  title: 'Error en el Pago | SKILGLASS',
 }
 
 export default function PagoError() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 pt-20">
-      <div className="max-w-md w-full text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center text-center px-6 pt-20 relative overflow-hidden">
+      {/* Background Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] bg-error/5 blur-[120px] rounded-full pointer-events-none" />
+
+      <div className="max-w-md w-full relative z-10">
         {/* Error icon */}
-        <div className="w-20 h-20 mx-auto mb-8 bg-error-container flex items-center justify-center">
-          <svg className="w-10 h-10 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path strokeLinecap="square" strokeLinejoin="miter" d="M6 18L18 6M6 6l12 12" />
+        <div className="w-20 h-20 mx-auto mb-10 bg-surface-container border border-error/20 flex items-center justify-center shadow-[0_0_30px_rgba(255,180,171,0.05)]">
+          <svg className="w-10 h-10 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+            <path strokeLinecap="square" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </div>
 
         <h1
-          className="text-3xl mb-4"
+          className="text-4xl lg:text-5xl text-on-surface mb-6"
           style={{ fontFamily: 'var(--font-display)' }}
         >
-          Hubo un error
+          Transacción Fallida
         </h1>
 
-        <p className="text-on-surface-variant leading-relaxed mb-8">
-          No se pudo procesar el pago. Podés intentarlo de nuevo o
-          contactarnos por WhatsApp para recibir asistencia personalizada.
-        </p>
+        <div className="prose prose-invert prose-p:text-on-surface-variant prose-p:font-serif mb-12">
+          <p>
+            No hemos podido procesar tu pago en este momento. Puede deberse a una interrupción en la conexión o limitaciones de la tarjeta seleccionada. Por favor, intenta nuevamente o contáctanos para asistencia personalizada.
+          </p>
+        </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            href="/"
-            className="inline-block bg-primary-container text-primary px-8 py-4 text-sm tracking-widest uppercase transition-all duration-300 hover:shadow-[inset_0_0_30px_rgba(169,199,255,0.15)]"
+            href="/carrito"
+            className="inline-block border border-gold/30 text-gold px-10 py-4 text-[10px] tracking-[0.4em] uppercase transition-all duration-500 hover:bg-gold hover:text-surface-deep font-bold"
             style={{ fontFamily: 'var(--font-label)' }}
           >
-            Volver al catálogo
+            Reintentar Pago
+          </Link>
+          <Link
+            href="/"
+            className="inline-block border border-outline-variant/30 text-on-surface-variant px-10 py-4 text-[10px] tracking-[0.4em] uppercase transition-all duration-500 hover:border-gold hover:text-gold font-bold"
+            style={{ fontFamily: 'var(--font-label)' }}
+          >
+            Volver al Inicio
           </Link>
         </div>
       </div>

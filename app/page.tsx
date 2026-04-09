@@ -114,7 +114,7 @@ export default async function Home() {
       {alquimia?.activo && (
         <section className="py-24 lg:py-40 bg-surface relative overflow-hidden border-y border-outline-gold/10">
           {/* Radial Refraction: Violeta/Dorado simulating light through glass */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[100vw] bg-[radial-gradient(circle,rgba(201,168,76,0.08)_0%,rgba(131,56,236,0.05)_30%,transparent_70%)] blur-[100px] mix-blend-screen pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-screen h-[100vw] bg-[radial-gradient(circle,rgba(201,168,76,0.08)_0%,rgba(131,56,236,0.05)_30%,transparent_70%)] blur-[100px] mix-blend-screen pointer-events-none" />
           
           <div className="max-w-360 mx-auto px-6 lg:px-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">

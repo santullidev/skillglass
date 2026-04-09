@@ -163,7 +163,7 @@ export default async function ProductDetailPage({
 
           {/* Sello de Autenticidad / Pieza Única */}
           <div className="mb-12 p-8 border border-gold/30 bg-surface-deep relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 blur-[40px] rounded-full" />
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 blur-2xl rounded-full" />
             <div className="relative z-10 flex flex-col gap-6">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] tracking-[0.5em] text-gold font-bold uppercase" style={{ fontFamily: 'var(--font-label)' }}>

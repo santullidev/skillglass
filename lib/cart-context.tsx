@@ -83,6 +83,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => {
     setItems([])
+    localStorage.removeItem('skilglass-cart')
   }
 
   const totalItems = items.reduce((total, item) => total + item.cantidad, 0)

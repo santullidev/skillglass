@@ -89,10 +89,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ url: response.init_point, id: response.id })
 
   } catch (error) {
-    console.error('MP Error al crear preferencia:', error)
-    return NextResponse.json(
-      { error: 'Error al crear la preferencia de pago' },
-      { status: 500 }
-    )
-  }
+  console.error('MP Error al crear preferencia:', error)
+  return NextResponse.json(
+    { 
+      error: 'Error al crear la preferencia de pago',
+      detail: error instanceof Error ? error.message : String(error)  // 👈 agregar esto
+    },
+    { status: 500 }
+  )
+}
 }

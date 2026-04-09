@@ -112,7 +112,7 @@ export default function Navbar() {
 
         {/* Mobile Menu Overlay */}
         <div 
-          className={`fixed inset-0 z-[100] bg-surface-deep/98 backdrop-blur-2xl md:hidden transition-all duration-700 ease-in-out ${
+          className={`fixed inset-0 z-100 bg-surface-deep/98 backdrop-blur-2xl md:hidden transition-all duration-700 ease-in-out ${
             mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
           }`}
         >
