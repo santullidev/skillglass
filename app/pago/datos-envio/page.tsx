@@ -37,6 +37,14 @@ export default function DatosEnvioPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Validar email simple regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(formData.email)) {
+      alert('Por favor, ingresa un email válido.')
+      return
+    }
+
     setIsLoading(true)
 
     try {

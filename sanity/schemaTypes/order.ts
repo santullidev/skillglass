@@ -70,9 +70,6 @@ export const orderSchema = defineType({
       title: 'Datos de Envío',
       type: 'object',
       fields: [
-        { name: 'nombre', type: 'string', title: 'Nombre' },
-        { name: 'email', type: 'string', title: 'Email' },
-        { name: 'telefono', type: 'string', title: 'Teléfono' },
         { name: 'provincia', type: 'string', title: 'Provincia' },
         { name: 'ciudad', type: 'string', title: 'Ciudad' },
         { name: 'direccion', type: 'string', title: 'Dirección' },

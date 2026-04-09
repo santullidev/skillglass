@@ -63,6 +63,12 @@ export async function POST(req: NextRequest) {
 
     const shippingData = body.shippingData || {}
 
+    // Validar email en el servidor
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (shippingData.email && !emailRegex.test(shippingData.email)) {
+      return NextResponse.json({ error: 'Email inválido' }, { status: 400 })
+    }
+
     const preference = new Preference(client)
     const response = await preference.create({
       body: {
