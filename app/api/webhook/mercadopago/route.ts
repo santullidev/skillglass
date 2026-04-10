@@ -204,21 +204,52 @@ export async function POST(req: NextRequest) {
         }
       }).catch(err => console.error('Error al enviar emails después del pedido:', err))
 
-      // ✅ FIX 8: Marcar productos como no disponibles con fallback por slug
+      // ✅ Marcar productos como no disponibles
+      // Los IDs en el metadata de MP pueden ser el _id de Sanity (preferido) o el slug (fallback)
       for (const item of items) {
         if (!item.id || item.id === 'N/A') {
-          // Fallback: buscar por slug usando la referencia externa
-          console.warn(`Item sin ID válido: ${item.title}. Verificar manualmente.`)
+          console.warn(`⚠️ Item sin ID válido: "${item.title}". No se pudo marcar como vendido.`)
           continue
         }
 
-        await backendClient
-          .patch(item.id)
-          .set({ disponible: false })
-          .commit()
-          .catch((err) =>
-            console.error(`Error al marcar como vendido el producto ${item.id}:`, err)
+        // Los _id de Sanity tienen formato de UUID (contienen letras mayúsculas y son longos)
+        // Los slugs son kebab-case lowercase. Detectamos cuál es.
+        const looksLikeSanityId = item.id.length > 20 && /[A-Z]/.test(item.id)
+
+        if (looksLikeSanityId) {
+          // Patch directo por _id
+          const patchResult = await backendClient
+            .patch(item.id)
+            .set({ disponible: false })
+            .commit()
+            .catch((err) => {
+              console.error(`❌ Error al marcar producto por _id "${item.id}":`, err)
+              return null
+            })
+
+          if (patchResult) {
+            console.log(`✅ Producto "${item.title}" (${item.id}) marcado como no disponible.`)
+          }
+        } else {
+          // El id parece ser un slug — buscar el documento por slug y patchear
+          console.warn(`⚠️ ID "${item.id}" parece ser un slug. Buscando en Sanity por slug...`)
+          const productoDoc = await backendClient.fetch(
+            `*[_type == "producto" && slug.current == $slug][0]{ _id }`,
+            { slug: item.id }
           )
+
+          if (productoDoc?._id) {
+            await backendClient
+              .patch(productoDoc._id)
+              .set({ disponible: false })
+              .commit()
+              .catch((err) => console.error(`❌ Error al marcar producto por slug "${item.id}":`, err))
+
+            console.log(`✅ Producto "${item.title}" (slug: ${item.id} → _id: ${productoDoc._id}) marcado como no disponible.`)
+          } else {
+            console.error(`❌ No se encontró producto con slug "${item.id}" en Sanity.`)
+          }
+        }
       }
 
       console.log(`✅ Pago ${id} procesado exitosamente.`)
