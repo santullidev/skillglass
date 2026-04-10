@@ -104,7 +104,14 @@ export async function POST(req: NextRequest) {
 
     // Consultar el pago a la API de MP
     const payment = new Payment(client)
-    const paymentData = await payment.get({ id })
+    let paymentData
+    try {
+      paymentData = await payment.get({ id })
+    } catch (mpError) {
+      // MP puede enviar IDs de prueba inexistentes (ej: desde el simulador del panel)
+      console.warn(`⚠️ No se pudo obtener el pago ${id} de la API de MP (puede ser un ID de prueba). Error:`, mpError)
+      return NextResponse.json({ received: true })
+    }
 
     if (paymentData.status === 'approved') {
       const meta = paymentData.metadata || {}
@@ -151,7 +158,8 @@ export async function POST(req: NextRequest) {
         referenciaExterna: externalReference || 'N/A',
         montoTotal: paymentData.transaction_amount,
         estado: 'approved',
-        productos: items.map((item: MetadataItem) => ({
+        productos: items.map((item: MetadataItem, index: number) => ({
+          _key: `item_${item.id}_${index}`,   // ← requerido por Sanity para arrays de objetos
           id: item.id,
           nombre: item.title,
           cantidad: item.quantity ?? 1,
