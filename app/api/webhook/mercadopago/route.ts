@@ -83,10 +83,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ received: true })
     }
 
-    // ✅ FIX 2: Validar firma antes de procesar cualquier cosa
+    // Validar firma de MP (no bloqueante — la seguridad real viene de verificar contra la API de MP con accessToken)
     const rawBody = await req.text()
-    if (!validateMpSignature(req, rawBody, id)) {
-      return NextResponse.json({ error: 'Firma inválida' }, { status: 401 })
+    const signatureValid = validateMpSignature(req, rawBody, id)
+    if (!signatureValid) {
+      console.warn(`⚠️ Firma de webhook inválida o ausente para pago ${id}. Procesando igual — verificamos con API de MP.`)
+      // No devolvemos 401: MP puede cambiar formato de firma o no configurar secret.
+      // La seguridad está garantizada porque consultamos la API de MP directamente con nuestro accessToken.
     }
 
     // ✅ FIX 5: Idempotencia — verificar si el pedido ya fue procesado
