@@ -204,7 +204,18 @@ export async function POST(req: NextRequest) {
         }
       }).catch(err => console.error('Error al enviar emails después del pedido:', err))
 
-      // ✅ Marcar productos como no disponibles
+      // Helper para invalidar cache de Next.js de una página de producto
+      const revalidateProductPage = async (slug: string) => {
+        const revalidateToken = process.env.REVALIDATE_SECRET || process.env.MP_ACCESS_TOKEN?.slice(-12)
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+        await fetch(`${baseUrl}/api/revalidar-producto`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug, token: revalidateToken }),
+        }).catch(err => console.error(`⚠️ Error al revalidar cache de /productos/${slug}:`, err))
+      }
+
+      // ✅ Marcar productos como no disponibles + invalidar cache del frontend
       // Los IDs en el metadata de MP pueden ser el _id de Sanity (preferido) o el slug (fallback)
       for (const item of items) {
         if (!item.id || item.id === 'N/A') {
@@ -212,12 +223,17 @@ export async function POST(req: NextRequest) {
           continue
         }
 
-        // Los _id de Sanity tienen formato de UUID (contienen letras mayúsculas y son longos)
+        // Los _id de Sanity tienen formato de UUID (contienen letras mayúsculas y son largos)
         // Los slugs son kebab-case lowercase. Detectamos cuál es.
         const looksLikeSanityId = item.id.length > 20 && /[A-Z]/.test(item.id)
 
         if (looksLikeSanityId) {
-          // Patch directo por _id
+          // Patch por _id — también buscamos el slug para poder revalidar el cache
+          const productoData = await backendClient.fetch(
+            `*[_type == "producto" && _id == $id][0]{ "slug": slug.current }`,
+            { id: item.id }
+          ).catch(() => null)
+
           const patchResult = await backendClient
             .patch(item.id)
             .set({ disponible: false })
@@ -229,6 +245,9 @@ export async function POST(req: NextRequest) {
 
           if (patchResult) {
             console.log(`✅ Producto "${item.title}" (${item.id}) marcado como no disponible.`)
+            if (productoData?.slug) {
+              await revalidateProductPage(productoData.slug)
+            }
           }
         } else {
           // El id parece ser un slug — buscar el documento por slug y patchear
@@ -246,11 +265,13 @@ export async function POST(req: NextRequest) {
               .catch((err) => console.error(`❌ Error al marcar producto por slug "${item.id}":`, err))
 
             console.log(`✅ Producto "${item.title}" (slug: ${item.id} → _id: ${productoDoc._id}) marcado como no disponible.`)
+            await revalidateProductPage(item.id)
           } else {
             console.error(`❌ No se encontró producto con slug "${item.id}" en Sanity.`)
           }
         }
       }
+
 
       console.log(`✅ Pago ${id} procesado exitosamente.`)
     }
