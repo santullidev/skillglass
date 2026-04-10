@@ -22,6 +22,14 @@ interface MetadataItem {
   unit_price: number
 }
 
+// Tipo para items crudos del metadata de MP (pueden llegar con campos opcionales en snake_case)
+interface RawMetadataItem {
+  id?: string
+  title?: string
+  quantity?: number
+  unit_price?: number
+}
+
 interface ShippingData {
   nombre: string
   email: string
@@ -119,7 +127,7 @@ export async function POST(req: NextRequest) {
       // ⚠️ CRÍTICO: MercadoPago convierte las keys del metadata a snake_case automáticamente.
       // shipping_data es el objeto anidado, y sus keys internas también quedan en snake_case.
       // Ejemplo: codigoPostal → codigo_postal, estadoEnvio → estado_envio
-      const raw: Record<string, any> = meta.shipping_data || {}
+      const raw: Record<string, string> = meta.shipping_data || {}
 
       const shippingData: ShippingData = {
         nombre:       raw.nombre       || '',
@@ -133,8 +141,8 @@ export async function POST(req: NextRequest) {
       }
 
       // Items también llegan en snake_case desde el metadata de MP
-      const rawItems: any[] = meta.items || []
-      const items: MetadataItem[] = rawItems.map((i: any) => ({
+      const rawItems: RawMetadataItem[] = meta.items || []
+      const items: MetadataItem[] = rawItems.map((i: RawMetadataItem) => ({
         id:         i.id         || 'N/A',
         title:      i.title      || 'Producto SKILLGLASS',
         quantity:   Number(i.quantity  ?? 1),
