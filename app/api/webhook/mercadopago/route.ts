@@ -104,10 +104,44 @@ export async function POST(req: NextRequest) {
     const paymentData = await payment.get({ id })
 
     if (paymentData.status === 'approved') {
-      const items: MetadataItem[] = paymentData.metadata?.items || []
-      const externalReference = paymentData.external_reference // ✅ FIX 4: se guarda abajo
+      const meta = paymentData.metadata || {}
 
-      // ✅ FIX 3 + 6 + 7: Crear pedido con tipos correctos, cantidad y precio reales
+      // ⚠️ CRÍTICO: MercadoPago convierte las keys del metadata a snake_case automáticamente.
+      // shipping_data es el objeto anidado, y sus keys internas también quedan en snake_case.
+      // Ejemplo: codigoPostal → codigo_postal, estadoEnvio → estado_envio
+      const raw: Record<string, any> = meta.shipping_data || {}
+
+      const shippingData: ShippingData = {
+        nombre:       raw.nombre       || '',
+        email:        raw.email        || '',
+        telefono:     raw.telefono     || '',
+        provincia:    raw.provincia    || '',
+        ciudad:       raw.ciudad       || '',
+        direccion:    raw.direccion    || '',
+        codigoPostal: raw.codigo_postal || raw.codigoPostal || '',
+        notas:        raw.notas        || '',
+      }
+
+      // Items también llegan en snake_case desde el metadata de MP
+      const rawItems: any[] = meta.items || []
+      const items: MetadataItem[] = rawItems.map((i: any) => ({
+        id:         i.id         || 'N/A',
+        title:      i.title      || 'Producto SKILLGLASS',
+        quantity:   Number(i.quantity  ?? 1),
+        unit_price: Number(i.unit_price ?? 0),
+      }))
+
+      const externalReference = paymentData.external_reference
+
+      // Derivar el nombre del cliente: priorizar payer de MP, luego shipping_data
+      const clienteNombre = paymentData.payer?.first_name
+        ? `${paymentData.payer.first_name} ${paymentData.payer.last_name || ''}`.trim()
+        : shippingData.nombre || 'Cliente MP'
+
+      const clienteEmail    = paymentData.payer?.email || shippingData.email
+      const clienteTelefono = String(paymentData.payer?.phone?.number || shippingData.telefono || '')
+
+      // ✅ Crear pedido en Sanity con todos los campos correctamente mapeados
       await backendClient.create({
         _type: 'pedido',
         idMercadoPago: id,
@@ -121,35 +155,32 @@ export async function POST(req: NextRequest) {
           precio: item.unit_price ?? 0,
         })),
         cliente: {
-          nombre: paymentData.payer?.first_name 
-            ? `${paymentData.payer.first_name} ${paymentData.payer.last_name || ''}`.trim()
-            : paymentData.metadata?.shipping_data?.nombre || 'Cliente MP',
-          email: paymentData.payer?.email || paymentData.metadata?.shipping_data?.email,
-          telefono: String(paymentData.payer?.phone?.number || paymentData.metadata?.shipping_data?.telefono || ''),
+          nombre:   clienteNombre,
+          email:    clienteEmail,
+          telefono: clienteTelefono,
         },
-        envio: paymentData.metadata?.shipping_data || {
-          nombre: 'N/A',
-          direccion: 'N/A',
-          ciudad: 'N/A',
-          provincia: 'N/A',
-          codigoPostal: 'N/A'
+        envio: {
+          provincia:    shippingData.provincia    || 'N/A',
+          ciudad:       shippingData.ciudad       || 'N/A',
+          direccion:    shippingData.direccion    || 'N/A',
+          codigoPostal: shippingData.codigoPostal || 'N/A',
+          notas:        shippingData.notas        || '',
         },
         estadoEnvio: 'pendiente',
         fecha: new Date().toISOString(),
       })
 
-      // ✅ FIX 9: Enviar Notificaciones por Email
-      const shippingData: ShippingData = paymentData.metadata?.shipping_data || {}
+      // ✅ Enviar Notificaciones por Email
       await sendOrderEmails({
         orderId: String(id),
-        customerName: paymentData.metadata?.shipping_data?.nombre || paymentData.payer?.first_name || 'Cliente',
-        customerEmail: paymentData.metadata?.shipping_data?.email || paymentData.payer?.email || '',
-        totalAmount: paymentData.transaction_amount || 0,
+        customerName:  clienteNombre,
+        customerEmail: clienteEmail || '',
+        totalAmount:   paymentData.transaction_amount || 0,
         items: items.map(i => ({ nombre: i.title, cantidad: i.quantity, precio: i.unit_price })),
         shippingData: {
-          direccion: shippingData.direccion || 'N/A',
-          ciudad: shippingData.ciudad || 'N/A',
-          provincia: shippingData.provincia || 'N/A',
+          direccion:    shippingData.direccion    || 'N/A',
+          ciudad:       shippingData.ciudad       || 'N/A',
+          provincia:    shippingData.provincia    || 'N/A',
           codigoPostal: shippingData.codigoPostal || 'N/A',
         }
       }).catch(err => console.error('Error al enviar emails después del pedido:', err))
