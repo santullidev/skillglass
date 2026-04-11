@@ -110,6 +110,142 @@ export default async function Home() {
         </section>
       )}
 
+      {/* ── PRODUCTOS DESTACADOS ──────────────────────────────── */}
+      <section id="piezas" className="py-32 lg:py-48 bg-surface-lowest overflow-hidden relative">
+        <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-gold/20 to-transparent" />
+        
+        {/* Section Header — editorial, off-center */}
+        <div className="max-w-360 mx-auto px-6 lg:px-8 mb-24">
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-12">
+            <div className="relative">
+              <div className="absolute -left-6 top-2 bottom-0 w-px bg-gold/30 hidden md:block" />
+              <p
+                className="text-[10px] tracking-[0.5em] text-gold font-bold uppercase mb-6"
+                style={{ fontFamily: 'var(--font-label)' }}
+              >
+                Sala de exposición
+              </p>
+              <h2
+                className="text-6xl lg:text-9xl text-on-surface leading-none tracking-tight"
+                style={{ fontFamily: 'var(--font-display)' }}
+              >
+                {tituloPiezas}
+              </h2>
+            </div>
+            <div className="lg:max-w-sm lg:pb-3 border-l border-outline-gold/20 pl-6">
+              <p className="text-on-surface-variant font-serif italic text-xl leading-relaxed mb-8">
+                Joyería que nace de la pura destreza térmica. Un catálogo donde el asombro artesanal se encuentra con la fluidez del cristal soplado a la flama.
+              </p>
+              <Link
+                href="/productos"
+                className="group inline-flex items-center gap-3 text-[10px] tracking-[0.4em] text-gold font-bold uppercase border-b border-gold/30 pb-2 hover:border-gold transition-all duration-500"
+                style={{ fontFamily: 'var(--font-label)' }}
+              >
+                Catálogo Flameworking
+                <span className="text-gold group-hover:translate-x-2 transition-transform duration-500">→</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Editorial Grid: 1st featured (2 cols), rest 3 columns */}
+        {productos.length > 0 && (
+          <div className="max-w-360 mx-auto px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-px bg-outline-gold/10 border border-outline-gold/10">
+              {productos.map((producto, idx) => {
+                const isFirst = idx === 0
+                return (
+                  <div key={producto._id} className={`${isFirst ? 'md:col-span-6 lg:col-span-8' : 'md:col-span-3 lg:col-span-4'}`}>
+                    <ProductCard 
+                      producto={producto} 
+                      index={idx} 
+                      variant={isFirst ? 'featured' : 'normal'} 
+                    />
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Tagline footer */}
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 mt-12 flex items-center gap-6">
+          <span className="flex-1 h-px bg-outline-variant/20" />
+          <p
+            className="text-[10px] tracking-[0.4em] text-outline-variant/40 uppercase shrink-0"
+            style={{ fontFamily: 'var(--font-label)' }}
+          >
+            La Alquimia de la Luz Molten · Buenos Aires
+          </p>
+          <span className="flex-1 h-px bg-outline-variant/20" />
+        </div>
+      </section>
+
+      {/* ── FRASE EDITORIAL ───────────────────────────────────── */}
+      {mostrarFrase && (
+        <section className="py-20 lg:py-28 bg-surface-deep relative overflow-hidden flex items-center justify-center">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,168,76,0.1)_0%,transparent_60%)] blur-[120px] pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[80%] text-[400px] text-surface-container opacity-10 font-serif leading-none select-none pointer-events-none">
+            &ldquo;
+          </div>
+          
+          <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
+            <p className="text-2xl md:text-3xl lg:text-4xl leading-[1.6] text-gradient-gold font-serif italic drop-shadow-2xl text-balance animate-in fade-in slide-in-from-bottom-8 duration-1000">
+              {frase}
+            </p>
+            <div className="mt-12 inline-flex flex-col items-center gap-4 animate-in fade-in zoom-in duration-1000 delay-500">
+              <span className="w-px h-12 bg-gold/40 shadow-[0_0_10px_rgba(201,168,76,0.5)]" />
+              <span className="text-[10px] tracking-[0.6em] text-gold font-bold uppercase" style={{ fontFamily: 'var(--font-label)' }}>SKILGLASS</span>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── NARRATIVA / PILARES (legacy seccionNarrativa) ────── */}
+      {config?.seccionNarrativa?.activo && (
+        <section className="py-24 lg:py-40 bg-surface-lowest">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8">
+            <div className="flex flex-col lg:flex-row gap-24 items-start mb-32">
+              <div className="lg:max-w-2xl">
+                <h2
+                  className="text-5xl lg:text-7xl text-on-surface mb-12 leading-tight"
+                  style={{ fontFamily: 'var(--font-display)' }}
+                >
+                  {config.seccionNarrativa.titulo || 'El Caos Controlado del Fuego'}
+                </h2>
+                <p className="text-xl text-on-surface-variant font-serif leading-relaxed italic">
+                  {config.seccionNarrativa.descripcion || 'Cada pieza de SKILGLASS atraviesa un riguroso proceso de transformación molecular. No fabricamos joyería; capturamos un momento de fluidez sólida.'}
+                </p>
+              </div>
+              <div className="w-full lg:w-px lg:h-64 bg-outline-variant/30" />
+            </div>
+            {config.seccionNarrativa.features && config.seccionNarrativa.features.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-outline-variant/20 border border-outline-variant/20">
+                {config.seccionNarrativa.features.map((feature, i) => (
+                  <div key={i} className="bg-surface p-10 hover:bg-surface-container transition-all duration-500 group">
+                    <span
+                      className="text-gold/60 text-[10px] font-bold mb-8 block tracking-[0.4em]"
+                      style={{ fontFamily: 'var(--font-label)' }}
+                    >
+                      0{i + 1} {'//'}
+                    </span>
+                    <h4
+                      className="text-xl text-on-surface mb-4 group-hover:text-gold transition-colors"
+                      style={{ fontFamily: 'var(--font-display)' }}
+                    >
+                      {feature.titulo}
+                    </h4>
+                    <p className="text-on-surface-variant text-sm leading-relaxed">
+                      {feature.descripcion}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
       {/* ── PIEZA DESTACADA (ALQUIMIA) ────────────────────────── */}
       {alquimia?.activo && (
         <section className="py-24 lg:py-40 bg-surface relative overflow-hidden border-y border-outline-gold/10">
@@ -190,142 +326,6 @@ export default async function Home() {
           </div>
         </section>
       )}
-
-      {/* ── FRASE EDITORIAL ───────────────────────────────────── */}
-      {mostrarFrase && (
-        <section className="py-20 lg:py-28 bg-surface-deep relative overflow-hidden flex items-center justify-center">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,168,76,0.1)_0%,transparent_60%)] blur-[120px] pointer-events-none" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[80%] text-[400px] text-surface-container opacity-10 font-serif leading-none select-none pointer-events-none">
-            &ldquo;
-          </div>
-          
-          <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
-            <p className="text-2xl md:text-3xl lg:text-4xl leading-[1.6] text-gradient-gold font-serif italic drop-shadow-2xl text-balance animate-in fade-in slide-in-from-bottom-8 duration-1000">
-              {frase}
-            </p>
-            <div className="mt-12 inline-flex flex-col items-center gap-4 animate-in fade-in zoom-in duration-1000 delay-500">
-              <span className="w-px h-12 bg-gold/40 shadow-[0_0_10px_rgba(201,168,76,0.5)]" />
-              <span className="text-[10px] tracking-[0.6em] text-gold font-bold uppercase" style={{ fontFamily: 'var(--font-label)' }}>SKILGLASS</span>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── NARRATIVA / PILARES (legacy seccionNarrativa) ────── */}
-      {config?.seccionNarrativa?.activo && (
-        <section className="py-24 lg:py-40 bg-surface-lowest">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="flex flex-col lg:flex-row gap-24 items-start mb-32">
-              <div className="lg:max-w-2xl">
-                <h2
-                  className="text-5xl lg:text-7xl text-on-surface mb-12 leading-tight"
-                  style={{ fontFamily: 'var(--font-display)' }}
-                >
-                  {config.seccionNarrativa.titulo || 'El Caos Controlado del Fuego'}
-                </h2>
-                <p className="text-xl text-on-surface-variant font-serif leading-relaxed italic">
-                  {config.seccionNarrativa.descripcion || 'Cada pieza de SKILGLASS atraviesa un riguroso proceso de transformación molecular. No fabricamos joyería; capturamos un momento de fluidez sólida.'}
-                </p>
-              </div>
-              <div className="w-full lg:w-px lg:h-64 bg-outline-variant/30" />
-            </div>
-            {config.seccionNarrativa.features && config.seccionNarrativa.features.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-outline-variant/20 border border-outline-variant/20">
-                {config.seccionNarrativa.features.map((feature, i) => (
-                  <div key={i} className="bg-surface p-10 hover:bg-surface-container transition-all duration-500 group">
-                    <span
-                      className="text-gold/60 text-[10px] font-bold mb-8 block tracking-[0.4em]"
-                      style={{ fontFamily: 'var(--font-label)' }}
-                    >
-                      0{i + 1} {'//'}
-                    </span>
-                    <h4
-                      className="text-xl text-on-surface mb-4 group-hover:text-gold transition-colors"
-                      style={{ fontFamily: 'var(--font-display)' }}
-                    >
-                      {feature.titulo}
-                    </h4>
-                    <p className="text-on-surface-variant text-sm leading-relaxed">
-                      {feature.descripcion}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </section>
-      )}
-
-      {/* ── PRODUCTOS DESTACADOS ──────────────────────────────── */}
-      <section id="piezas" className="py-32 lg:py-48 bg-surface-lowest overflow-hidden relative">
-        <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-gold/20 to-transparent" />
-        
-        {/* Section Header — editorial, off-center */}
-        <div className="max-w-360 mx-auto px-6 lg:px-8 mb-24">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-12">
-            <div className="relative">
-              <div className="absolute -left-6 top-2 bottom-0 w-px bg-gold/30 hidden md:block" />
-              <p
-                className="text-[10px] tracking-[0.5em] text-gold font-bold uppercase mb-6"
-                style={{ fontFamily: 'var(--font-label)' }}
-              >
-                Sala de exposición
-              </p>
-              <h2
-                className="text-6xl lg:text-9xl text-on-surface leading-none tracking-tight"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                {tituloPiezas}
-              </h2>
-            </div>
-            <div className="lg:max-w-sm lg:pb-3 border-l border-outline-gold/20 pl-6">
-              <p className="text-on-surface-variant font-serif italic text-xl leading-relaxed mb-8">
-                Joyería que nace de la pura destreza térmica. Un catálogo donde el asombro artesanal se encuentra con la fluidez del cristal soplado a la flama.
-              </p>
-              <Link
-                href="/productos"
-                className="group inline-flex items-center gap-3 text-[10px] tracking-[0.4em] text-gold font-bold uppercase border-b border-gold/30 pb-2 hover:border-gold transition-all duration-500"
-                style={{ fontFamily: 'var(--font-label)' }}
-              >
-                Catálogo Flameworking
-                <span className="text-gold group-hover:translate-x-2 transition-transform duration-500">→</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Editorial Grid: 1st featured (2 cols), rest 3 columns */}
-        {productos.length > 0 && (
-          <div className="max-w-360 mx-auto px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-px bg-outline-gold/10 border border-outline-gold/10">
-              {productos.map((producto, idx) => {
-                const isFirst = idx === 0
-                return (
-                  <div key={producto._id} className={`${isFirst ? 'md:col-span-6 lg:col-span-8' : 'md:col-span-3 lg:col-span-4'}`}>
-                    <ProductCard 
-                      producto={producto} 
-                      index={idx} 
-                      variant={isFirst ? 'featured' : 'normal'} 
-                    />
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Tagline footer */}
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 mt-12 flex items-center gap-6">
-          <span className="flex-1 h-px bg-outline-variant/20" />
-          <p
-            className="text-[10px] tracking-[0.4em] text-outline-variant/40 uppercase shrink-0"
-            style={{ fontFamily: 'var(--font-label)' }}
-          >
-            La Alquimia de la Luz Molten · Buenos Aires
-          </p>
-          <span className="flex-1 h-px bg-outline-variant/20" />
-        </div>
-      </section>
 
       {/* ── MANIFIESTO / EL CAOS CONTROLADO ──────────────────── */}
       {mostrarProceso && (
