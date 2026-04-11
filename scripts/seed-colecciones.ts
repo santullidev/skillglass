@@ -86,7 +86,7 @@ const seedData = async () => {
     _id: 'col-luz-fundida',
     nombre: 'Luz Fundida',
     slug: { _type: 'slug', current: 'luz-fundida' },
-    descripcion: 'Explorando el límite térmico del cristal. Piezas capturadas en el instante exacto de la vitrofusión.',
+    descripcion: 'Explorando el límite térmico del cristal. Piezas capturadas en el instante exacto de la joyería en vidrio.',
     descripcionLarga: 'Cada pieza de la colección Luz Fundida es el resultado de una cocción controlada de 24 horas. El vidrio alcanza su punto de saturación y comienza a fluir, creando patrones imposibles de replicar. Maestría de la Luz Molten. Joyería de autor diseñada y producida en el calor del horno.',
     productos: [
       {

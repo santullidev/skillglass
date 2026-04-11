@@ -20,7 +20,7 @@ const DEFAULTS = {
   alquimiaSpecs: [
     { label: 'TEMPERATURA', valor: '820°C' },
     { label: 'MASA', valor: '114g' },
-    { label: 'PROCESO', valor: 'VITROFUSIÓN' },
+    { label: 'PROCESO', valor: 'JOYERÍA EN VIDRIO' },
   ],
   procesoEtiqueta: 'LA TÉCNICA',
   procesoTitulo: 'La Tensión de la Llama',
@@ -339,7 +339,7 @@ export default async function Home() {
               {proceso?.imagen ? (
                 <Image
                   src={urlFor(proceso.imagen).width(1200).height(1400).url()}
-                  alt="Proceso de vitrofusión"
+                  alt="Proceso de joyería en vidrio"
                   fill
                   className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 50vw"

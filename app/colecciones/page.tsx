@@ -8,7 +8,7 @@ export const revalidate = 60 // Revalidate every minute
 
 export const metadata: Metadata = {
   title: 'Colecciones | SKILGLASS',
-  description: 'Explora nuestras colecciones exclusivas de joyería en vitrofusión. Piezas capturadas en el instante exacto de la luz molten.',
+  description: 'Explora nuestras colecciones exclusivas de joyería en vidrio. Piezas capturadas en el instante exacto de la luz molten.',
   openGraph: {
     title: 'Colecciones de Joyería de Autor | SKILGLASS',
     description: 'Series limitadas esculpidas al fuego, capturando la fluidez del cristal.',

@@ -33,7 +33,7 @@ export async function generateMetadata({
 
   return {
     title: `${producto.nombre} | SKILGLASS`,
-    description: producto.descripcion || `Adquiere ${producto.nombre}, una joya única de autor. Vitrofusión SKILGLASS.`,
+    description: producto.descripcion || `Adquiere ${producto.nombre}, una joya única de autor. Joyería en vidrio SKILGLASS.`,
     openGraph: {
       title: `${producto.nombre} | SKILGLASS`,
       description: producto.descripcion || `Pieza única de joyería artesanal esculpida al fuego.`,
@@ -112,7 +112,7 @@ export default async function ProductDetailPage({
 
           <div className="prose prose-invert prose-p:text-on-surface-variant prose-p:font-serif prose-p:leading-relaxed mb-12">
             <p>
-              {producto.descripcion || 'Pieza única creada mediante el proceso de vitrofusión a alta temperatura.'}
+              {producto.descripcion || 'Pieza única creada mediante el proceso de joyería en vidrio a alta temperatura.'}
             </p>
           </div>
 

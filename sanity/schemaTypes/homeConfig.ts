@@ -135,7 +135,7 @@ export const homeConfigSchema = defineType({
                 name: 'valor',
                 title: 'Valor',
                 type: 'string',
-                description: 'Ej: 820°C, 114g, Vitrofusión',
+                description: 'Ej: 820°C, 114g, Joyería en vidrio',
                 placeholder: '820°C',
               },
             ],

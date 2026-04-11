@@ -57,7 +57,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const existingItemIndex = currentItems.findIndex((item) => item.id === newItem.id)
       
       if (existingItemIndex > -1) {
-        // Para piezas únicas de vitrofusión, no permitimos más de 1 unidad
+        // Para piezas únicas de joyería en vidrio, no permitimos más de 1 unidad
         return currentItems
       }
       
@@ -71,7 +71,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const updateQuantity = useCallback((id: string, cantidad: number) => {
     if (cantidad < 1) return
-    // Para piezas únicas de vitrofusión, bloqueamos cantidad > 1
+    // Para piezas únicas de joyería en vidrio, bloqueamos cantidad > 1
     if (cantidad > 1) return
     
     setItems((currentItems) =>

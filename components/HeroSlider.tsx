@@ -44,7 +44,7 @@ export default function HeroSlider({ images, metadata, title, subtitle }: Props)
             <Image
               key={img._key || i}
               src={urlFor(img).width(1920).height(1080).url()}
-              alt={`Vitrofusión Hero ${i + 1}`}
+              alt={`Joyería en vidrio Hero ${i + 1}`}
               fill
               className={`object-cover transition-opacity duration-1500 ease-in-out ${
                 i === index ? 'opacity-60 z-10' : 'opacity-0 z-0'
@@ -56,7 +56,7 @@ export default function HeroSlider({ images, metadata, title, subtitle }: Props)
         ) : (
           <Image
             src="/hero-bg.png"
-            alt="Vitrofusión Hero"
+            alt="Joyería en vidrio Hero"
             fill
             className="object-cover opacity-60"
             priority
@@ -90,7 +90,7 @@ export default function HeroSlider({ images, metadata, title, subtitle }: Props)
         <div className="mb-10 px-6 py-2 border border-gold/40 bg-surface-deep/40 backdrop-blur-md inline-flex items-center gap-3 relative overflow-hidden">
           <div className="w-1.5 h-1.5 bg-gold rounded-full animate-pulse shadow-[0_0_10px_rgba(201,168,76,0.8)]" />
           <p className="label-text tracking-[0.5em] text-gold mb-0 text-[10px] font-bold uppercase drop-shadow-lg">
-            VITROFUSIÓN DE AUTOR
+            JOYERÍA EN VIDRIO DE AUTOR
           </p>
           <div className="absolute top-0 left-0 w-12 h-px bg-linear-to-r from-transparent via-gold to-transparent" />
         </div>

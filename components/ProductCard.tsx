@@ -84,7 +84,7 @@ export default function ProductCard({ producto, variant = 'normal', index = 0 }:
         <div className="absolute bottom-0 left-0 right-0 z-20 p-5 lg:p-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
           <p className="text-[10px] tracking-[0.25em] text-white/40 uppercase mb-2"
             style={{ fontFamily: 'var(--font-label)' }}>
-            {producto.categoria || 'Vitrofusión de autor'}
+            {producto.categoria || 'Joyería en vidrio de autor'}
           </p>
 
           <div className="flex items-end justify-between gap-4">

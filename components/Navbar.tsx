@@ -162,7 +162,7 @@ export default function Navbar() {
             {/* Mobile Footer in Menu */}
             <div className="mt-12 pt-12 border-t border-outline-variant/10 w-full text-center">
               <p className="text-[10px] tracking-[0.4em] text-outline-variant/60 uppercase" style={{ fontFamily: 'var(--font-label)' }}>
-                Vitrofusión de Autor · Buenos Aires
+                Joyería en Vidrio de Autor · Buenos Aires
               </p>
             </div>
           </div>

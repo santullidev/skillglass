@@ -13,7 +13,7 @@ export default function Loading() {
             className="text-[10px] tracking-[0.5em] text-on-surface/40 uppercase"
             style={{ fontFamily: 'var(--font-label)' }}
           >
-            Vitrofusión
+            Joyería en vidrio
           </span>
           <div className="w-24 h-px bg-linear-to-r from-transparent via-primary/30 to-transparent" />
         </div>

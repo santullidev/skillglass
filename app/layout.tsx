@@ -32,9 +32,9 @@ export const metadata: Metadata = {
     template: "%s | SKILGLASS",
   },
   description:
-    "Joyas esculpidas por el fuego. Estudio de diseño experimental enfocado en la refracción lumínica y la joyería de autor mediante técnicas de vitrofusión avanzada.",
+    "Joyas esculpidas por el fuego. Estudio de diseño experimental enfocado en la refracción lumínica y la joyería de autor mediante técnicas de joyería en vidrio avanzada.",
   keywords: [
-    "vitrofusión",
+    "joyería en vidrio",
     "joyería artesanal",
     "vidrio fundido",
     "joyas de vidrio",

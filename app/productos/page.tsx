@@ -6,7 +6,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Catálogo de Piezas Únicas | SKILGLASS',
-  description: 'Explora nuestra colección de joyería de autor y piezas escultóricas en vitrofusión. Maestría en la refracción de la luz y el cristal fundido.',
+  description: 'Explora nuestra colección de joyería de autor y piezas escultóricas en joyería en vidrio. Maestría en la refracción de la luz y el cristal fundido.',
 }
 
 export const revalidate = 60 // Revalidate every minute
