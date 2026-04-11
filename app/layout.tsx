@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Noto_Serif, Manrope, Space_Grotesk } from "next/font/google";
+import { Playfair_Display, Manrope, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-const notoSerif = Noto_Serif({
-  variable: "--font-noto-serif",
+const playfairDisplay = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "500", "600", "700"],
@@ -76,7 +76,7 @@ export default async function RootLayout({
   return (
     <html
       lang="es"
-      className={`${notoSerif.variable} ${manrope.variable} ${spaceGrotesk.variable}`}
+      className={`${playfairDisplay.variable} ${manrope.variable} ${spaceGrotesk.variable}`}
     >
       <body className="min-h-screen flex flex-col antialiased">
         <StyledComponentsRegistry>

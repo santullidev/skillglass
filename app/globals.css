@@ -56,7 +56,7 @@
   --inverse-primary: #E8A0AC;
 
   /* Fonts */
-  --font-display: var(--font-noto-serif), 'Noto Serif', Georgia, serif;
+  --font-display: var(--font-playfair), 'Playfair Display', Georgia, serif;
   --font-body: var(--font-manrope), 'Manrope', system-ui, sans-serif;
   --font-label: var(--font-space-grotesk), 'Space Grotesk', monospace;
 }
@@ -74,7 +74,7 @@
   --color-on-surface-variant: var(--on-surface-variant);
   --color-outline: var(--outline);
   --color-outline-variant: var(--outline-variant);
-  --font-display: var(--font-noto-serif), "Noto Serif", Georgia, serif;
+  --font-display: var(--font-playfair), "Playfair Display", Georgia, serif;
   --font-body: var(--font-manrope), "Manrope", system-ui, sans-serif;
   --font-label: var(--font-space-grotesk), "Space Grotesk", monospace;
 }
