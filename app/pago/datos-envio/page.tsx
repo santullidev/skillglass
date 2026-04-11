@@ -243,11 +243,11 @@ export default function DatosEnvioPage() {
                   value={formData.provincia} 
                   onChange={handleInputChange} 
                   onBlur={() => validateField('provincia', formData.provincia)}
-                  className={`w-full bg-[#1c080b] text-[#ffdadc] border ${errors.provincia ? 'border-primary' : 'border-outline-variant/20'} p-4 text-sm focus:outline-none focus:border-primary/50 transition-colors cursor-pointer appearance-none pr-10`}
+                  className={`w-full bg-surface-container-low text-on-surface border ${errors.provincia ? 'border-primary' : 'border-outline-variant/20'} p-4 text-sm focus:outline-none focus:border-primary/50 transition-colors cursor-pointer appearance-none pr-10`}
                 >
-                  <option value="" className="bg-[#1c080b] text-[#ffdadc]">Seleccionar Provincia...</option>
+                  <option value="" className="bg-surface-container-low text-on-surface">Seleccionar Provincia...</option>
                   {PROVINCIAS_ARGENTINA.map(p => (
-                    <option key={p} value={p} className="bg-[#1c080b] text-[#ffdadc]">{p}</option>
+                    <option key={p} value={p} className="bg-surface-container-low text-on-surface">{p}</option>
                   ))}
                 </select>
                 {/* Custom arrow for improved contrast and UX */}

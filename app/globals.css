@@ -1,59 +1,59 @@
 @import "tailwindcss";
 
 /* ============================================
-   SKILGLASS — Design System: Alquimia de Luz Fundida
+   SKILGLASS — Design System: Minimalista Bordó
    ============================================ */
 
 /* --- Design Tokens --- */
 :root {
-  /* Surfaces */
-  --surface: #1a0a0d;
-  --surface-deep: #0d0608;
-  --surface-dim: #1a0a0d;
-  --surface-bright: #4c3235;
-  --surface-container-lowest: #080305;
-  --surface-container-low: #1c080b;
-  --surface-container: #2b1518;
-  --surface-container-high: #3b2326;
-  --surface-container-highest: #472e30;
+  /* Surfaces — light theme */
+  --surface: #FFFFFF;
+  --surface-deep: #F7F4F4;
+  --surface-dim: #F0EBEBF;
+  --surface-bright: #FFFFFF;
+  --surface-container-lowest: #FFFFFF;
+  --surface-container-low: #F7F4F4;
+  --surface-container: #F0EBEB;
+  --surface-container-high: #E8E0E1;
+  --surface-container-highest: #DED5D6;
 
-  /* Accents (Luxury Gold & Copper) */
-  --gold: #c9a84c;
-  --gold-glow: rgba(201, 168, 76, 0.3);
-  --copper: #b87333;
-  --on-gold: #0d0608;
+  /* Acento Bordó */
+  --borde: #6B1A2A;
+  --borde-light: #F5EAEC;
+  --borde-mid: #C4667A;
+  --on-borde: #FFFFFF;
 
-  /* Primary (Baltic Blue - kept for functional elements like success/buttons) */
-  --primary: #a9c7ff;
-  --primary-container: #00234b;
-  --on-primary: #003062;
-  --on-primary-container: #688bc5;
+  /* Primary → bordó */
+  --primary: #6B1A2A;
+  --primary-container: #F5EAEC;
+  --on-primary: #FFFFFF;
+  --on-primary-container: #4A0F1C;
 
-  /* Secondary (Gold highlight) */
-  --secondary: #c9a84c;
-  --secondary-container: #4a3b1a;
-  --on-secondary: #0d0608;
+  /* Secondary → gris cálido */
+  --secondary: #5C4B4D;
+  --secondary-container: #EDE5E6;
+  --on-secondary: #FFFFFF;
 
-  /* Tertiary (Copper highlight) */
-  --tertiary: #b87333;
-  --tertiary-container: #48200c;
-  --on-tertiary: #ffffff;
+  /* Tertiary → bordó suave */
+  --tertiary: #8B2E3F;
+  --tertiary-container: #FAE8EB;
+  --on-tertiary: #FFFFFF;
 
-  /* Neutrals */
-  --on-surface: #ffdadc;
-  --on-surface-variant: #d9c1c2;
-  --outline: #a18c8d;
-  --outline-variant: #534344;
-  --outline-gold: rgba(201, 168, 76, 0.2);
+  /* Neutrals — texto oscuro sobre fondo blanco */
+  --on-surface: #111111;
+  --on-surface-variant: #4A3B3C;
+  --outline: #9E8485;
+  --outline-variant: #D6CBCC;
+  --outline-gold: rgba(107, 26, 42, 0.15);
 
   /* Error */
-  --error: #ffb4ab;
-  --error-container: #93000a;
+  --error: #BA1A1A;
+  --error-container: #FFDAD6;
 
-  /* Inverse */
-  --inverse-surface: #ffdadc;
-  --inverse-on-surface: #432a2c;
-  --inverse-primary: #3b5f96;
+  /* Inverse (para badges sobre fondos oscuros) */
+  --inverse-surface: #111111;
+  --inverse-on-surface: #FFFFFF;
+  --inverse-primary: #E8A0AC;
 
   /* Fonts */
   --font-display: var(--font-noto-serif), 'Noto Serif', Georgia, serif;
@@ -65,8 +65,8 @@
   --color-surface: var(--surface);
   --color-surface-deep: var(--surface-deep);
   --color-surface-dim: var(--surface-dim);
-  --color-gold: var(--gold);
-  --color-copper: var(--copper);
+  --color-gold: var(--borde);
+  --color-copper: var(--borde-mid);
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
   --color-tertiary: var(--tertiary);
@@ -74,7 +74,6 @@
   --color-on-surface-variant: var(--on-surface-variant);
   --color-outline: var(--outline);
   --color-outline-variant: var(--outline-variant);
-
   --font-display: var(--font-noto-serif), "Noto Serif", Georgia, serif;
   --font-body: var(--font-manrope), "Manrope", system-ui, sans-serif;
   --font-label: var(--font-space-grotesk), "Space Grotesk", monospace;
@@ -90,7 +89,7 @@ html {
 }
 
 body {
-  background-color: var(--surface-deep);
+  background-color: var(--surface);
   color: var(--on-surface);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
@@ -128,7 +127,7 @@ p {
 
 /* --- Links --- */
 a {
-  color: var(--gold);
+  color: var(--primary);
   text-decoration: none;
   transition: all 0.3s ease;
 }
@@ -139,31 +138,29 @@ a:hover {
 
 /* --- Utility Classes --- */
 
-/* Glassmorphism panel */
+/* Panel limpio (reemplaza glassmorphism) */
 .glass-panel {
-  background: rgba(13, 6, 8, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(201, 168, 76, 0.15);
+  background: rgba(240, 235, 235, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(107, 26, 42, 0.1);
 }
 
-/* Luxury Glass Card */
+/* Card minimalista */
 .glass-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #FFFFFF;
+  border: 1px solid var(--outline-variant);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-card:hover {
-  border-color: rgba(201, 168, 76, 0.4);
-  box-shadow: 0 0 30px rgba(201, 168, 76, 0.1);
-  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(107, 26, 42, 0.35);
+  box-shadow: 0 4px 24px rgba(107, 26, 42, 0.08);
 }
 
-/* Text Gradient Alquimia */
+/* Text Gradient Bordó */
 .text-gradient-gold {
-  background: linear-gradient(135deg, #FFFFFF 0%, #C9A84C 60%, #B87333 100%);
+  background: linear-gradient(135deg, #111111 0%, #6B1A2A 60%, #8B2E3F 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -175,53 +172,53 @@ a:hover {
   align-items: center;
   justify-content: center;
   background: transparent;
-  border: 1px solid var(--gold);
-  color: var(--gold);
+  border: 1px solid var(--primary);
+  color: var(--primary);
   padding: 1rem 2rem;
   text-transform: uppercase;
   letter-spacing: 0.3em;
   font-size: 0.75rem;
   font-family: var(--font-label);
   font-weight: 700;
-  transition: all 0.5s ease;
+  transition: all 0.4s ease;
   position: relative;
   overflow: hidden;
 }
 
 .btn-luxury:hover {
-  background: var(--gold);
-  color: var(--surface-deep);
+  background: var(--primary);
+  color: #FFFFFF;
 }
 
-/* Ghost border — the razor edge of cut glass */
+/* Ghost border */
 .ghost-border {
-  border: 1px solid rgba(83, 67, 68, 0.2);
+  border: 1px solid rgba(158, 132, 133, 0.2);
 }
 
-/* Iridescent edge — top+left gradient border */
+/* Iridescent edge → bordó sutil */
 .iridescent-edge {
-  border-top: 1px solid rgba(169, 199, 255, 0.15);
-  border-left: 1px solid rgba(255, 178, 185, 0.15);
+  border-top: 1px solid rgba(107, 26, 42, 0.12);
+  border-left: 1px solid rgba(107, 26, 42, 0.08);
   border-right: 1px solid transparent;
   border-bottom: 1px solid transparent;
 }
 
-/* Horno (furnace) glow gradient — radial behind hero elements */
+/* Horno glow → bordó muy suave */
 .horno-glow {
-  background: radial-gradient(ellipse at 50% 60%, rgba(72, 12, 24, 0.6) 0%, transparent 70%);
+  background: radial-gradient(ellipse at 50% 60%, rgba(107, 26, 42, 0.06) 0%, transparent 70%);
 }
 
-/* Caustic ambient glow for floating elements */
+/* Caustic glow */
 .caustic-glow {
-  box-shadow: 0 0 40px rgba(169, 199, 255, 0.08);
+  box-shadow: 0 0 30px rgba(107, 26, 42, 0.06);
 }
 
-/* Tinted shadow — never black */
+/* Tinted shadow */
 .tinted-shadow {
-  box-shadow: 0 8px 40px rgba(72, 12, 24, 0.3);
+  box-shadow: 0 8px 40px rgba(107, 26, 42, 0.1);
 }
 
-/* Label text (technical / monospace feel) */
+/* Label text */
 .label-text {
   font-family: var(--font-label);
   font-size: 0.75rem;
@@ -233,7 +230,7 @@ a:hover {
 /* Price display */
 .price-text {
   font-family: var(--font-label);
-  color: var(--tertiary);
+  color: var(--primary);
   font-weight: 700;
 }
 
@@ -245,21 +242,24 @@ a:hover {
 
 /* --- Scrollbar --- */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
+
 ::-webkit-scrollbar-track {
-  background: var(--surface-container-lowest);
+  background: var(--surface-container-low);
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--outline-variant);
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--outline);
+  background: var(--primary);
 }
 
 /* --- Selection --- */
 ::selection {
-  background: rgba(169, 199, 255, 0.3);
+  background: rgba(107, 26, 42, 0.15);
   color: var(--on-surface);
 }
 

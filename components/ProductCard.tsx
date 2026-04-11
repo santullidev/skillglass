@@ -26,7 +26,7 @@ export default function ProductCard({ producto, variant = 'normal', index = 0 }:
   return (
     <Link
       href={`/productos/${safeSlug}`}
-      className={`group relative overflow-hidden block glass-card transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(0,0,0,0.6),0_0_40px_rgba(201,168,76,0.1)] ${
+      className={`group relative overflow-hidden block glass-card transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)] hover:tinted-shadow ${
         isFeatured ? 'col-span-2 row-span-2' :
         isTall     ? 'row-span-2' :
         isWide     ? 'col-span-2' : ''
@@ -55,7 +55,7 @@ export default function ProductCard({ producto, variant = 'normal', index = 0 }:
         <div className="absolute inset-0 border border-white/5 pointer-events-none z-10" />
 
         {/* Deep gradient from bottom */}
-        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent z-10" />
+        <div className="absolute inset-0 bg-linear-to-t from-surface-deep/90 via-surface-deep/20 to-transparent z-10" />
 
         {/* Caustic glow on hover */}
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 z-10"
