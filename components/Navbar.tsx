@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { useCart } from '@/lib/cart-context'
@@ -57,14 +58,15 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <Link href="/" className="group flex flex-col items-center">
-            <span
-              className="text-lg lg:text-xl tracking-[0.3em] font-medium text-gold transition-all duration-500 group-hover:tracking-[0.35em]"
-              style={{ fontFamily: 'var(--font-label)' }}
-            >
-              SKILGLASS
-            </span>
-            <div className="w-0 group-hover:w-full h-px bg-linear-to-r from-transparent via-gold/50 to-transparent transition-all duration-700" />
+          <Link href="/" className="group flex items-center">
+            <Image
+              src="/logo.png"
+              alt="Skil Glass"
+              width={140}
+              height={40}
+              className="object-contain transition-opacity duration-300 group-hover:opacity-80"
+              priority
+            />
           </Link>
 
           {/* Desktop Nav */}
@@ -118,12 +120,13 @@ export default function Navbar() {
         >
           {/* Header inside mobile menu */}
           <div className="flex items-center justify-between h-16 px-6 border-b border-outline-variant/10">
-            <span
-              className="text-lg tracking-[0.3em] font-medium text-gold"
-              style={{ fontFamily: 'var(--font-label)' }}
-            >
-              SKILGLASS
-            </span>
+            <Image
+              src="/logo.png"
+              alt="Skil Glass"
+              width={120}
+              height={34}
+              className="object-contain"
+            />
             <button
               onClick={() => setMobileOpen(false)}
               className="text-gold p-2 hover:rotate-90 transition-transform duration-500"
