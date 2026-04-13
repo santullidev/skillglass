@@ -26,19 +26,19 @@ export default function ProductCard({ producto, variant = 'normal', index = 0 }:
   return (
     <Link
       href={`/productos/${safeSlug}`}
-      className={`group relative overflow-hidden block glass-card transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)] hover:tinted-shadow ${
+      className={`group relative overflow-hidden flex flex-col w-full h-full glass-card transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)] hover:tinted-shadow ${
         isFeatured ? 'col-span-2 row-span-2' :
         isTall     ? 'row-span-2' :
         isWide     ? 'col-span-2' : ''
       }`}
     >
       {/* Full-bleed image */}
-      <div className={`relative w-full overflow-hidden bg-surface-container-low ${
-        isFeatured ? 'h-[70vh]' :
-        isTall     ? 'h-[60vh]' :
-        isStacked  ? 'h-[35vh]' :
-        isWide     ? 'h-[45vh]' :
-                     'h-[50vh] md:h-[55vh]'
+      <div className={`relative w-full flex-1 overflow-hidden bg-surface-container-low ${
+        isFeatured ? 'min-h-[70vh]' :
+        isTall     ? 'min-h-[60vh]' :
+        isStacked  ? 'min-h-[35vh]' :
+        isWide     ? 'min-h-[45vh]' :
+                     'min-h-[50vh] md:min-h-[55vh]'
       }`}>
         <Image
           src={imagenUrl}

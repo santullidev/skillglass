@@ -155,7 +155,7 @@ export default async function Home() {
               {productos.map((producto, idx) => {
                 const isFirst = idx === 0
                 return (
-                  <div key={producto._id} className={`${isFirst ? 'md:col-span-6 lg:col-span-8' : 'md:col-span-3 lg:col-span-4'}`}>
+                  <div key={producto._id} className={`flex flex-col w-full h-full ${isFirst ? 'md:col-span-6 lg:col-span-8' : 'md:col-span-3 lg:col-span-4'}`}>
                     <ProductCard 
                       producto={producto} 
                       index={idx} 
