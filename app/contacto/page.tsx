@@ -35,7 +35,7 @@ export default function ContactoPage() {
 
   return (
     <div className="min-h-screen bg-surface pt-32 pb-24 relative overflow-hidden">
-      {/* Background Decor - Molten Glow */}
+      {/* Background Decor - Vidrio Glow */}
       <div className="absolute top-0 right-0 w-[50vw] h-[50vh] bg-primary/5 blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[50vw] h-[50vh] bg-tertiary/5 blur-[120px] translate-y-1/2 -translate-x-1/2 pointer-events-none" />
 

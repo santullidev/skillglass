@@ -38,7 +38,7 @@ export async function sendOrderEmails(data: OrderEmailData) {
         <div style="font-family: serif; max-width: 600px; margin: 0 auto; color: #1a1a1a;">
           <h1 style="text-align: center; color: #c9a84c;">SKILGLASS</h1>
           <p>Hola ${customerName},</p>
-          <p>Gracias por tu compra. Tu pedido ha sido confirmado y pronto comenzaremos a preparar tu pieza de luz molten.</p>
+          <p>Gracias por tu compra. Tu pedido ha sido confirmado y pronto comenzaremos a preparar tu pieza de autor.</p>
           
           <div style="background: #f9f9f9; padding: 20px; border: 1px solid #eee; margin: 20px 0;">
             <h3 style="margin-top: 0;">Resumen del Pedido</h3>

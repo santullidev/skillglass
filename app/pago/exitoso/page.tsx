@@ -43,7 +43,7 @@ function PagoExitosoContent() {
           {status === 'approved' || !status ? (
             <>
               <p>
-                Tu pago ha sido confirmado. Cada pieza de SKILGLASS nace de la tensión absoluta entre el fuego y la gravedad; pronto recibirás tu obra de luz molten.
+                Tu pago ha sido confirmado. Cada pieza de SKILGLASS nace de la tensión absoluta entre el fuego y la gravedad; pronto recibirás tu obra en vidrio de autor.
               </p>
               {paymentId && (
                 <p className="text-xs tracking-widest uppercase opacity-50 mt-4" style={{ fontFamily: 'var(--font-label)' }}>

@@ -28,7 +28,7 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://skilglass.vercel.app'),
   title: {
-    default: "SKILGLASS | Maestría de la Luz Molten",
+    default: "SKILGLASS | Joyería de Autor",
     template: "%s | SKILGLASS",
   },
   description:
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     "cristal artesanal",
   ],
   openGraph: {
-    title: "SKILGLASS | Maestría de la Luz Molten",
+    title: "SKILGLASS | Joyería de Autor",
     description:
       "Joyas esculpidas por el fuego, capturando la fluidez del cristal en su estado más puro y eterno.",
     type: "website",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "SKILGLASS | Maestría de la Luz Molten",
+    title: "SKILGLASS | Joyería de Autor",
     description: "Joyas esculpidas por el fuego, capturando la fluidez del cristal.",
   },
   robots: {

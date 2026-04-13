@@ -24,7 +24,7 @@ export async function generateMetadata({
     description: coleccion.descripcion || `Explora las piezas únicas de la cápsula ${coleccion.nombre}.`,
     openGraph: {
       title: `${coleccion.nombre} | Cápsula SKILGLASS`,
-      description: coleccion.descripcion || `Series limitadas de piezas capturadas en el instante exacto de la luz molten.`,
+      description: coleccion.descripcion || `Series limitadas de piezas capturadas en el vidrio fundido.`,
       images: coleccion.imagenes?.[0]
         ? [urlFor(coleccion.imagenes[0]).width(1200).height(630).url()]
         : [],
@@ -96,7 +96,7 @@ export default async function ColeccionDetailPage({
       <div className="border-t border-outline-variant/20 pt-16">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <h2 className="text-3xl lg:text-4xl text-on-surface" style={{ fontFamily: 'var(--font-display)' }}>
-            Piezas Molten
+            Piezas de la Cápsula
           </h2>
           <div className="text-on-surface-variant text-sm tracking-widest uppercase" style={{ fontFamily: 'var(--font-label)' }}>
             {coleccion.productos?.length || 0} Resultados

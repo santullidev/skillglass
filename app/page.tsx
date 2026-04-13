@@ -37,7 +37,7 @@ export default async function Home() {
   const fallbackProductos = await client.fetch<Producto[]>(PRODUCTOS_QUERY)
 
   // Resolución de todos los textos: primero Sanity, luego fallback
-  const heroTitle = config?.tituloPrincipal || DEFAULTS.heroTitle
+  const heroTitle = config?.tituloPrincipal || 'Joyas de\nAutor'
   const heroSubtitle = config?.subtituloHero || DEFAULTS.heroSubtitle
   const tituloColecciones = config?.tituloColecciones || DEFAULTS.tituloColecciones
   const frase = config?.seccionFrase?.frase || DEFAULTS.frase
@@ -175,7 +175,7 @@ export default async function Home() {
             className="text-[10px] tracking-[0.4em] text-outline-variant/40 uppercase shrink-0"
             style={{ fontFamily: 'var(--font-label)' }}
           >
-            La Alquimia de la Luz Molten · Buenos Aires
+            Joyería en Vidrio de Autor · Buenos Aires
           </p>
           <span className="flex-1 h-px bg-outline-variant/20" />
         </div>

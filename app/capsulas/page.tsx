@@ -8,10 +8,10 @@ export const revalidate = 60 // Revalidate every minute
 
 export const metadata: Metadata = {
   title: 'Cápsulas | SKILGLASS',
-  description: 'Explora nuestras cápsulas exclusivas de joyería en vidrio. Piezas capturadas en el instante exacto de la luz molten.',
+  description: 'Explora nuestras cápsulas exclusivas de joyería en vidrio. Piezas capturadas en el vidrio fundido.',
   openGraph: {
     title: 'Cápsulas de Joyería de Autor | SKILGLASS',
-    description: 'Series conceptuales de joyería molten.',
+    description: 'Series conceptuales de joyería en vidrio artesanal.',
     url: 'https://skillglass.com/capsulas',
     siteName: 'SKILGLASS',
     images: [{ url: '/og-image.jpg', width: 1200, height: 630 }],

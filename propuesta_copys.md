@@ -10,7 +10,7 @@ Hemos pasado de un concepto de "industria pesada/hornos industriales masivos" a 
 
 ### 1. SECCIÓN HERO (Portada principal)
 **[ACTUAL]** 
-*Título*: Maestría de la Luz Molten
+*Título*: Maestría en Vidrio
 *Subtítulo*: Explorando el límite térmico del cristal.
 
 **[PROPUESTA]**

@@ -109,7 +109,7 @@ export default function HeroSlider({ images, metadata, title, subtitle }: Props)
             <>
               <span className="font-medium">Maestría de la</span>
               <br />
-              <span className="italic font-light opacity-90">Luz Molten</span>
+              <span className="italic font-light opacity-90">Vidrio de Autor</span>
             </>
           )}
         </h1>

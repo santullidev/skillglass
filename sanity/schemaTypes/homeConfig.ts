@@ -28,7 +28,7 @@ export const homeConfigSchema = defineType({
       type: 'string',
       group: 'hero',
       description: 'El texto grande que aparece en el centro. Podés usar dos líneas separando con un salto de línea.',
-      placeholder: 'Maestría de la Luz Molten',
+      placeholder: 'Maestría en Vitrofusión',
     }),
     defineField({
       name: 'subtituloHero',
