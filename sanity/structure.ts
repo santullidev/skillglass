@@ -45,6 +45,15 @@ export const structure: StructureResolver = (S) =>
         ),
 
       S.listItem()
+        .title('💎  Página de Producto')
+        .child(
+          S.document()
+            .schemaType('productoConfig')
+            .documentId('productoConfig')
+            .title('Diseño de Página de Producto')
+        ),
+
+      S.listItem()
         .title('⚙️  Datos de contacto y redes')
         .child(
           S.document()

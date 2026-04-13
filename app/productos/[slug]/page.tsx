@@ -1,6 +1,4 @@
-import { client, urlFor } from '@/lib/sanity'
-import { PRODUCTO_BY_SLUG_QUERY, PRODUCTOS_QUERY, SETTINGS_QUERY } from '@/lib/queries'
-import Link from 'next/link'
+import { PRODUCTO_BY_SLUG_QUERY, PRODUCTOS_QUERY, SETTINGS_QUERY, PRODUCT_CONFIG_QUERY } from '@/lib/queries'
 import WhatsAppButton from '@/components/WhatsAppButton'
 import { notFound } from 'next/navigation'
 import type { Producto } from '@/types/producto'
@@ -58,10 +56,11 @@ export default async function ProductDetailPage({
   const resolvedParams = await params
   const { slug } = resolvedParams
 
-  const [producto, settings] = await Promise.all([
+  const [producto, settings, config] = await Promise.all([
     client.fetch(PRODUCTO_BY_SLUG_QUERY, { slug }),
-    client.fetch(SETTINGS_QUERY)
-  ]) as [Producto, { telefono?: string }]
+    client.fetch(SETTINGS_QUERY),
+    client.fetch(PRODUCT_CONFIG_QUERY)
+  ]) as [Producto, { telefono?: string }, any]
 
   if (!producto) {
     notFound()
@@ -76,7 +75,7 @@ export default async function ProductDetailPage({
       <nav className="flex items-center gap-2 text-xs uppercase tracking-wider text-on-surface-variant mb-12" style={{ fontFamily: 'var(--font-label)' }}>
         <Link href="/" className="hover:text-primary transition-colors">Home</Link>
         <span className="text-outline-variant">/</span>
-        <span className="text-on-surface">Serie Limitada</span>
+        <span className="text-on-surface">{config?.breadcrumbText || 'Serie Limitada'}</span>
       </nav>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
@@ -86,7 +85,7 @@ export default async function ProductDetailPage({
           <ImageCarousel images={producto.imagenes || []} alt={producto.nombre} />
           
           <p className="text-xs text-on-surface-variant text-center tracking-widest uppercase mt-4" style={{ fontFamily: 'var(--font-label)' }}>
-            Zoom disponible • Arrastrar para rotar
+            {config?.galleryHelpText || 'Zoom disponible • Arrastrar para rotar'}
           </p>
         </div>
 
@@ -98,7 +97,7 @@ export default async function ProductDetailPage({
             
             {producto.esEdicionLimitada && (
               <p className="text-secondary text-xs tracking-[0.2em] font-bold uppercase mb-4" style={{ fontFamily: 'var(--font-label)' }}>
-                Pieza de Colección / Edición Limitada
+                {config?.tagText || 'Pieza de Colección / Edición Limitada'}
               </p>
             )}
 
@@ -120,7 +119,7 @@ export default async function ProductDetailPage({
           <div className="grid grid-cols-2 gap-px bg-outline-variant/20 border border-outline-variant/20 mb-12 text-sm" style={{ fontFamily: 'var(--font-label)' }}>
             <div className="bg-surface p-4 flex flex-col gap-1 hover:bg-surface-container transition-colors">
               <span className="text-outline-variant text-[10px] tracking-widest uppercase">Técnica</span>
-              <span className="text-on-surface">Fusión 820°C</span>
+              <span className="text-on-surface">{config?.tecnicaGeneral || 'Fusión 820°C'}</span>
             </div>
             <div className="bg-surface p-4 flex flex-col gap-1 hover:bg-surface-container transition-colors">
               <span className="text-outline-variant text-[10px] tracking-widest uppercase">Stock</span>
@@ -128,11 +127,11 @@ export default async function ProductDetailPage({
             </div>
             <div className="bg-surface p-4 flex flex-col gap-1 hover:bg-surface-container transition-colors">
               <span className="text-outline-variant text-[10px] tracking-widest uppercase">Material</span>
-              <span className="text-on-surface">Cristal Spectrum / Plata 925</span>
+              <span className="text-on-surface">{config?.materialGeneral || 'Cristal Spectrum / Plata 925'}</span>
             </div>
             <div className="bg-surface p-4 flex flex-col gap-1 hover:bg-surface-container transition-colors">
               <span className="text-outline-variant text-[10px] tracking-widest uppercase">Envío</span>
-              <span className="text-primary">Eco-Global Express</span>
+              <span className="text-primary">{config?.envioGeneral || 'Eco-Global Express'}</span>
             </div>
           </div>
 
@@ -156,7 +155,7 @@ export default async function ProductDetailPage({
               </>
             ) : (
               <div className="border border-outline-variant text-on-surface-variant py-4 px-6 text-center text-sm tracking-widest uppercase line-through" style={{ fontFamily: 'var(--font-label)' }}>
-                Pieza no disponible
+                {config?.outOfStockText || 'Pieza no disponible'}
               </div>
             )}
             
@@ -179,13 +178,13 @@ export default async function ProductDetailPage({
                 </span>
               </div>
               <div className="flex flex-col gap-2">
-                <h4 className="text-2xl text-on-surface font-serif italic">Pieza Única e Irrepetible</h4>
+                <h4 className="text-2xl text-on-surface font-serif italic">{config?.certificadoTitulo || 'Pieza Única e Irrepetible'}</h4>
                 <p className="text-sm text-on-surface-variant leading-relaxed">
-                  Esta obra ha sido esculpida mediante transformación térmica directa. Debido a la naturaleza orgánica del cristal fundido, las tensiones moleculares y la gravedad han dictado una forma final que es técnicamente imposible de replicar con exactitud.
+                  {config?.certificadoTexto || 'Esta obra ha sido esculpida mediante transformación térmica directa. Debido a la naturaleza orgánica del cristal fundido, las tensiones moleculares y la gravedad han dictado una forma final que es técnicamente imposible de replicar con exactitud.'}
                 </p>
               </div>
               <div className="pt-4 border-t border-gold/10 flex items-center justify-between">
-                <span className="text-[9px] tracking-[0.2em] text-gold/60 uppercase" style={{ fontFamily: 'var(--font-label)' }}>Estudio Skilglass Ar</span>
+                <span className="text-[9px] tracking-[0.2em] text-gold/60 uppercase" style={{ fontFamily: 'var(--font-label)' }}>{config?.firmaEstudio || 'Estudio Skilglass Ar'}</span>
                 <div className="flex gap-1">
                   {[1,2,3].map(i => <span key={i} className="w-1 h-1 bg-gold rounded-full opacity-40" />)}
                 </div>
@@ -202,10 +201,10 @@ export default async function ProductDetailPage({
             </svg>
             <div className="flex flex-col gap-2">
               <span className="text-[11px] tracking-widest uppercase text-on-surface" style={{ fontFamily: 'var(--font-label)' }}>
-                Soplado a la Flama
+                {config?.procesoIconoTitulo || 'Soplado a la Flama'}
               </span>
               <span className="text-on-surface-variant text-sm font-serif leading-relaxed">
-                Cristal esculpido directamente<br />bajo la tensión térmica del soplete.
+                {config?.procesoIconoTexto || 'Cristal esculpido directamente bajo la tensión térmica del soplete.'}
               </span>
             </div>
           </div>
@@ -213,14 +212,23 @@ export default async function ProductDetailPage({
           {/* Trust Badges */}
           <div className="border-t border-outline-variant/20 pt-8 mt-auto">
             <ul className="space-y-4 text-sm text-on-surface-variant font-serif">
-              <li className="flex items-start gap-3">
-                <span className="text-primary mt-1">✧</span>
-                <p><strong>Certificado de Autenticidad:</strong> Cada pieza se entrega con un certificado firmado a mano que garantiza su origen artesanal en nuestro estudio y su carácter de pieza única.</p>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-primary mt-1">✧</span>
-                <p><strong>Packaging Artesanal:</strong> Estuche de lino orgánico y caja rígida de diseño minimalista con sello de marca en relieve.</p>
-              </li>
+              {(config?.garantias || [
+                {
+                  _key: 'def-1',
+                  titulo: 'Certificado de Autenticidad',
+                  descripcion: 'Cada pieza se entrega con un certificado firmado a mano que garantiza su origen artesanal en nuestro estudio y su carácter de pieza única.'
+                },
+                {
+                  _key: 'def-2',
+                  titulo: 'Packaging Artesanal',
+                  descripcion: 'Estuche de lino orgánico y caja rígida de diseño minimalista con sello de marca en relieve.'
+                }
+              ]).map((g: any) => (
+                <li key={g._key || g.titulo} className="flex items-start gap-3">
+                  <span className="text-primary mt-1">✧</span>
+                  <p><strong>{g.titulo}:</strong> {g.descripcion}</p>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -231,9 +239,9 @@ export default async function ProductDetailPage({
       <div className="w-full h-px bg-linear-to-r from-transparent via-outline-variant/30 to-transparent my-24" />
 
       {/* Quote */}
-      <div className="max-w-3xl mx-auto text-center">
+      <div className="max-w-3xl mx-auto text-center px-4">
         <p className="text-2xl md:text-3xl text-on-surface font-serif italic leading-relaxed">
-          &ldquo;El cristal no olvida. La curva de temperatura que le dimos ayer dictará cómo refracta la luz hoy.&rdquo;
+          &ldquo;{config?.fraseFinal || 'El cristal no olvida. La curva de temperatura que le dimos ayer dictará cómo refracta la luz hoy.'}&rdquo;
         </p>
       </div>
 

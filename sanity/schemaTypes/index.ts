@@ -4,6 +4,7 @@ import { homeConfigSchema } from './homeConfig'
 import { orderSchema } from './order'
 import { settingsSchema } from './settings'
 import { soporteSchema } from './soporte'
+import { productoConfigSchema } from './productoConfig'
 
 export const schemaTypes = [
   productSchema, 
@@ -11,5 +12,6 @@ export const schemaTypes = [
   homeConfigSchema, 
   orderSchema,
   settingsSchema, 
-  soporteSchema
+  soporteSchema,
+  productoConfigSchema
 ]

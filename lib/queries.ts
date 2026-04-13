@@ -132,6 +132,25 @@ export const HOME_CONFIG_QUERY = defineQuery(`
   }
 `)
 
+export const PRODUCT_CONFIG_QUERY = defineQuery(`
+  *[_type == "productoConfig"][0] {
+    breadcrumbText,
+    galleryHelpText,
+    tagText,
+    outOfStockText,
+    tecnicaGeneral,
+    materialGeneral,
+    envioGeneral,
+    certificadoTitulo,
+    certificadoTexto,
+    firmaEstudio,
+    procesoIconoTitulo,
+    procesoIconoTexto,
+    garantias,
+    fraseFinal
+  }
+`)
+
 export const SETTINGS_QUERY = defineQuery(`
   *[_type == "settings"][0] {
     email,
