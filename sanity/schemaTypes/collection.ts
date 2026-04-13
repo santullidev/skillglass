@@ -2,7 +2,7 @@ import { defineField, defineType } from 'sanity'
 
 export const collectionSchema = defineType({
   name: 'coleccion',
-  title: 'Colección',
+  title: 'Cápsula',
   type: 'document',
   groups: [
     { name: 'info', title: '📝  Información', default: true },
@@ -13,17 +13,17 @@ export const collectionSchema = defineType({
     // ─── INFO ───────────────────────────────────────────────────────────
     defineField({
       name: 'nombre',
-      title: 'Nombre de la colección',
+      title: 'Nombre de la cápsula',
       type: 'string',
       group: 'info',
-      description: '✏️ El nombre que aparecerá como título de la colección. Ej: "Colección Elementos".',
-      placeholder: 'Colección Elementos',
+      description: '✏️ El nombre que aparecerá como título de la cápsula. Ej: "Cápsula Elementos".',
+      placeholder: 'Cápsula Elementos',
       validation: (rule) =>
-        rule.required().error('El nombre de la colección es obligatorio.'),
+        rule.required().error('El nombre de la cápsula es obligatorio.'),
     }),
     defineField({
       name: 'slug',
-      title: 'URL de la colección (generada automáticamente)',
+      title: 'URL de la cápsula (generada automáticamente)',
       type: 'slug',
       group: 'info',
       options: { source: 'nombre', maxLength: 96 },
@@ -37,7 +37,7 @@ export const collectionSchema = defineType({
       type: 'text',
       rows: 3,
       group: 'info',
-      description: '📝 Frase breve que aparece debajo del nombre en la vista previa de la colección. Máximo 2-3 oraciones.',
+      description: '📝 Frase breve que aparece debajo del nombre en la vista previa de la cápsula. Máximo 2-3 oraciones.',
       placeholder: 'Una exploración de la luz a través del cristal fundido...',
     }),
     defineField({
@@ -46,14 +46,14 @@ export const collectionSchema = defineType({
       type: 'text',
       rows: 6,
       group: 'info',
-      description: '🖊️ Texto más extenso que aparece dentro de la página de la colección. Podés contar la historia detrás de esta serie, la inspiración, los materiales usados, etc.',
-      placeholder: 'Esta colección nació de la observación del cielo nocturno sobre el taller...',
+      description: '🖊️ Texto más extenso que aparece dentro de la página de la cápsula. Podés contar la historia detrás de esta serie, la inspiración, los materiales usados, etc.',
+      placeholder: 'Esta cápsula nació de la observación del cielo nocturno sobre el taller...',
     }),
 
     // ─── IMÁGENES ───────────────────────────────────────────────────────
     defineField({
       name: 'imagenes',
-      title: 'Fotos de la colección',
+      title: 'Fotos de la cápsula',
       type: 'array',
       group: 'galeria',
       of: [{ type: 'image', options: { hotspot: true } }],

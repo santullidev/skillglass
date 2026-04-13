@@ -81,7 +81,7 @@ export default async function Home() {
           <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8 relative z-10">
             <div>
               <p className="text-[10px] tracking-[0.5em] text-gold uppercase mb-6 font-bold" style={{ fontFamily: 'var(--font-label)' }}>
-                COLECCIONES
+                CÁPSULAS
               </p>
               <h2
                 className="text-5xl lg:text-7xl xl:text-8xl text-on-surface max-w-2xl leading-none"
@@ -91,7 +91,7 @@ export default async function Home() {
               </h2>
             </div>
             <Link
-              href="/colecciones"
+              href="/capsulas"
               className="group inline-flex items-center gap-3 text-[10px] tracking-[0.4em] text-gold uppercase border-b border-gold/30 pb-2 hover:border-gold transition-all duration-500"
               style={{ fontFamily: 'var(--font-label)' }}
             >

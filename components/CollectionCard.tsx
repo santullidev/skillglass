@@ -19,7 +19,7 @@ export default function CollectionCard({ coleccion }: Props) {
 
   return (
     <Link
-      href={`/colecciones/${coleccion.slug}`}
+      href={`/capsulas/${coleccion.slug}`}
       className="group block relative w-full aspect-4/5 bg-surface-container-lowest overflow-hidden border border-outline-variant/20 hover:border-primary/50 transition-colors duration-500"
     >
       {/* Background Image */}

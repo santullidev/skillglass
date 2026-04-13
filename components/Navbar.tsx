@@ -42,7 +42,7 @@ export default function Navbar() {
 
   const links = [
     { href: '/productos', label: 'Productos' },
-    { href: '/colecciones', label: 'Colecciones' },
+    { href: '/capsulas', label: 'Cápsulas' },
     { href: '/#proceso', label: 'Proceso' },
     { href: '/#piezas', label: 'Piezas Únicas' },
   ]

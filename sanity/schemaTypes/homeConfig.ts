@@ -6,7 +6,7 @@ export const homeConfigSchema = defineType({
   type: 'document',
   groups: [
     { name: 'hero', title: '🖼️  Portada (Hero)' },
-    { name: 'colecciones', title: '🗂️  Colecciones' },
+    { name: 'colecciones', title: '🗂️  Cápsulas' },
     { name: 'alquimia', title: '💎  Pieza Destacada' },
     { name: 'frase', title: '💬  Frase Editorial' },
     { name: 'productos', title: '📦  Productos' },
@@ -64,22 +64,22 @@ export const homeConfigSchema = defineType({
       ],
     }),
 
-    // ─── COLECCIONES ────────────────────────────────────────────────────
+    // ─── CÁPSULAS ────────────────────────────────────────────────────
     defineField({
       name: 'tituloColecciones',
       title: 'Título de la sección',
       type: 'string',
       group: 'colecciones',
-      description: 'El encabezado de la sección de colecciones en el home.',
+      description: 'El encabezado de la sección de cápsulas en el home.',
       placeholder: 'Series Conceptuales',
     }),
     defineField({
       name: 'coleccionesDestacadas',
-      title: 'Colecciones a mostrar',
+      title: 'Cápsulas a mostrar',
       type: 'array',
       group: 'colecciones',
       of: [{ type: 'reference', to: [{ type: 'coleccion' }] }],
-      description: '🗂️ Elegí qué colecciones van a aparecer en esta sección. Si no elegís ninguna, la sección no se muestra.',
+      description: '🗂️ Elegí qué cápsulas van a aparecer en esta sección. Si no elegís ninguna, la sección no se muestra.',
     }),
 
     // ─── PIEZA DESTACADA (ALQUIMIA) ─────────────────────────────────────

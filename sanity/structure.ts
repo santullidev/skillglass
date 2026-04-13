@@ -26,10 +26,10 @@ export const structure: StructureResolver = (S) =>
         ),
 
       S.listItem()
-        .title('🗂️  Colecciones')
+        .title('🗂️  Cápsulas')
         .child(
           S.documentTypeList('coleccion')
-            .title('Colecciones de piezas')
+            .title('Cápsulas de piezas')
         ),
 
       S.divider(),
