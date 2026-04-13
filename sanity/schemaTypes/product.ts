@@ -97,12 +97,11 @@ export const productSchema = defineType({
       initialValue: false,
       description: '🏆 Activalo si esta pieza forma parte de una colección especial o es una edición limitada. Puede aparecer con una insignia especial en el futuro.',
     }),
-  ],
   preview: {
     select: {
       title: 'nombre',
       subtitle: 'categoria',
-      media: 'imagenes.0',
+      media: 'imagenes.0.asset',
       disponible: 'disponible',
     },
     prepare({ title, subtitle, media, disponible }) {
