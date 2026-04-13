@@ -99,6 +99,13 @@ export const orderSchema = defineType({
               title: 'Precio unitario (ARS)',
               readOnly: true,
             },
+            {
+              name: 'numeroCertificado',
+              type: 'string',
+              title: 'Número de Certificado',
+              readOnly: true,
+              description: 'Número único del certificado de esta pieza en el momento de la venta.',
+            },
           ],
         },
       ],

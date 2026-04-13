@@ -32,6 +32,14 @@ export const structure: StructureResolver = (S) =>
             .title('Cápsulas de piezas')
         ),
 
+      S.listItem()
+        .title('📜  Certificados Emitidos')
+        .child(
+          S.documentTypeList('producto')
+            .title('Todas las piezas y sus certificados')
+            .defaultOrdering([{ field: 'numeroCertificado', direction: 'asc' }])
+        ),
+
       S.divider(),
 
       // ─── CONFIGURACIÓN DEL SITIO ─────────────────────────────────────────

@@ -20,6 +20,7 @@ interface CartItem {
   cantidad?: number
   imagenUrl?: string    // legacy — se sigue soportando
   picture_url?: string
+  numeroCertificado?: string
 }
 
 // ✅ FIX 2b: Tipo del item ya normalizado para MP (evita el `any` en el webhook)
@@ -30,6 +31,7 @@ interface MpItem {
   unit_price: number
   currency_id: string
   picture_url?: string
+  numeroCertificado?: string
 }
 
 export async function POST(req: NextRequest) {
@@ -59,6 +61,7 @@ export async function POST(req: NextRequest) {
       unit_price: Number(item.precio || item.unit_price || 0),
       currency_id: 'ARS',
       picture_url: item.imagenUrl || item.picture_url,
+      numeroCertificado: item.numeroCertificado
     }))
 
     const shippingData = body.shippingData || {}
@@ -111,6 +114,7 @@ export async function POST(req: NextRequest) {
             title: item.title,
             quantity: item.quantity,
             unit_price: item.unit_price,
+            numero_certificado: item.numeroCertificado || null,
           })),
         },
       },

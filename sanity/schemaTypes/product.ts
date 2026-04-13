@@ -1,5 +1,12 @@
 import { defineField, defineType } from 'sanity'
 
+function generateCertificateNumber(): string {
+  return Math.floor(Math.random() * 0xffff)
+    .toString(16)
+    .toUpperCase()
+    .padStart(4, '0')
+}
+
 export const productSchema = defineType({
   name: 'producto',
   title: 'Producto',

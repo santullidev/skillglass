@@ -18,8 +18,9 @@ const client = new MercadoPagoConfig({ accessToken })
 interface MetadataItem {
   id: string
   title: string
-  quantity: number
-  unit_price: number
+  quantity?: number
+  unit_price?: number
+  numero_certificado?: string | null
 }
 
 // Tipo para items crudos del metadata de MP (pueden llegar con campos opcionales en snake_case)
@@ -147,6 +148,7 @@ export async function POST(req: NextRequest) {
         title:      i.title      || 'Producto SKILLGLASS',
         quantity:   Number(i.quantity  ?? 1),
         unit_price: Number(i.unit_price ?? 0),
+        numeroCertificado: i.numero_certificado || null,
       }))
 
       const externalReference = paymentData.external_reference
@@ -172,6 +174,7 @@ export async function POST(req: NextRequest) {
           nombre: item.title,
           cantidad: item.quantity ?? 1,
           precio: item.unit_price ?? 0,
+          numeroCertificado: (item as any).numeroCertificado || null,
         })),
         cliente: {
           nombre:   clienteNombre,

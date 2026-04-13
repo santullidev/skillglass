@@ -9,9 +9,10 @@ interface Props {
   slug: string
   precio: number
   imagenUrl: string
+  numeroCertificado?: string
 }
 
-export default function AddToCartButton({ id, nombre, slug, precio, imagenUrl }: Props) {
+export default function AddToCartButton({ id, nombre, slug, precio, imagenUrl, numeroCertificado }: Props) {
   const { addItem } = useCart()
   const [added, setAdded] = useState(false)
 
@@ -22,7 +23,8 @@ export default function AddToCartButton({ id, nombre, slug, precio, imagenUrl }:
       slug,
       precio,
       imagenUrl,
-      referencia: `Ref: SKG-${id.substring(0, 4).toUpperCase()} // Serie Limitada` // Simulated reference
+      referencia: `Ref: SKG-${id.substring(0, 4).toUpperCase()} // Serie Limitada`, // Simulated reference
+      numeroCertificado
     })
     
     setAdded(true)

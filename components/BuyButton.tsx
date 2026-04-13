@@ -10,9 +10,10 @@ interface Props {
   precio: number
   slug: string
   imagenUrl: string
+  numeroCertificado?: string
 }
 
-export default function BuyButton({ id, nombre, precio, slug, imagenUrl }: Props) {
+export default function BuyButton({ id, nombre, precio, slug, imagenUrl, numeroCertificado }: Props) {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const { addItem } = useCart()
@@ -27,7 +28,8 @@ export default function BuyButton({ id, nombre, precio, slug, imagenUrl }: Props
         slug,
         precio,
         imagenUrl,
-        referencia: `Ref: SKG-${id.substring(0, 4).toUpperCase()} // Directo`
+        referencia: `Ref: SKG-${id.substring(0, 4).toUpperCase()} // Directo`,
+        numeroCertificado
       })
 
       // 2. Redirigir al flujo de envío

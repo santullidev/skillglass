@@ -10,6 +10,7 @@ export interface CartItem {
   cantidad: number
   imagenUrl: string
   referencia: string // e.g. "SKG-4411 // Colección Elementos" (simulated or real from Sanity)
+  numeroCertificado?: string
 }
 
 interface CartContextType {

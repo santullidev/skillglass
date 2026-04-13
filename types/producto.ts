@@ -5,7 +5,8 @@ export interface Producto {
   precio: number
   descripcion?: string
   disponible: boolean
-  esEdicionLimitada?: boolean
+  esEdicionLimitada: boolean
+  numeroCertificado?: string
   categoria?: string
   imagenes: SanityImage[]
 }

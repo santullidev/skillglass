@@ -146,6 +146,7 @@ export default async function ProductDetailPage({
                   slug={producto.slug}
                   precio={producto.precio}
                   imagenUrl={firstImageUrl}
+                  numeroCertificado={producto.numeroCertificado}
                 />
                 <BuyButton 
                   id={producto._id}
@@ -153,6 +154,7 @@ export default async function ProductDetailPage({
                   precio={producto.precio}
                   slug={producto.slug}
                   imagenUrl={firstImageUrl}
+                  numeroCertificado={producto.numeroCertificado}
                 />
               </>
             ) : (
@@ -175,9 +177,11 @@ export default async function ProductDetailPage({
                 <span className="text-[10px] tracking-[0.5em] text-gold font-bold uppercase" style={{ fontFamily: 'var(--font-label)' }}>
                   Certificado de Unicidad
                 </span>
-                <span className="text-gold/40 text-[10px]" style={{ fontFamily: 'var(--font-label)' }}>
-                  № {producto._id.slice(-4).toUpperCase()}
-                </span>
+                {producto.numeroCertificado && (
+                  <span className="text-gold/80 font-mono tracking-[0.3em] font-bold text-[12px]">
+                    № {producto.numeroCertificado}
+                  </span>
+                )}
               </div>
               <div className="flex flex-col gap-2">
                 <h4 className="text-2xl text-on-surface font-serif italic">{config?.certificadoTitulo || 'Pieza Única e Irrepetible'}</h4>
