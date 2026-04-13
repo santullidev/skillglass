@@ -45,7 +45,8 @@ export const COLECCIONES_QUERY = defineQuery(`
         nombre,
         "slug": slug.current,
         precio,
-        imagenes
+        imagenes,
+        numeroCertificado
       }
     }
   }
@@ -67,7 +68,8 @@ export const COLECCION_BY_SLUG_QUERY = defineQuery(`
         nombre,
         "slug": slug.current,
         precio,
-        imagenes
+        imagenes,
+        numeroCertificado
       }
     }
   }
@@ -98,7 +100,8 @@ export const HOME_CONFIG_QUERY = defineQuery(`
         "slug": slug.current,
         precio,
         descripcion,
-        imagenes
+        imagenes,
+        numeroCertificado
       },
       specs
     },
@@ -112,7 +115,8 @@ export const HOME_CONFIG_QUERY = defineQuery(`
       nombre,
       "slug": slug.current,
       precio,
-      imagenes
+      imagenes,
+      numeroCertificado
     },
     seccionProceso {
       activo,

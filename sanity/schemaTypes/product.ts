@@ -39,6 +39,18 @@ export const productSchema = defineType({
         Rule.required().error('Hacé clic en "Generate" para generar la URL.'),
     }),
     defineField({
+      name: 'numeroCertificado',
+      title: '📜 Número de Certificado de Unicidad',
+      type: 'string',
+      group: 'info',
+      description:
+        '🔒 Código único irrepetible asignado a esta pieza. Se genera automáticamente al crear el producto. NO lo modifiques.',
+      readOnly: true,
+      initialValue: () => generateCertificateNumber(),
+      validation: (Rule) =>
+        Rule.required().error('El certificado es obligatorio.'),
+    }),
+    defineField({
       name: 'categoria',
       title: 'Categoría',
       type: 'string',
