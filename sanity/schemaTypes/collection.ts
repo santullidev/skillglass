@@ -58,16 +58,16 @@ export const collectionSchema = defineType({
       group: 'galeria',
       of: [{ type: 'image', options: { hotspot: true } }],
       options: { layout: 'grid' },
-      description: '📸 La primera imagen es la portada de la colección. Podés agregar varias fotos que se mostrarán como carrusel. Arrastrá para reordenar.',
+      description: '📸 La primera imagen es la portada de la cápsula. Podés agregar varias fotos que se mostrarán como carrusel. Arrastrá para reordenar.',
     }),
 
     // ─── PRODUCTOS ──────────────────────────────────────────────────────
     defineField({
       name: 'productos',
-      title: 'Piezas que forman esta colección',
+      title: 'Piezas que forman esta cápsula',
       type: 'array',
       group: 'productos',
-      description: '💎 Elegí qué piezas pertenecen a esta colección. También podés controlar qué tan grande se muestra cada una en la grilla del sitio (normal, doble ancho, etc.).',
+      description: '💎 Elegí qué piezas pertenecen a esta cápsula. También podés controlar qué tan grande se muestra cada una en la grilla del sitio (normal, doble ancho, etc.).',
       of: [
         {
           type: 'object',
@@ -128,7 +128,7 @@ export const collectionSchema = defineType({
     },
     prepare({ title, subtitle, media }) {
       return {
-        title: title || 'Colección sin nombre',
+        title: title || 'Cápsula sin nombre',
         subtitle: subtitle || 'Sin descripción',
         media,
       }

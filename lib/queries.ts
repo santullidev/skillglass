@@ -84,7 +84,8 @@ export const HOME_CONFIG_QUERY = defineQuery(`
       nombre,
       "slug": slug.current,
       descripcion,
-      imagenes
+      imagenes,
+      productos
     },
     seccionAlquimia {
       activo,
