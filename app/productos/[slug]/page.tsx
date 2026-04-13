@@ -1,4 +1,6 @@
+import { client, urlFor } from '@/lib/sanity'
 import { PRODUCTO_BY_SLUG_QUERY, PRODUCTOS_QUERY, SETTINGS_QUERY, PRODUCT_CONFIG_QUERY } from '@/lib/queries'
+import Link from 'next/link'
 import WhatsAppButton from '@/components/WhatsAppButton'
 import { notFound } from 'next/navigation'
 import type { Producto } from '@/types/producto'
