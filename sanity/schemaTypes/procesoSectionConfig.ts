@@ -58,7 +58,7 @@ export const procesoSectionSchema = defineType({
                 title: title || 'Nuevo Pilar',
                 subtitle: subtitle || 'Sin descripción',
                 // Usamos un emoji como icono visual rápido y liviano
-                media: () => <div style={{ fontSize: '1.2rem' }}>💎</div>
+                media: () => React.createElement('div', { style: { fontSize: '1.2rem' } }, '💎')
               }
             }
           },
