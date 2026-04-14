@@ -124,7 +124,7 @@ export const collectionSchema = defineType({
     select: {
       title: 'nombre',
       subtitle: 'descripcion',
-      media: 'imagenes.0',
+      media: 'imagenes',
     },
     prepare({ title, subtitle, media }) {
       return {
