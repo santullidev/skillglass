@@ -40,6 +40,8 @@ const DEFAULTS = {
     { titulo: 'Templado Íntimo', descripcion: 'Tras ser esculpidas en el fuego, las piezas reposan en un meticuloso proceso de templado artesanal para garantizar su resistencia eterna.' },
     { titulo: 'Luz Vestible', descripcion: 'Diseñamos prismas orgánicos. Creados no solo como accesorios, sino como piezas que interactúan con la refracción lumínica sobre tu piel.' },
   ],
+  procesoCtaTexto: 'VER LAS CÁPSULAS',
+  procesoCtaLink: '/colecciones',
 }
 
 export default async function Home() {
@@ -419,11 +421,11 @@ export default async function Home() {
 
               {/* CTA */}
               <Link
-                href={procesoConfig?.ctaLink || '/colecciones'}
+                href={procesoConfig?.ctaLink || DEFAULTS.procesoCtaLink}
                 className="group self-start inline-flex items-center gap-4 text-[11px] tracking-[0.4em] text-on-surface uppercase border border-outline-variant/30 px-8 py-4 hover:border-primary hover:text-primary transition-all duration-500 overflow-hidden relative"
                 style={{ fontFamily: 'var(--font-label)' }}
               >
-                <span className="relative z-10">{procesoConfig?.ctaTexto || 'Conocer el Estudio'}</span>
+                <span className="relative z-10">{procesoConfig?.ctaTexto || DEFAULTS.procesoCtaTexto}</span>
                 <span className="relative z-10 group-hover:translate-x-1 transition-transform duration-300">→</span>
                 <div className="absolute inset-0 translate-x-full group-hover:translate-x-0 bg-surface-container transition-transform duration-500 ease-out" />
               </Link>

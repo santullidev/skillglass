@@ -74,11 +74,13 @@ export const procesoSectionSchema = defineType({
       name: 'ctaTexto',
       title: 'Texto del botón',
       type: 'string',
+      initialValue: 'VER LAS CÁPSULAS',
     }),
     defineField({
       name: 'ctaLink',
       title: 'Enlace del botón',
       type: 'string',
+      initialValue: '/colecciones',
     }),
   ],
 })
