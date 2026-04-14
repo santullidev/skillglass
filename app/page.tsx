@@ -435,41 +435,45 @@ export default async function Home() {
 
       {/* ── SECCIÓN EL ESTUDIO (ACCESO) ────────────────────────── */}
       {homeEstudioConfig?.activo !== false && (
-        <section className="relative py-32 lg:py-56 overflow-hidden flex items-center justify-center">
-          {/* Background Image with Overlay */}
-          <div className="absolute inset-0 z-0">
+        <section className="relative py-24 lg:py-40 overflow-hidden flex items-center justify-center group/study">
+          {/* Background Image with Cinematic Overlay */}
+          <div className="absolute inset-0 z-0 overflow-hidden">
             {homeEstudioConfig?.imagen ? (
               <Image
                 src={urlFor(homeEstudioConfig.imagen).width(2000).url()}
                 alt={homeEstudioConfig.titulo || 'El Estudio'}
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-[3s] ease-out group-hover/study:scale-110"
                 sizes="100vw"
               />
             ) : (
               <div className="absolute inset-0 bg-surface-container-lowest" />
             )}
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
+            {/* Multi-layered overlay for depth */}
+            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 bg-linear-to-b from-surface via-transparent to-surface opacity-80" />
+            <div className="absolute inset-0 bg-radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%)" />
           </div>
 
-          <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-            <p className="text-[10px] tracking-[0.5em] text-gold font-bold uppercase mb-8" style={{ fontFamily: 'var(--font-label)' }}>
-              EL TALLER
+          <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
+            <p className="text-[9px] tracking-[0.6em] text-gold font-bold uppercase mb-6 opacity-80" style={{ fontFamily: 'var(--font-label)' }}>
+              Mística del Taller
             </p>
-            <h2 className="text-5xl lg:text-8xl text-on-primary mb-10 leading-none" style={{ fontFamily: 'var(--font-display)' }}>
+            <h2 className="text-4xl lg:text-7xl text-on-primary mb-8 leading-[0.9] tracking-tighter" style={{ fontFamily: 'var(--font-display)' }}>
               {homeEstudioConfig?.titulo || 'El Alma del Vidrio'}
             </h2>
-            <p className="text-xl lg:text-2xl text-on-primary/80 font-serif italic leading-relaxed mb-16 max-w-2xl mx-auto">
+            <div className="w-12 h-px bg-gold/30 mx-auto mb-8" />
+            <p className="text-lg lg:text-xl text-on-primary/70 font-serif italic leading-relaxed mb-12 max-w-xl mx-auto">
               {homeEstudioConfig?.descripcion || 'Adéntrate en el proceso donde el fuego y la paciencia se encuentran. Conoce nuestro taller y la filosofía detrás de cada pieza única.'}
             </p>
             <Link
               href={homeEstudioConfig?.ctaLink || '/estudio'}
-              className="group inline-flex items-center gap-4 text-xs tracking-[0.4em] text-on-primary uppercase border border-on-primary/30 px-12 py-6 hover:border-gold hover:text-gold transition-all duration-500 overflow-hidden relative"
+              className="group/btn inline-flex items-center gap-6 text-[10px] tracking-[0.5em] text-on-primary uppercase border border-on-primary/20 bg-on-primary/5 backdrop-blur-xs px-10 py-5 hover:border-gold hover:text-gold transition-all duration-700 overflow-hidden relative"
               style={{ fontFamily: 'var(--font-label)' }}
             >
               <span className="relative z-10">{homeEstudioConfig?.ctaTexto || 'Explorar el Estudio'}</span>
-              <span className="relative z-10 group-hover:translate-x-1 transition-transform duration-300">→</span>
-              <div className="absolute inset-0 translate-x-full group-hover:translate-x-0 bg-surface-deep/20 transition-transform duration-500 ease-out" />
+              <span className="relative z-10 group-hover/btn:translate-x-2 transition-transform duration-500">→</span>
+              <div className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-0 bg-gold/10 transition-transform duration-700 ease-in-out" />
             </Link>
           </div>
         </section>
