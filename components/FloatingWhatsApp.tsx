@@ -13,8 +13,8 @@ export default function FloatingWhatsApp({ phone }: FloatingWhatsAppProps) {
 
   useEffect(() => {
     const toggleVisibility = () => {
-      // Show after 100px of scroll for better visibility
-      if (window.scrollY > 100) {
+      // Show after 10px of scroll for better visibility
+      if (window.scrollY > 10) {
         setIsVisible(true)
       } else {
         setIsVisible(false)
@@ -30,7 +30,7 @@ export default function FloatingWhatsApp({ phone }: FloatingWhatsAppProps) {
   if (!finalPhone) return null
 
   // Format phone: remove spaces and plus for the URL
-  const whatsappUrl = `https://wa.me/${finalPhone.replace(/[^0-9]/g, '')}`
+  const whatsappUrl = `https://wa.me/${finalPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('Hola Skil Glass estudio, quiero consultar sobre...')}`
 
   return (
     <AnimatePresence>

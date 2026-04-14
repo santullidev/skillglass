@@ -6,7 +6,6 @@ export const settingsSchema = defineType({
   type: 'document',
   groups: [
     { name: 'contacto', title: '📞  Contacto', default: true },
-    { name: 'redes', title: '📱  Redes Sociales' },
     { name: 'taller', title: '🏠  El Taller' },
   ],
   fields: [
@@ -26,16 +25,6 @@ export const settingsSchema = defineType({
       group: 'contacto',
       description: '✉️ Email que aparecerá en el pie de página y en la página de contacto.',
       placeholder: 'hola@skilglass.com',
-    }),
-
-    // ─── REDES ──────────────────────────────────────────────────────────
-    defineField({
-      name: 'instagram',
-      title: 'Perfil de Instagram',
-      type: 'url',
-      group: 'redes',
-      description: '📷 Link completo al perfil de Instagram. Ejemplo: https://instagram.com/skilglass — aparecerá como ícono en el sitio.',
-      placeholder: 'https://instagram.com/skilglass',
     }),
 
     // ─── TALLER ─────────────────────────────────────────────────────────
