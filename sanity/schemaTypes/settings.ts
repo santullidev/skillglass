@@ -26,6 +26,14 @@ export const settingsSchema = defineType({
       description: '✉️ Email que aparecerá en el pie de página y en la página de contacto.',
       placeholder: 'hola@skilglass.com',
     }),
+    defineField({
+      name: 'horario',
+      title: 'Horario de Soplete / Taller',
+      type: 'string',
+      group: 'contacto',
+      description: '🔥 Horario de atención o trabajo. Ejemplo: Lunes a Viernes, 10:00 — 18:00 (GMT-3).',
+      placeholder: 'Lunes a Viernes, 10:00 — 18:00 (GMT-3)',
+    }),
 
     // ─── TALLER ─────────────────────────────────────────────────────────
     defineField({

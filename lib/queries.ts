@@ -187,6 +187,7 @@ export const SETTINGS_QUERY = defineQuery(`
     email,
     telefono,
     direccion,
+    horario,
     "instagram": *[_type == "diarioTaller" && _id == "diarioTaller-singleton"][0].urlInstagram
   }
 `)

@@ -44,10 +44,12 @@ export default async function ContactoPage() {
                   <p className="text-lg text-on-surface font-serif">{settings.direccion}</p>
                 </div>
               )}
-              <div>
-                <span className="text-[10px] tracking-widest uppercase text-outline block mb-3" style={{ fontFamily: 'var(--font-label)' }}>Horario de Soplete</span>
-                <p className="text-lg text-on-surface font-serif">Lunes a Viernes<br />10:00 — 18:00 (GMT-3)</p>
-              </div>
+              {settings?.horario && (
+                <div>
+                  <span className="text-[10px] tracking-widest uppercase text-outline block mb-3" style={{ fontFamily: 'var(--font-label)' }}>Horario de Soplete</span>
+                  <p className="text-lg text-on-surface font-serif whitespace-pre-line">{settings.horario}</p>
+                </div>
+              )}
             </div>
           </motion.div>
 
