@@ -174,7 +174,6 @@ export const SETTINGS_QUERY = defineQuery(`
     instagram
   }
 `)
-
 export const SOPORTE_QUERY = defineQuery(`
   *[_type == "soporte"][0] {
     titulo,
@@ -187,6 +186,23 @@ export const SOPORTE_QUERY = defineQuery(`
     faqs[] {
       pregunta,
       respuesta
+    }
+  }
+`)
+
+export const DIARIO_TALLER_QUERY = defineQuery(`
+  *[_type == "diarioTaller" && _id == "diarioTaller-singleton"][0]{
+    titulo,
+    handle,
+    urlInstagram,
+    activo,
+    posts[]{
+      _key,
+      tipo,
+      imagen{ asset->{ url } },
+      "videoUrl": video.asset->url,
+      descripcion,
+      linkPost
     }
   }
 `)

@@ -65,6 +65,16 @@ export const structure: StructureResolver = (S) =>
         ),
 
       S.listItem()
+        .title('📸 Diario del Taller')
+        .icon(() => '📸')
+        .child(
+          S.document()
+            .schemaType('diarioTaller')
+            .documentId('diarioTaller-singleton')
+            .title('Diario del Taller')
+        ),
+
+      S.listItem()
         .title('💎  Página de Producto')
         .child(
           S.document()

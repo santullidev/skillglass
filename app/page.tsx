@@ -1,5 +1,5 @@
 import { client, urlFor } from '@/lib/sanity'
-import { HOME_CONFIG_QUERY, PRODUCTOS_QUERY } from '@/lib/queries'
+import { HOME_CONFIG_QUERY, PRODUCTOS_QUERY, DIARIO_TALLER_QUERY } from '@/lib/queries'
 import Image from 'next/image'
 import Link from 'next/link'
 import ProductCard from '@/components/ProductCard'
@@ -35,6 +35,7 @@ const DEFAULTS = {
 export default async function Home() {
   const config = await client.fetch<HomeConfig>(HOME_CONFIG_QUERY)
   const fallbackProductos = await client.fetch<Producto[]>(PRODUCTOS_QUERY)
+  const diario = await client.fetch(DIARIO_TALLER_QUERY)
 
   // Resolución de todos los textos: primero Sanity, luego fallback
   const heroTitle = config?.tituloPrincipal || 'Joyas de\nAutor'
@@ -465,48 +466,75 @@ export default async function Home() {
         </section>
       )}
 
-      {/* ── SECCIÓN INSTAGRAM (PLACEHOLDERS) ───────────────────── */}
-      <section className="pt-24 border-t border-outline-variant/10 bg-surface">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 mb-16 flex flex-col items-center text-center">
-          <p
-            className="text-[10px] tracking-[0.4em] text-primary uppercase mb-4"
-            style={{ fontFamily: 'var(--font-label)' }}
-          >
-            Diario del Taller
-          </p>
-          <h2
-            className="text-4xl lg:text-5xl text-on-surface mb-8"
-            style={{ fontFamily: 'var(--font-display)' }}
-          >
-            @skilglass
-          </h2>
-          <a href="#" className="group inline-flex items-center gap-3 text-xs tracking-[0.2em] uppercase text-on-surface-variant hover:text-primary transition-colors border-b border-primary/20 pb-1">
-            Síguenos en la red
-            <span className="group-hover:translate-x-1 transition-transform">→</span>
-          </a>
-        </div>
-
-        {/* Feed Grid: 4 columnas desktop, 2 columnas mobile */}
-        <div className="grid grid-cols-2 md:grid-cols-4 w-full">
-          {[1, 2, 3, 4].map((i) => (
-            <a key={i} href="#" className="group relative aspect-square overflow-hidden bg-surface-container-lowest border border-outline-variant/5">
-              <Image 
-                src={`https://placehold.co/600x600/170f10/a9c7ff?text=IG+POST+0${i}&font=Playfair+Display`} 
-                alt={`Instagram placeholder ${i}`}
-                fill
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 opacity-60 mix-blend-lighten"
-                sizes="(max-width: 768px) 50vw, 25vw"
-              />
-              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col items-center justify-center gap-4">
-                <svg className="w-8 h-8 text-on-primary" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
-                </svg>
-                <span className="text-xs tracking-widest text-on-primary" style={{ fontFamily: 'var(--font-label)' }}>VER POST</span>
-              </div>
+      {/* ── SECCIÓN DIARIO DEL TALLER ─── */}
+      {diario?.activo !== false && (
+        <section className="pt-24 border-t border-outline-variant/10 bg-surface">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8 mb-16 flex flex-col items-center text-center">
+            <p
+              className="text-[10px] tracking-[0.4em] text-primary uppercase mb-4"
+              style={{ fontFamily: 'var(--font-label)' }}
+            >
+              {diario?.titulo || 'Diario del Taller'}
+            </p>
+            <h2
+              className="text-4xl lg:text-5xl text-on-surface mb-8"
+              style={{ fontFamily: 'var(--font-display)' }}
+            >
+              {diario?.handle || '@skilglass'}
+            </h2>
+            <a 
+              href={diario?.urlInstagram || '#'} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-3 text-xs tracking-[0.2em] uppercase text-on-surface-variant hover:text-primary transition-colors border-b border-primary/20 pb-1"
+            >
+              Seguinos en la red
+              <span className="group-hover:translate-x-1 transition-transform">→</span>
             </a>
-          ))}
-        </div>
-      </section>
+          </div>
+
+          {/* Feed Grid: 4 columnas desktop, 2 columnas mobile */}
+          <div className="grid grid-cols-2 md:grid-cols-4 w-full">
+            {diario?.posts?.map((post: any) => (
+              <a
+                key={post._key}
+                href={post.linkPost || diario.urlInstagram || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative aspect-square overflow-hidden bg-surface-container-lowest border border-outline-variant/5"
+              >
+                {post.tipo === 'video' && post.videoUrl ? (
+                  <video
+                    src={post.videoUrl}
+                    autoPlay muted loop playsInline
+                    className="w-full h-full object-cover"
+                  />
+                ) : post.imagen?.asset?.url ? (
+                  <Image
+                    src={post.imagen.asset.url}
+                    alt={post.descripcion || 'Diario del Taller'}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-1000"
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                  />
+                ) : null}
+
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col items-center justify-center gap-4 p-6 text-center">
+                  <svg className="w-8 h-8 text-on-primary" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                  </svg>
+                  {post.descripcion && (
+                    <p className="text-on-primary text-xs font-serif italic mb-2 line-clamp-3">
+                      "{post.descripcion}"
+                    </p>
+                  )}
+                  <span className="text-[10px] tracking-[0.3em] font-bold text-on-primary uppercase" style={{ fontFamily: 'var(--font-label)' }}>VER POST</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
 
     </div>
   )
