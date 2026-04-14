@@ -8,7 +8,6 @@ export const PRODUCTOS_QUERY = defineQuery(`
     precio,
     descripcion,
     disponible,
-    esEdicionLimitada,
     categoria,
     imagenes,
     numeroCertificado
@@ -23,7 +22,6 @@ export const PRODUCTO_BY_SLUG_QUERY = defineQuery(`
     precio,
     descripcion,
     disponible,
-    esEdicionLimitada,
     imagenes,
     numeroCertificado
   }

@@ -14,7 +14,6 @@ const CATEGORIAS = [
   { label: 'AROS', value: 'aros' },
   { label: 'BRAZALETES', value: 'brazaletes' },
   { label: 'DIJES', value: 'dijes' },
-  { label: 'ED. LIMITADA', value: 'limitada' },
 ]
 
 export default function CatalogClient({ initialProductos }: Props) {
@@ -22,7 +21,6 @@ export default function CatalogClient({ initialProductos }: Props) {
 
   const filteredProductos = useMemo(() => {
     if (filter === 'todos') return initialProductos
-    if (filter === 'limitada') return initialProductos.filter(p => p.esEdicionLimitada)
     return initialProductos.filter(p => p.categoria?.toLowerCase() === filter)
   }, [filter, initialProductos])
 

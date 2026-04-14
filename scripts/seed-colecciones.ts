@@ -25,7 +25,6 @@ const seedData = async () => {
       precio: 85000,
       descripcion: 'Pieza forjada al rojo vivo, con bordes fundidos naturales de 12 horas de curado.',
       disponible: true,
-      esEdicionLimitada: true,
     },
     {
       _type: 'producto',
@@ -35,7 +34,6 @@ const seedData = async () => {
       precio: 45000,
       descripcion: 'Anillo moldeado con cristal ámbar oscuro incrustado.',
       disponible: true,
-      esEdicionLimitada: false,
     },
     {
       _type: 'producto',
@@ -45,7 +43,6 @@ const seedData = async () => {
       precio: 32000,
       descripcion: 'Combinación de cristal transparente y obsidiana con base de plata 925.',
       disponible: true,
-      esEdicionLimitada: false,
     },
     {
       _type: 'producto',
@@ -55,7 +52,6 @@ const seedData = async () => {
       precio: 52000,
       descripcion: 'Brazalete envolvente de forma libre.',
       disponible: true,
-      esEdicionLimitada: false,
     },
     {
       _type: 'producto',
@@ -65,7 +61,6 @@ const seedData = async () => {
       precio: 29000,
       descripcion: 'Dije minimalista, ideal para cadenas ligeras.',
       disponible: true,
-      esEdicionLimitada: false,
     }
   ]
 

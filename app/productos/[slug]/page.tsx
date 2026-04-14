@@ -77,7 +77,7 @@ export default async function ProductDetailPage({
       <nav className="flex items-center gap-2 text-xs uppercase tracking-wider text-on-surface-variant mb-12" style={{ fontFamily: 'var(--font-label)' }}>
         <Link href="/" className="hover:text-primary transition-colors">Home</Link>
         <span className="text-outline-variant">/</span>
-        <span className="text-on-surface">{config?.breadcrumbText || 'Serie Limitada'}</span>
+        <span className="text-on-surface">{config?.breadcrumbText || 'Pieza Única'}</span>
       </nav>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
@@ -97,11 +97,9 @@ export default async function ProductDetailPage({
           <div className="mb-8 relative">
             <div className="absolute -left-8 top-4 w-1 h-24 bg-primary/30 hidden lg:block" />
             
-            {producto.esEdicionLimitada && (
-              <p className="text-secondary text-xs tracking-[0.2em] font-bold uppercase mb-4" style={{ fontFamily: 'var(--font-label)' }}>
-                {config?.tagText || 'Pieza de Colección / Edición Limitada'}
-              </p>
-            )}
+            <p className="text-secondary text-xs tracking-[0.2em] font-bold uppercase mb-4" style={{ fontFamily: 'var(--font-label)' }}>
+              {config?.tagText || 'Pieza Única e Irrepetible'}
+            </p>
 
             <h1 className="text-4xl lg:text-5xl text-on-surface mb-4 leading-tight" style={{ fontFamily: 'var(--font-display)' }}>
               {producto.nombre}
@@ -125,7 +123,7 @@ export default async function ProductDetailPage({
             </div>
             <div className="bg-surface p-4 flex flex-col gap-1 hover:bg-surface-container transition-colors">
               <span className="text-outline-variant text-[10px] tracking-widest uppercase">Stock</span>
-              <span className="text-on-surface">{producto.disponible ? '1 / Serie Limitada' : 'Agotado'}</span>
+              <span className="text-on-surface">{producto.disponible ? 'Pieza de Autor / 1 unidad' : 'Agotado'}</span>
             </div>
             <div className="bg-surface p-4 flex flex-col gap-1 hover:bg-surface-container transition-colors">
               <span className="text-outline-variant text-[10px] tracking-widest uppercase">Material</span>

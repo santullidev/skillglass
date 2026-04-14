@@ -108,14 +108,6 @@ export const productSchema = defineType({
       initialValue: true,
       description: '🟢 Si está activado, el cliente puede agregarla al carrito y comprarla. Si lo desactivás, aparecerá como "No disponible" en la tienda. Esto se actualiza automáticamente cuando se realiza una venta.',
     }),
-    defineField({
-      name: 'esEdicionLimitada',
-      title: '¿Es pieza de colección / edición limitada?',
-      type: 'boolean',
-      group: 'visibilidad',
-      initialValue: false,
-      description: '🏆 Activalo si esta pieza forma parte de una colección especial o es una edición limitada. Puede aparecer con una insignia especial en el futuro.',
-    }),
   ],
   preview: {
     select: {

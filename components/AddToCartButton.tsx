@@ -23,7 +23,7 @@ export default function AddToCartButton({ id, nombre, slug, precio, imagenUrl, n
       slug,
       precio,
       imagenUrl,
-      referencia: `Ref: SKG-${id.substring(0, 4).toUpperCase()} // Serie Limitada`, // Simulated reference
+      referencia: `Ref: SKG-${id.substring(0, 4).toUpperCase()} // Pieza Única`, // Simulated reference
       numeroCertificado
     })
     

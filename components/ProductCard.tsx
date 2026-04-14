@@ -70,15 +70,13 @@ export default function ProductCard({ producto, variant = 'normal', index = 0 }:
           </span>
         </div>
 
-        {/* Top-right badge: Edición Limitada */}
-        {producto.esEdicionLimitada && (
-          <div className="absolute top-4 right-4 z-20">
-            <span className="text-[9px] font-bold tracking-[0.2em] bg-gold text-[#080305] px-3 py-1.5 uppercase shadow-xl"
-              style={{ fontFamily: 'var(--font-label)' }}>
-              Ed. Limitada
-            </span>
-          </div>
-        )}
+        {/* Top-right badge: Pieza Única */}
+        <div className="absolute top-4 right-4 z-20">
+          <span className="text-[9px] font-bold tracking-[0.2em] bg-gold text-[#080305] px-3 py-1.5 uppercase shadow-xl"
+            style={{ fontFamily: 'var(--font-label)' }}>
+            ✦ Pieza Única
+          </span>
+        </div>
 
         {/* Bottom info overlay */}
         <div className="absolute bottom-0 left-0 right-0 z-20 p-5 lg:p-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
