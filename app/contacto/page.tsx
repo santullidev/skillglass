@@ -27,10 +27,10 @@ export default async function ContactoPage() {
               DIÁLOGO DIRECTO
             </p>
             <h1 className="text-6xl lg:text-8xl text-on-surface mb-12 leading-none" style={{ fontFamily: 'var(--font-display)' }}>
-              Conversaciones con el Taller
+              {settings?.contactoTitulo || "Conversaciones con el Taller"}
             </h1>
             <p className="text-xl text-on-surface-variant font-serif italic leading-relaxed mb-16 max-w-lg">
-              &ldquo;El cristal es un lenguaje de paciencia. Si tienes una consulta sobre una pieza, una colaboración especial o simplemente quieres saludarnos, estamos al otro lado de la flama.&rdquo;
+              &ldquo;{settings?.contactoTexto || "El cristal es un lenguaje de paciencia. Si tienes una consulta sobre una pieza, una colaboración especial o simplemente quieres saludarnos, estamos al otro lado de la flama."}&rdquo;
             </p>
             
             <div className="space-y-12 border-l border-outline-variant/30 pl-8">

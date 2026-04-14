@@ -34,6 +34,23 @@ export const settingsSchema = defineType({
       description: '🔥 Horario de atención o trabajo. Ejemplo: Lunes a Viernes, 10:00 — 18:00 (GMT-3).',
       placeholder: 'Lunes a Viernes, 10:00 — 18:00 (GMT-3)',
     }),
+    defineField({
+      name: 'contactoTitulo',
+      title: 'Título Página de Contacto',
+      type: 'string',
+      group: 'contacto',
+      initialValue: 'Conversaciones con el Taller',
+      description: 'El título principal que aparece en la página de contacto.',
+    }),
+    defineField({
+      name: 'contactoTexto',
+      title: 'Frase Editorial de Contacto',
+      type: 'text',
+      group: 'contacto',
+      rows: 3,
+      initialValue: '“El cristal es un lenguaje de paciencia. Si tienes una consulta sobre una pieza, una colaboración especial o simplemente quieres saludarnos, estamos al otro lado de la flama.”',
+      description: 'La frase inspiracional que aparece debajo del título.',
+    }),
 
     // ─── TALLER ─────────────────────────────────────────────────────────
     defineField({
