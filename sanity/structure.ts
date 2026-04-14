@@ -45,8 +45,9 @@ export const structure: StructureResolver = (S) =>
                 .schemaType('producto')
                 .views([
                   S.view
+                    .id('certificado')
                     .component(CertificadoView)
-                    .title('📜 Certificado'),
+                    .title('Certificado de Unicidad'),
                 ])
             )
         ),
