@@ -43,11 +43,11 @@ export const structure: StructureResolver = (S) =>
               S.document()
                 .documentId(documentId)
                 .schemaType('producto')
+                .id(`cert-${documentId}`)
                 .views([
                   S.view
-                    .id('certificado')
                     .component(CertificadoView)
-                    .title('Certificado de Unicidad'),
+                    .title('Certificado'),
                 ])
             )
         ),
