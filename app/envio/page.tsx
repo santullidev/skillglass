@@ -170,7 +170,8 @@ export default function EnvioPage() {
           {step === 1 && (
             <button 
               onClick={() => setStep(2)}
-              className="mt-8 bg-on-surface text-white py-4 px-12 text-[10px] tracking-[0.3em] uppercase font-bold hover:bg-on-surface/90 transition-all font-serif italic"
+              className="mt-8 bg-on-surface !text-white py-4 px-12 text-[10px] tracking-[0.3em] uppercase font-bold hover:bg-on-surface/90 transition-all font-serif italic"
+              style={{ color: 'white' }}
             >
               Siguiente →
             </button>
@@ -273,7 +274,8 @@ export default function EnvioPage() {
                      <button 
                        onClick={handleFinalizarYPay}
                        disabled={isLoading}
-                       className="bg-on-surface text-white py-5 px-10 text-[11px] tracking-[0.3em] uppercase font-bold hover:bg-primary transition-colors disabled:opacity-50"
+                       className="bg-on-surface !text-white py-5 px-10 text-[11px] tracking-[0.3em] uppercase font-bold hover:bg-primary transition-colors disabled:opacity-50"
+                       style={{ color: 'white' }}
                      >
                        {isLoading ? 'Conectando...' : 'Pagar con Mercado Pago'}
                      </button>
