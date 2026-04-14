@@ -1,4 +1,5 @@
 import type { StructureResolver } from 'sanity/structure'
+import CertificadoView from './components/CertificadoView'
 
 // Estructura del panel de administración de SKILGLASS
 // Organizada por flujo de trabajo: primero lo que se edita más seguido
@@ -36,8 +37,18 @@ export const structure: StructureResolver = (S) =>
         .title('📜  Certificados Emitidos')
         .child(
           S.documentTypeList('producto')
-            .title('Todas las piezas y sus certificados')
+            .title('Registro de Certificados')
             .defaultOrdering([{ field: 'numeroCertificado', direction: 'asc' }])
+            .child((documentId) =>
+              S.document()
+                .documentId(documentId)
+                .schemaType('producto')
+                .views([
+                  S.view
+                    .component(CertificadoView)
+                    .title('📜 Certificado'),
+                ])
+            )
         ),
 
       S.divider(),
