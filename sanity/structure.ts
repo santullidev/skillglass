@@ -56,22 +56,87 @@ export const structure: StructureResolver = (S) =>
 
       // ─── CONFIGURACIÓN DEL SITIO ─────────────────────────────────────────
       S.listItem()
-        .title('🖼️  Página de Inicio (Home)')
+        .title('🖼️ Página de Inicio (Home)')
         .child(
-          S.document()
-            .schemaType('homeConfig')
-            .documentId('homeConfig')
-            .title('Editar la página de inicio')
-        ),
-
-      S.listItem()
-        .title('📸 Diario del Taller')
-        .icon(() => '📸')
-        .child(
-          S.document()
-            .schemaType('diarioTaller')
-            .documentId('diarioTaller-singleton')
-            .title('Diario del Taller')
+          S.list()
+            .title('Secciones del Home')
+            .items([
+              S.listItem()
+                .title('1 · 🖼️  Portada')
+                .child(
+                  S.document()
+                    .schemaType('homeConfig')
+                    .documentId('homeConfig')
+                    .title('Portada — Título, fotos y subtítulo')
+                    .views([
+                      S.view.form().options({ defaultFieldGroup: 'hero' }),
+                    ])
+                ),
+              S.listItem()
+                .title('2 · 🗂️  Cápsulas')
+                .child(
+                  S.document()
+                    .schemaType('homeConfig')
+                    .documentId('homeConfig')
+                    .title('Cápsulas — Series Conceptuales')
+                    .views([
+                      S.view.form().options({ defaultFieldGroup: 'colecciones' }),
+                    ])
+                ),
+              S.listItem()
+                .title('3 · 💎  Pieza Destacada')
+                .child(
+                  S.document()
+                    .schemaType('homeConfig')
+                    .documentId('homeConfig')
+                    .title('Pieza Destacada — La Alquimia')
+                    .views([
+                      S.view.form().options({ defaultFieldGroup: 'alquimia' }),
+                    ])
+                ),
+              S.listItem()
+                .title('4 · 💬  Frase Editorial')
+                .child(
+                  S.document()
+                    .schemaType('homeConfig')
+                    .documentId('homeConfig')
+                    .title('Frase Editorial')
+                    .views([
+                      S.view.form().options({ defaultFieldGroup: 'frase' }),
+                    ])
+                ),
+              S.listItem()
+                .title('5 · 📦  Productos Destacados')
+                .child(
+                  S.document()
+                    .schemaType('homeConfig')
+                    .documentId('homeConfig')
+                    .title('Productos Destacados')
+                    .views([
+                      S.view.form().options({ defaultFieldGroup: 'productos' }),
+                    ])
+                ),
+              S.listItem()
+                .title('6 · ⚙️  Proceso de Creación')
+                .child(
+                  S.document()
+                    .schemaType('homeConfig')
+                    .documentId('homeConfig')
+                    .title('Proceso de Creación')
+                    .views([
+                      S.view.form().options({ defaultFieldGroup: 'proceso' }),
+                    ])
+                ),
+              S.divider(),
+              S.listItem()
+                .title('7 · 📸  Diario del Taller')
+                .child(
+                  S.document()
+                    .schemaType('diarioTaller')
+                    .documentId('diarioTaller-singleton')
+                    .title('Diario del Taller')
+                ),
+            ])
         ),
 
       S.listItem()
