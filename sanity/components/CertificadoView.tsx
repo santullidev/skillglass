@@ -1,11 +1,20 @@
-import { useFormValue } from 'sanity'
+import { SanityDocument } from 'sanity'
 
-export default function CertificadoView() {
-  const nombre = useFormValue(['nombre']) as string
-  const slug = useFormValue(['slug', 'current']) as string
-  const categoria = useFormValue(['categoria']) as string
-  const numeroCertificado = useFormValue(['numeroCertificado']) as string
-  const descripcion = useFormValue(['descripcion']) as string
+// Las vistas reciben el documento completo en props — NO usar useFormValue
+interface CertificadoViewProps {
+  document: {
+    displayed: SanityDocument & {
+      nombre?: string
+      slug?: { current: string }
+      categoria?: string
+      numeroCertificado?: string
+      descripcion?: string
+    }
+  }
+}
+
+export default function CertificadoView({ document }: CertificadoViewProps) {
+  const { nombre, slug, categoria, numeroCertificado, descripcion } = document.displayed
 
   return (
     <div style={{ padding: '3rem 2.5rem', maxWidth: '680px', fontFamily: 'sans-serif', color: '#111' }}>
@@ -17,23 +26,23 @@ export default function CertificadoView() {
       </div>
 
       <div style={{ background: '#fafafa', border: '1px solid #e0e0e0', borderRadius: '6px', padding: '1.25rem 1.5rem', marginBottom: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontSize: '11px', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#777' }}>
+        <p style={{ fontSize: '11px', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#777' }}>
           Número de Certificado
-        </span>
+        </p>
         <span style={{ fontFamily: 'monospace', fontSize: '22px', fontWeight: '700', letterSpacing: '0.3em', color: '#111' }}>
           № {numeroCertificado || 'Sin asignar'}
         </span>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-        <Field label="URL / Slug" value={slug ? `/${slug}` : '—'} />
+        <Field label="URL / Slug" value={slug?.current ? `/${slug.current}` : '—'} />
         <Field label="Categoría" value={categoria || '—'} />
         <Field label="Descripción" value={descripcion || '—'} multiline />
       </div>
 
-      <div style={{ marginTop: '3rem', paddingTop: '1.25rem', borderTop: '1px solid #e5e5e5', fontSize: '10px', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#bbb' }}>
+      <p style={{ marginTop: '3rem', paddingTop: '1.25rem', borderTop: '1px solid #e5e5e5', fontSize: '10px', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#bbb' }}>
         Estudio Skilglass · Solo Lectura · No editable desde esta vista
-      </div>
+      </p>
     </div>
   )
 }
