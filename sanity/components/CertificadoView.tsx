@@ -1,4 +1,5 @@
 import { SanityDocument } from 'sanity'
+import { urlFor } from '../lib/image'
 
 // Las vistas reciben el documento completo en props — NO usar useFormValue
 interface CertificadoViewProps {
@@ -9,12 +10,13 @@ interface CertificadoViewProps {
       categoria?: string
       numeroCertificado?: string
       descripcion?: string
+      imagenes?: any[]
     }
   }
 }
 
 export default function CertificadoView({ document }: CertificadoViewProps) {
-  const { nombre, slug, categoria, numeroCertificado, descripcion } = document.displayed
+  const { nombre, slug, categoria, numeroCertificado, descripcion, imagenes } = document.displayed
 
   return (
     <div style={{ padding: '3rem 2.5rem', maxWidth: '680px', fontFamily: 'sans-serif', color: '#111' }}>
@@ -33,6 +35,21 @@ export default function CertificadoView({ document }: CertificadoViewProps) {
           № {numeroCertificado || 'Sin asignar'}
         </span>
       </div>
+
+      {/* Galería de Imágenes */}
+      {imagenes && imagenes.length > 0 && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '1rem', marginBottom: '2.5rem' }}>
+          {imagenes.map((img, i) => (
+            <div key={i} style={{ aspectRatio: '1/1', overflow: 'hidden', borderRadius: '4px', border: '1px solid #eee', background: '#f5f5f5' }}>
+              <img 
+                src={urlFor(img).width(300).height(300).fit('crop').url()} 
+                alt={`${nombre} - ${i + 1}`}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
         <Field label="URL / Slug" value={slug?.current ? `/${slug.current}` : '—'} />
