@@ -22,7 +22,7 @@ export default defineConfig({
       defaultDocumentNode: (S, { schemaType, structurePath }) => {
         if (
           schemaType === 'producto' &&
-          structurePath?.includes('certificadosEmitidos')
+          structurePath?.includes('certificados-emitidos')
         ) {
           return S.document().views([
             S.view.form(),

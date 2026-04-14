@@ -1,19 +1,29 @@
 import { productSchema } from './product'
 import { collectionSchema } from './collection'
-import { homeConfigSchema } from './homeConfig'
 import { orderSchema } from './order'
 import { settingsSchema } from './settings'
 import { soporteSchema } from './soporte'
 import { productoConfigSchema } from './productoConfig'
 import { diarioTallerSchema } from './diarioTaller'
+import { heroConfigSchema } from './heroConfig'
+import { capsulasSectionSchema } from './capsulasSectionConfig'
+import { alquimiaSectionSchema } from './alquimiaSectionConfig'
+import { fraseSectionSchema } from './fraseSectionConfig'
+import { productosSectionSchema } from './productosSectionConfig'
+import { procesoSectionSchema } from './procesoSectionConfig'
 
 export const schemaTypes = [
-  productSchema, 
-  collectionSchema, 
-  homeConfigSchema, 
+  productSchema,
+  collectionSchema,
   orderSchema,
-  settingsSchema, 
+  settingsSchema,
   soporteSchema,
   productoConfigSchema,
-  diarioTallerSchema
+  diarioTallerSchema,
+  heroConfigSchema,
+  capsulasSectionSchema,
+  alquimiaSectionSchema,
+  fraseSectionSchema,
+  productosSectionSchema,
+  procesoSectionSchema,
 ]

@@ -2,7 +2,6 @@ import type { StructureResolver } from 'sanity/structure'
 import CertificadoView from './components/CertificadoView'
 
 // Estructura del panel de administración de SKILGLASS
-// Organizada por flujo de trabajo: primero lo que se edita más seguido
 export const structure: StructureResolver = (S) =>
   S.list()
     .title('Panel SKILGLASS')
@@ -21,6 +20,7 @@ export const structure: StructureResolver = (S) =>
       // ─── CATÁLOGO ───────────────────────────────────────────────────────
       S.listItem()
         .title('💎  Piezas (Productos)')
+        .id('catalogo-piezas')
         .child(
           S.documentTypeList('producto')
             .title('Todas las piezas del catálogo')
@@ -28,6 +28,7 @@ export const structure: StructureResolver = (S) =>
 
       S.listItem()
         .title('🗂️  Cápsulas')
+        .id('menu-capsulas')
         .child(
           S.documentTypeList('coleccion')
             .title('Cápsulas de piezas')
@@ -35,6 +36,7 @@ export const structure: StructureResolver = (S) =>
 
       S.listItem()
         .title('📜  Certificados Emitidos')
+        .id('certificados-emitidos')
         .child(
           S.documentTypeList('producto')
             .title('Registro de Certificados')
@@ -54,48 +56,48 @@ export const structure: StructureResolver = (S) =>
                 .title('1 · 🖼️  Portada')
                 .child(
                   S.document()
-                    .schemaType('homeConfig')
-                    .documentId('homeConfig')
+                    .schemaType('heroConfig')
+                    .documentId('heroConfig')
                     .title('Portada — Título, fotos y subtítulo')
                 ),
               S.listItem()
                 .title('2 · 🗂️  Cápsulas')
                 .child(
                   S.document()
-                    .schemaType('homeConfig')
-                    .documentId('homeConfig')
+                    .schemaType('capsulasSectionConfig')
+                    .documentId('capsulasSectionConfig')
                     .title('Cápsulas — Series Conceptuales')
                 ),
               S.listItem()
                 .title('3 · 💎  Pieza Destacada')
                 .child(
                   S.document()
-                    .schemaType('homeConfig')
-                    .documentId('homeConfig')
+                    .schemaType('alquimiaSectionConfig')
+                    .documentId('alquimiaSectionConfig')
                     .title('Pieza Destacada — La Alquimia')
                 ),
               S.listItem()
                 .title('4 · 💬  Frase Editorial')
                 .child(
                   S.document()
-                    .schemaType('homeConfig')
-                    .documentId('homeConfig')
+                    .schemaType('fraseSectionConfig')
+                    .documentId('fraseSectionConfig')
                     .title('Frase Editorial')
                 ),
               S.listItem()
                 .title('5 · 📦  Productos Destacados')
                 .child(
                   S.document()
-                    .schemaType('homeConfig')
-                    .documentId('homeConfig')
+                    .schemaType('productosSectionConfig')
+                    .documentId('productosSectionConfig')
                     .title('Productos Destacados')
                 ),
               S.listItem()
                 .title('6 · ⚙️  Proceso de Creación')
                 .child(
                   S.document()
-                    .schemaType('homeConfig')
-                    .documentId('homeConfig')
+                    .schemaType('procesoSectionConfig')
+                    .documentId('procesoSectionConfig')
                     .title('Proceso de Creación')
                 ),
               S.divider(),

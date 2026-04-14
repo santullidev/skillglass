@@ -1,11 +1,20 @@
 import { client, urlFor } from '@/lib/sanity'
-import { HOME_CONFIG_QUERY, PRODUCTOS_QUERY, DIARIO_TALLER_QUERY } from '@/lib/queries'
+import { 
+  HERO_CONFIG_QUERY,
+  CAPSULAS_SECTION_QUERY,
+  ALQUIMIA_SECTION_QUERY,
+  FRASE_SECTION_QUERY,
+  PRODUCTOS_SECTION_QUERY,
+  PROCESO_SECTION_QUERY,
+  PRODUCTOS_QUERY, 
+  DIARIO_TALLER_QUERY 
+} from '@/lib/queries'
 import Image from 'next/image'
 import Link from 'next/link'
 import ProductCard from '@/components/ProductCard'
 import CollectionCard from '@/components/CollectionCard'
 import HeroSlider from '@/components/HeroSlider'
-import type { HomeConfig, Producto } from '@/types/producto'
+import type { Producto } from '@/types/producto'
 
 export const revalidate = 60
 
@@ -33,51 +42,78 @@ const DEFAULTS = {
 }
 
 export default async function Home() {
-  const config = await client.fetch<HomeConfig>(HOME_CONFIG_QUERY)
-  const fallbackProductos = await client.fetch<Producto[]>(PRODUCTOS_QUERY)
-  const diario = await client.fetch(DIARIO_TALLER_QUERY)
+  const [
+    heroData,
+    capsulasData,
+    alquimiaData,
+    fraseData,
+    productosData,
+    procesoData,
+    fallbackProductos,
+    diario
+  ] = await Promise.all([
+    client.fetch(HERO_CONFIG_QUERY),
+    client.fetch(CAPSULAS_SECTION_QUERY),
+    client.fetch(ALQUIMIA_SECTION_QUERY),
+    client.fetch(FRASE_SECTION_QUERY),
+    client.fetch(PRODUCTOS_SECTION_QUERY),
+    client.fetch(PROCESO_SECTION_QUERY),
+    client.fetch<Producto[]>(PRODUCTOS_QUERY),
+    client.fetch(DIARIO_TALLER_QUERY)
+  ])
 
-  // Resolución de todos los textos: primero Sanity, luego fallback
-  const heroTitle = config?.tituloPrincipal || 'Joyas de\nAutor'
-  const heroSubtitle = config?.subtituloHero || DEFAULTS.heroSubtitle
-  const tituloColecciones = config?.tituloColecciones || DEFAULTS.tituloColecciones
-  const frase = config?.seccionFrase?.frase || DEFAULTS.frase
-  const mostrarFrase = config?.seccionFrase?.activo !== false
-  const tituloPiezas = config?.tituloPiezasDestacadas || DEFAULTS.tituloPiezasDestacadas
+  // Normalización de datos para evitar errores de hidratación
+  const hero = heroData || {}
+  const capsulas = capsulasData || { coleccionesDestacadas: [] }
+  const alquimia = alquimiaData || { activo: false }
+  const fraseConfig = fraseData || { activo: false }
+  const productosConfig = productosData || { productosDestacados: [] }
+  const procesoConfig = procesoData || { activo: false }
+
+  // Resolución de textos
+  const heroTitle = hero?.tituloHero || 'Joyas de\nAutor'
+  const heroSubtitle = hero?.subtituloHero || DEFAULTS.heroSubtitle
+  const tituloColecciones = capsulas?.tituloSeccionColecciones || DEFAULTS.tituloColecciones
+  const frase = fraseConfig?.fraseEditorial || DEFAULTS.frase
+  const autorFrase = fraseConfig?.autorFrase || 'SKILGLASS'
+  const mostrarFrase = fraseConfig?.activo !== false
+  const tituloPiezas = productosConfig?.tituloSeccionProductos || DEFAULTS.tituloPiezasDestacadas
 
   // Proceso
-  const proceso = config?.seccionProceso
-  const mostrarProceso = proceso?.activo !== false
-  const procesoEtiqueta = proceso?.etiqueta || DEFAULTS.procesoEtiqueta
-  const procesoTitulo = proceso?.titulo || DEFAULTS.procesoTitulo
-  const procesoPasos = proceso?.pasos && proceso.pasos.length > 0 ? proceso.pasos : DEFAULTS.procesoPasos
+  const mostrarProceso = procesoConfig?.activo !== false
+  const procesoEtiqueta = procesoConfig?.etiqueta || DEFAULTS.procesoEtiqueta
+  const procesoTitulo = procesoConfig?.tituloProceso || DEFAULTS.procesoTitulo
+  const procesoPasos = (procesoConfig?.pasosProceso && procesoConfig.pasosProceso.length > 0) 
+    ? procesoConfig.pasosProceso 
+    : DEFAULTS.procesoPasos
 
   // Alquimia
-  const alquimia = config?.seccionAlquimia
   const alquimiaEtiqueta = alquimia?.etiqueta || DEFAULTS.alquimiaEtiqueta
-  const alquimiaSpecs = alquimia?.specs && alquimia.specs.length > 0 ? alquimia.specs : DEFAULTS.alquimiaSpecs
+  const alquimiaSpecs = (alquimia?.specs && alquimia.specs.length > 0) 
+    ? alquimia.specs 
+    : DEFAULTS.alquimiaSpecs
 
-  // Pillares: usamos los pasos configurados o los de fallback
-  const pilares = procesoPasos || []
+  // Pilares / Pasos
+  const pilares = procesoPasos
 
-  // Productos
-  const productos = config?.productosDestacados && config.productosDestacados.length > 0
-    ? config.productosDestacados
-    : fallbackProductos
+  // Productos (Mapeo robusto)
+  const productos = (productosConfig?.productosDestacados && productosConfig.productosDestacados.length > 0)
+    ? productosConfig.productosDestacados
+    : (fallbackProductos || [])
 
   return (
     <div className="flex flex-col min-h-screen">
 
       {/* ── HERO ──────────────────────────────────────────────── */}
       <HeroSlider
-        images={config?.heroImages}
-        metadata={config?.heroMetadata}
+        images={hero?.fotosPortada}
+        metadata={hero?.metadata}
         title={heroTitle}
         subtitle={heroSubtitle}
       />
 
       {/* ── COLECCIONES ───────────────────────────────────────── */}
-      {config?.coleccionesDestacadas && config.coleccionesDestacadas.length > 0 && (
+      {capsulas?.coleccionesDestacadas && capsulas.coleccionesDestacadas.length > 0 && (
         <section id="colecciones" className="py-24 lg:py-40 px-6 lg:px-8 max-w-360 mx-auto w-full relative bg-surface-deep">
           <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8 relative z-10">
             <div>
@@ -104,7 +140,7 @@ export default async function Home() {
           <div className="w-full h-px bg-linear-to-r from-outline-gold/5 via-outline-gold/40 to-outline-gold/5 mb-12" />
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
-            {config.coleccionesDestacadas.map((coleccion) => (
+            {capsulas.coleccionesDestacadas.map((coleccion: any) => (
               <CollectionCard key={coleccion._id} coleccion={coleccion} />
             ))}
           </div>
@@ -196,53 +232,8 @@ export default async function Home() {
             </p>
             <div className="mt-12 inline-flex flex-col items-center gap-4 animate-in fade-in zoom-in duration-1000 delay-500">
               <span className="w-px h-12 bg-gold/40 shadow-[0_0_10px_rgba(201,168,76,0.5)]" />
-              <span className="text-[10px] tracking-[0.6em] text-gold font-bold uppercase" style={{ fontFamily: 'var(--font-label)' }}>SKILGLASS</span>
+              <span className="text-[10px] tracking-[0.4em] text-gold uppercase" style={{ fontFamily: 'var(--font-label)' }}>{autorFrase}</span>
             </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── NARRATIVA / PILARES (legacy seccionNarrativa) ────── */}
-      {config?.seccionNarrativa?.activo && (
-        <section className="py-24 lg:py-40 bg-surface-lowest">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="flex flex-col lg:flex-row gap-24 items-start mb-32">
-              <div className="lg:max-w-2xl">
-                <h2
-                  className="text-5xl lg:text-7xl text-on-surface mb-12 leading-tight"
-                  style={{ fontFamily: 'var(--font-display)' }}
-                >
-                  {config.seccionNarrativa.titulo || 'El Caos Controlado del Fuego'}
-                </h2>
-                <p className="text-xl text-on-surface-variant font-serif leading-relaxed italic">
-                  {config.seccionNarrativa.descripcion || 'Cada pieza de SKILGLASS atraviesa un riguroso proceso de transformación molecular. No fabricamos joyería; capturamos un momento de fluidez sólida.'}
-                </p>
-              </div>
-              <div className="w-full lg:w-px lg:h-64 bg-outline-variant/30" />
-            </div>
-            {config.seccionNarrativa.features && config.seccionNarrativa.features.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-outline-variant/20 border border-outline-variant/20">
-                {config.seccionNarrativa.features.map((feature, i) => (
-                  <div key={i} className="bg-surface p-10 hover:bg-surface-container transition-all duration-500 group">
-                    <span
-                      className="text-gold/60 text-[10px] font-bold mb-8 block tracking-[0.4em]"
-                      style={{ fontFamily: 'var(--font-label)' }}
-                    >
-                      0{i + 1} {'//'}
-                    </span>
-                    <h4
-                      className="text-xl text-on-surface mb-4 group-hover:text-gold transition-colors"
-                      style={{ fontFamily: 'var(--font-display)' }}
-                    >
-                      {feature.titulo}
-                    </h4>
-                    <p className="text-on-surface-variant text-sm leading-relaxed">
-                      {feature.descripcion}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         </section>
       )}
@@ -337,9 +328,9 @@ export default async function Home() {
 
             {/* Columna izquierda: Imagen atmosférica */}
             <div className="relative min-h-[50vh] lg:min-h-full overflow-hidden">
-              {proceso?.imagen ? (
+              {procesoConfig?.imagen ? (
                 <Image
-                  src={urlFor(proceso.imagen).width(1200).height(1400).url()}
+                  src={urlFor(procesoConfig.imagen).width(1200).height(1400).url()}
                   alt="Proceso de joyería en vidrio"
                   fill
                   className="object-cover"
@@ -388,16 +379,16 @@ export default async function Home() {
               </h2>
 
               {/* Frase / Cita principal */}
-              {(proceso?.descripcion || true) && (
+              {(procesoConfig?.descripcion || true) && (
                 <p className="text-lg text-on-surface-variant font-serif italic leading-relaxed mb-12 max-w-lg border-l-2 border-primary/30 pl-6">
-                  {proceso?.descripcion || 'Olvida la producción en masa. Cada joya de SKILGLASS es esculpida individualmente mediante la pura técnica del soplado a la flama. El artesano manipula el calor y el cristal líquido, moldeando la gota incandescente con precisión quirúrgica antes de que el aire la solidifique.'}
+                  {procesoConfig?.descripcion || 'Olvida la producción en masa. Cada joya de SKILGLASS es esculpida individualmente mediante la pura técnica del soplado a la flama. El artesano manipula el calor y el cristal líquido, moldeando la gota incandescente con precisión quirúrgica antes de que el aire la solidifique.'}
                 </p>
               )}
 
               {/* Lista de pilares */}
               {pilares.length > 0 && (
                 <div className="space-y-6 mb-12">
-                  {pilares.map((feature, i) => (
+                  {pilares.map((feature: any, i: number) => (
                     <div key={i} className="flex gap-5 items-start group">
                       <span
                         className="text-primary/50 text-xs tracking-[0.3em] shrink-0 mt-1"
@@ -423,11 +414,11 @@ export default async function Home() {
 
               {/* CTA */}
               <Link
-                href={proceso?.ctaLink || '/colecciones'}
+                href={procesoConfig?.ctaLink || '/colecciones'}
                 className="group self-start inline-flex items-center gap-4 text-[11px] tracking-[0.4em] text-on-surface uppercase border border-outline-variant/30 px-8 py-4 hover:border-primary hover:text-primary transition-all duration-500 overflow-hidden relative"
                 style={{ fontFamily: 'var(--font-label)' }}
               >
-                <span className="relative z-10">{proceso?.ctaTexto || 'Conocer el Estudio'}</span>
+                <span className="relative z-10">{procesoConfig?.ctaTexto || 'Conocer el Estudio'}</span>
                 <span className="relative z-10 group-hover:translate-x-1 transition-transform duration-300">→</span>
                 <div className="absolute inset-0 translate-x-full group-hover:translate-x-0 bg-surface-container transition-transform duration-500 ease-out" />
               </Link>
@@ -439,7 +430,7 @@ export default async function Home() {
             <div className="border-t border-outline-variant/10">
               <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 divide-y sm:divide-y-0 sm:divide-x divide-outline-variant/10">
-                  {procesoPasos.map((step, i) => (
+                  {procesoPasos.map((step: any, i: number) => (
                     <div key={i} className="px-0 sm:px-8 py-8 sm:py-0 first:pl-0">
                       <span
                         className="text-primary/40 text-xs font-bold tracking-[0.3em] mb-4 block"

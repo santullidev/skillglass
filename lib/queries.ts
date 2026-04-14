@@ -73,14 +73,21 @@ export const COLECCION_BY_SLUG_QUERY = defineQuery(`
   }
 `)
 
-export const HOME_CONFIG_QUERY = defineQuery(`
-  *[_type == "homeConfig"][0] {
-    _id,
-    heroImages,
-    heroMetadata,
-    tituloPrincipal,
+
+export const HERO_CONFIG_QUERY = defineQuery(`
+  *[_type == "heroConfig" && _id == "heroConfig"][0] {
+    fotosPortada,
+    tituloHero,
     subtituloHero,
-    tituloColecciones,
+    metadata,
+    ctaTexto,
+    ctaLink
+  }
+`)
+
+export const CAPSULAS_SECTION_QUERY = defineQuery(`
+  *[_type == "capsulasSectionConfig" && _id == "capsulasSectionConfig"][0] {
+    tituloSeccionColecciones,
     coleccionesDestacadas[]->{
       _id,
       nombre,
@@ -99,26 +106,38 @@ export const HOME_CONFIG_QUERY = defineQuery(`
           numeroCertificado
         }
       }
+    }
+  }
+`)
+
+export const ALQUIMIA_SECTION_QUERY = defineQuery(`
+  *[_type == "alquimiaSectionConfig" && _id == "alquimiaSectionConfig"][0] {
+    activo,
+    etiqueta,
+    producto->{
+      _id,
+      nombre,
+      "slug": slug.current,
+      precio,
+      descripcion,
+      imagenes,
+      numeroCertificado
     },
-    seccionAlquimia {
-      activo,
-      etiqueta,
-      producto->{
-        _id,
-        nombre,
-        "slug": slug.current,
-        precio,
-        descripcion,
-        imagenes,
-        numeroCertificado
-      },
-      specs
-    },
-    seccionFrase {
-      activo,
-      frase
-    },
-    tituloPiezasDestacadas,
+    specs
+  }
+`)
+
+export const FRASE_SECTION_QUERY = defineQuery(`
+  *[_type == "fraseSectionConfig" && _id == "fraseSectionConfig"][0] {
+    activo,
+    fraseEditorial,
+    autorFrase
+  }
+`)
+
+export const PRODUCTOS_SECTION_QUERY = defineQuery(`
+  *[_type == "productosSectionConfig" && _id == "productosSectionConfig"][0] {
+    tituloSeccionProductos,
     productosDestacados[]->{
       _id,
       nombre,
@@ -126,26 +145,23 @@ export const HOME_CONFIG_QUERY = defineQuery(`
       precio,
       imagenes,
       numeroCertificado
-    },
-    seccionProceso {
-      activo,
-      imagen,
-      etiqueta,
-      titulo,
-      descripcion,
-      pasos,
-      features,
-      ctaTexto,
-      ctaLink
-    },
-    seccionNarrativa {
-      activo,
-      titulo,
-      descripcion,
-      features
     }
   }
 `)
+
+export const PROCESO_SECTION_QUERY = defineQuery(`
+  *[_type == "procesoSectionConfig" && _id == "procesoSectionConfig"][0] {
+    activo,
+    imagen,
+    etiqueta,
+    tituloProceso,
+    descripcion,
+    pasosProceso,
+    ctaTexto,
+    ctaLink
+  }
+`)
+
 
 export const PRODUCT_CONFIG_QUERY = defineQuery(`
   *[_type == "productoConfig"][0] {
