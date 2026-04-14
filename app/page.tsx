@@ -222,7 +222,7 @@ export default async function Home() {
       {mostrarFrase && (
         <section className="py-20 lg:py-28 bg-surface-deep relative overflow-hidden flex items-center justify-center">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,168,76,0.1)_0%,transparent_60%)] blur-[120px] pointer-events-none" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[85%] text-[450px] text-surface-container opacity-10 font-serif leading-tight select-none pointer-events-none">
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 text-[240px] text-surface-container opacity-10 font-serif leading-none select-none pointer-events-none">
             &ldquo;
           </div>
           
