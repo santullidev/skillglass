@@ -170,7 +170,7 @@ export default function EnvioPage() {
           {step === 1 && (
             <button 
               onClick={() => setStep(2)}
-              className="mt-8 bg-on-surface text-surface py-4 px-12 text-[10px] tracking-[0.3em] uppercase font-bold hover:bg-on-surface/90 transition-all"
+              className="mt-8 bg-on-surface text-white py-4 px-12 text-[10px] tracking-[0.3em] uppercase font-bold hover:bg-on-surface/90 transition-all font-serif italic"
             >
               Siguiente →
             </button>

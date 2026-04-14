@@ -80,7 +80,7 @@ export default function CarritoPage() {
             <div className="mt-10">
               <Link
                 href="/envio"
-                className="w-full bg-on-surface text-surface py-4 px-6 rounded-[6px] shadow-sm flex items-center justify-center gap-3 transition-all hover:bg-on-surface/90 font-bold tracking-widest uppercase text-xs"
+                className="w-full bg-on-surface text-white py-4 px-6 rounded-[6px] shadow-sm flex items-center justify-center gap-3 transition-all hover:bg-on-surface/90 font-bold tracking-widest uppercase text-xs"
                 style={{ fontFamily: 'var(--font-label)' }}
               >
                 Continuar con el Envío
