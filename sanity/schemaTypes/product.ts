@@ -112,14 +112,14 @@ export const productSchema = defineType({
     select: {
       title: 'nombre',
       subtitle: 'categoria',
-      media: 'imagenes.0',
+      media: 'imagenes',
       disponible: 'disponible',
     },
     prepare({ title, subtitle, media, disponible }) {
       return {
         title: `${disponible ? '🟢' : '🔴'} ${title || 'Sin nombre'}`,
         subtitle: subtitle || 'Sin categoría',
-        media,
+        media: media?.[0] || media,
       }
     },
   },
