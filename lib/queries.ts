@@ -89,7 +89,18 @@ export const HOME_CONFIG_QUERY = defineQuery(`
       "slug": slug.current,
       descripcion,
       imagenes,
-      productos
+      productos[]{
+        _key,
+        tamanoGrilla,
+        "producto": producto->{
+          _id,
+          nombre,
+          "slug": slug.current,
+          precio,
+          imagenes,
+          numeroCertificado
+        }
+      }
     },
     seccionAlquimia {
       activo,
