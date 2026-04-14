@@ -39,17 +39,6 @@ export const structure: StructureResolver = (S) =>
           S.documentTypeList('producto')
             .title('Registro de Certificados')
             .defaultOrdering([{ field: 'numeroCertificado', direction: 'asc' }])
-            .child((documentId) =>
-              S.document()
-                .documentId(documentId)
-                .schemaType('producto')
-                .id(`cert-${documentId}`)
-                .views([
-                  S.view
-                    .component(CertificadoView)
-                    .title('Certificado'),
-                ])
-            )
         ),
 
       S.divider(),
@@ -68,9 +57,6 @@ export const structure: StructureResolver = (S) =>
                     .schemaType('homeConfig')
                     .documentId('homeConfig')
                     .title('Portada — Título, fotos y subtítulo')
-                    .views([
-                      S.view.form().options({ defaultFieldGroup: 'hero' }),
-                    ])
                 ),
               S.listItem()
                 .title('2 · 🗂️  Cápsulas')
@@ -79,9 +65,6 @@ export const structure: StructureResolver = (S) =>
                     .schemaType('homeConfig')
                     .documentId('homeConfig')
                     .title('Cápsulas — Series Conceptuales')
-                    .views([
-                      S.view.form().options({ defaultFieldGroup: 'colecciones' }),
-                    ])
                 ),
               S.listItem()
                 .title('3 · 💎  Pieza Destacada')
@@ -90,9 +73,6 @@ export const structure: StructureResolver = (S) =>
                     .schemaType('homeConfig')
                     .documentId('homeConfig')
                     .title('Pieza Destacada — La Alquimia')
-                    .views([
-                      S.view.form().options({ defaultFieldGroup: 'alquimia' }),
-                    ])
                 ),
               S.listItem()
                 .title('4 · 💬  Frase Editorial')
@@ -101,9 +81,6 @@ export const structure: StructureResolver = (S) =>
                     .schemaType('homeConfig')
                     .documentId('homeConfig')
                     .title('Frase Editorial')
-                    .views([
-                      S.view.form().options({ defaultFieldGroup: 'frase' }),
-                    ])
                 ),
               S.listItem()
                 .title('5 · 📦  Productos Destacados')
@@ -112,9 +89,6 @@ export const structure: StructureResolver = (S) =>
                     .schemaType('homeConfig')
                     .documentId('homeConfig')
                     .title('Productos Destacados')
-                    .views([
-                      S.view.form().options({ defaultFieldGroup: 'productos' }),
-                    ])
                 ),
               S.listItem()
                 .title('6 · ⚙️  Proceso de Creación')
@@ -123,9 +97,6 @@ export const structure: StructureResolver = (S) =>
                     .schemaType('homeConfig')
                     .documentId('homeConfig')
                     .title('Proceso de Creación')
-                    .views([
-                      S.view.form().options({ defaultFieldGroup: 'proceso' }),
-                    ])
                 ),
               S.divider(),
               S.listItem()
