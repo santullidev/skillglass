@@ -158,31 +158,18 @@ export const orderSchema = defineType({
       readOnly: true,
       description: '🔒 Dirección ingresada por el cliente al comprar. Solo lectura.',
       fields: [
-        {
-          name: 'provincia',
-          type: 'string',
-          title: 'Provincia',
-        },
-        {
-          name: 'ciudad',
-          type: 'string',
-          title: 'Ciudad / Localidad',
-        },
-        {
-          name: 'direccion',
-          type: 'string',
-          title: 'Calle y número',
-        },
-        {
-          name: 'codigoPostal',
-          type: 'string',
-          title: 'Código Postal (CP)',
-        },
+        { name: 'tipo', type: 'string', title: 'Tipo de envío (domicilio/sucursal)' },
+        { name: 'provincia', type: 'string', title: 'Provincia' },
+        { name: 'ciudad', type: 'string', title: 'Ciudad / Localidad' },
+        { name: 'direccion', type: 'string', title: 'Calle y número' },
+        { name: 'codigoPostal', type: 'string', title: 'Código Postal (CP)' },
+        { name: 'costo', type: 'number', title: 'Costo del envío (ARS)' },
+        { name: 'sucursalId', type: 'string', title: 'ID Sucursal Andreani (si aplica)' },
+        { name: 'sucursalNombre', type: 'string', title: 'Nombre de Sucursal' },
         {
           name: 'notas',
           type: 'text',
           title: 'Notas adicionales del cliente',
-          description: 'Instrucciones especiales del cliente para la entrega.',
         },
       ],
     }),
@@ -190,20 +177,34 @@ export const orderSchema = defineType({
     // ─── GESTIÓN (EDITABLE) ─────────────────────────────────────────────
     defineField({
       name: 'estadoEnvio',
-      title: '🚚 Estado del envío — ¡Este podés editarlo!',
+      title: '🚚 Estado del envío (Andreani)',
       type: 'string',
       group: 'gestion',
       options: {
         list: [
           { title: '⏳  Pendiente de preparación', value: 'pendiente' },
-          { title: '📦  En preparación', value: 'preparando' },
-          { title: '🚀  Despachado al correo', value: 'despachado' },
+          { title: '📦  Generando etiqueta Andreani', value: 'generando_etiqueta' },
+          { title: '🚀  Despachado / Con número de seguimiento', value: 'despachado' },
           { title: '✅  Entregado', value: 'entregado' },
+          { title: '❌  Error en vinculación', value: 'error_logistica' },
         ],
         layout: 'radio',
       },
       initialValue: 'pendiente',
-      description: '✏️ Este es el único campo que vas a editar vos. Actualizalo a medida que preparás y mandás el pedido. Va de "Pendiente" → "En preparación" → "Despachado" → "Entregado".',
+    }),
+    defineField({
+      name: 'numeroAndreani',
+      title: 'Número de Envío (Andreani)',
+      type: 'string',
+      group: 'gestion',
+      description: 'Cargado automáticamente tras el pago.',
+    }),
+    defineField({
+      name: 'urlEtiqueta',
+      title: 'Link a la Etiqueta de Envío',
+      type: 'url',
+      group: 'gestion',
+      description: 'URL directa para descargar el PDF de la etiqueta.',
     }),
   ],
   orderings: [

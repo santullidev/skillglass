@@ -8,6 +8,7 @@ export interface Producto {
   numeroCertificado?: string
   categoria?: string
   imagenes: SanityImage[]
+  peso?: number
 }
 
 export interface SanityImage {

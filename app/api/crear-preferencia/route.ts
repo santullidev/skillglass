@@ -64,6 +64,18 @@ export async function POST(req: NextRequest) {
       numeroCertificado: item.numeroCertificado
     }))
 
+    // Agregar el costo de envío como un item adicional
+    const montoEnvio = Number(body.montoEnvio || 0)
+    if (montoEnvio > 0) {
+      mpItems.push({
+        id: 'shipping_andreani',
+        title: `Envío Andreani (${body.shippingData?.tipoEnvio || 'Estándar'})`,
+        quantity: 1,
+        unit_price: montoEnvio,
+        currency_id: 'ARS',
+      })
+    }
+
     const shippingData = body.shippingData || {}
 
     // ✅ FIX 5: Validación robusta del lado servidor
@@ -107,14 +119,16 @@ export async function POST(req: NextRequest) {
         // ✅ Metadata completo con items y datos de envío
         metadata: {
           shipping_data: {
-            ...shippingData
+            ...shippingData,
+            monto_envio: montoEnvio,
           },
-          items: mpItems.map((item) => ({
-            id: item.id,
-            title: item.title,
-            quantity: item.quantity,
-            unit_price: item.unit_price,
+          items: requestItems.map((item) => ({
+            id: item.id || item.slug,
+            title: item.nombre || item.title,
+            quantity: item.cantidad,
+            unit_price: item.precio || item.unit_price,
             numero_certificado: item.numeroCertificado || null,
+            peso: item.peso || 300,
           })),
         },
       },

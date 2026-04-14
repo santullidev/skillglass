@@ -1,0 +1,42 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { cotizarEnvio } from '@/lib/andreani';
+
+export async function POST(req: NextRequest) {
+  try {
+    const { cpDestino, items } = await req.json();
+
+    if (!cpDestino || !items || !Array.isArray(items)) {
+      return NextResponse.json({ error: 'CP y productos son requeridos' }, { status: 400 });
+    }
+
+    // Calcular peso total (usando el campo 'peso' o un default de 300g)
+    // El 'valorDeclarado' es la suma de los precios para el seguro
+    let pesoTotal = 0;
+    let valorTotal = 0;
+
+    items.forEach((item: any) => {
+      const cantidad = Number(item.cantidad || 1);
+      const pesoUnidad = Number(item.peso || 300); // Fallback a 300g
+      const precioUnidad = Number(item.precio || item.unit_price || 0);
+      
+      pesoTotal += pesoUnidad * cantidad;
+      valorTotal += precioUnidad * cantidad;
+    });
+
+    // Consultar a Andreani
+    const cotizaciones = await cotizarEnvio(cpDestino, pesoTotal, valorTotal);
+
+    return NextResponse.json({ 
+      success: true, 
+      cotizaciones,
+      detalles: { pesoTotal, valorTotal }
+    });
+
+  } catch (error) {
+    console.error('Error al cotizar Andreani:', error);
+    return NextResponse.json({ 
+      error: 'No se pudo obtener la cotización de Andreani',
+      detail: error instanceof Error ? error.message : String(error)
+    }, { status: 500 });
+  }
+}

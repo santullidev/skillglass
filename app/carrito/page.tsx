@@ -27,8 +27,6 @@ export default function CarritoPage() {
     )
   }
 
-  const shipping = 0
-  const taxes = totalPrice * 0.21
   const finalTotal = totalPrice
 
   return (
@@ -65,17 +63,13 @@ export default function CarritoPage() {
                 <span>SUBTOTAL</span>
                 <span>$ {totalPrice.toLocaleString('es-AR')} ARS</span>
               </div>
-              <div className="flex justify-between text-on-surface-variant text-xs tracking-wider">
-                <span>ENVÍO (EXPRESS)</span>
-                <span>$ {shipping} ARS</span>
-              </div>
-              <div className="flex justify-between text-on-surface-variant text-xs tracking-wider">
-                <span>IMPUESTOS</span>
-                <span>$ {taxes.toLocaleString('es-AR')} ARS</span>
-              </div>
               
+              <p className="text-[10px] text-on-surface-variant/60 italic leading-relaxed">
+                El costo de envío y los impuestos se calcularán en el siguiente paso.
+              </p>
+
               <div className="pt-6 border-t border-outline-variant/20 flex justify-between items-end">
-                <span className="text-on-surface font-bold tracking-widest text-xs">TOTAL</span>
+                <span className="text-on-surface font-bold tracking-widest text-xs">A PAGAR</span>
                 <span className="text-on-surface text-2xl font-bold tracking-wider">
                   $ {finalTotal.toLocaleString('es-AR')} ARS
                 </span>
@@ -85,7 +79,7 @@ export default function CarritoPage() {
             {/* Botón para continuar al envío en lugar del Wallet inmediato */}
             <div className="mt-10">
               <Link
-                href="/pago/datos-envio"
+                href="/envio"
                 className="w-full bg-on-surface text-surface py-4 px-6 rounded-[6px] shadow-sm flex items-center justify-center gap-3 transition-all hover:bg-on-surface/90 font-bold tracking-widest uppercase text-xs"
                 style={{ fontFamily: 'var(--font-label)' }}
               >

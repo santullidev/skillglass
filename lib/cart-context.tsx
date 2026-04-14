@@ -11,6 +11,7 @@ export interface CartItem {
   imagenUrl: string
   referencia: string // e.g. "SKG-4411 // Colección Elementos" (simulated or real from Sanity)
   numeroCertificado?: string
+  peso?: number // en gramos
 }
 
 interface CartContextType {

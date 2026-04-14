@@ -10,7 +10,8 @@ export const PRODUCTOS_QUERY = defineQuery(`
     disponible,
     categoria,
     imagenes,
-    numeroCertificado
+    numeroCertificado,
+    peso
   }
 `)
 
@@ -23,7 +24,8 @@ export const PRODUCTO_BY_SLUG_QUERY = defineQuery(`
     descripcion,
     disponible,
     imagenes,
-    numeroCertificado
+    numeroCertificado,
+    peso
   }
 `)
 
@@ -44,7 +46,8 @@ export const COLECCIONES_QUERY = defineQuery(`
         "slug": slug.current,
         precio,
         imagenes,
-        numeroCertificado
+        numeroCertificado,
+        peso
       }
     }
   }
@@ -67,7 +70,8 @@ export const COLECCION_BY_SLUG_QUERY = defineQuery(`
         "slug": slug.current,
         precio,
         imagenes,
-        numeroCertificado
+        numeroCertificado,
+        peso
       }
     }
   }

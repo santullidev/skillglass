@@ -10,9 +10,10 @@ interface Props {
   precio: number
   imagenUrl: string
   numeroCertificado?: string
+  peso?: number
 }
 
-export default function AddToCartButton({ id, nombre, slug, precio, imagenUrl, numeroCertificado }: Props) {
+export default function AddToCartButton({ id, nombre, slug, precio, imagenUrl, numeroCertificado, peso }: Props) {
   const { addItem } = useCart()
   const [added, setAdded] = useState(false)
 
@@ -24,7 +25,8 @@ export default function AddToCartButton({ id, nombre, slug, precio, imagenUrl, n
       precio,
       imagenUrl,
       referencia: `Ref: SKG-${id.substring(0, 4).toUpperCase()} // Pieza Única`, // Simulated reference
-      numeroCertificado
+      numeroCertificado,
+      peso
     })
     
     setAdded(true)

@@ -145,6 +145,7 @@ export default async function ProductDetailPage({
                   precio={producto.precio}
                   imagenUrl={firstImageUrl}
                   numeroCertificado={producto.numeroCertificado}
+                  peso={producto.peso}
                 />
                 <BuyButton 
                   id={producto._id}
@@ -153,6 +154,7 @@ export default async function ProductDetailPage({
                   slug={producto.slug}
                   imagenUrl={firstImageUrl}
                   numeroCertificado={producto.numeroCertificado}
+                  peso={producto.peso}
                 />
               </>
             ) : (

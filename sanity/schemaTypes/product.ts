@@ -85,6 +85,15 @@ export const productSchema = defineType({
       description: '🖊️ Contá la historia de esta pieza. ¿Qué la hace única? ¿Qué material usaste? ¿Qué técnica? Este texto aparece en la página de cada producto.',
       placeholder: 'Esculpida bajo 820°C de llama directa, esta pieza...',
     }),
+    defineField({
+      name: 'peso',
+      title: 'Peso en gramos',
+      type: 'number',
+      group: 'info',
+      initialValue: 300,
+      description: '⚖️ Peso aproximado en gramos (incluyendo packaging). Importante para calcular el costo de envío con Andreani. Valor por defecto: 300g.',
+      validation: (Rule) => Rule.min(1).error('El peso debe ser mayor a 0.'),
+    }),
 
     // ─── IMÁGENES ───────────────────────────────────────────────────────
     defineField({

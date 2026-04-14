@@ -11,9 +11,10 @@ interface Props {
   slug: string
   imagenUrl: string
   numeroCertificado?: string
+  peso?: number
 }
 
-export default function BuyButton({ id, nombre, precio, slug, imagenUrl, numeroCertificado }: Props) {
+export default function BuyButton({ id, nombre, precio, slug, imagenUrl, numeroCertificado, peso }: Props) {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const { addItem } = useCart()
@@ -29,11 +30,12 @@ export default function BuyButton({ id, nombre, precio, slug, imagenUrl, numeroC
         precio,
         imagenUrl,
         referencia: `Ref: SKG-${id.substring(0, 4).toUpperCase()} // Pieza Única de Autor`,
-        numeroCertificado
+        numeroCertificado,
+        peso
       })
 
       // 2. Redirigir al flujo de envío
-      router.push('/pago/datos-envio')
+      router.push('/envio')
       
     } catch (error) {
       console.error('Error al iniciar compra directa:', error)
