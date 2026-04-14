@@ -6,6 +6,7 @@ import {
   FRASE_SECTION_QUERY,
   PRODUCTOS_SECTION_QUERY,
   PROCESO_SECTION_QUERY,
+  HOME_ESTUDIO_SECTION_QUERY,
   PRODUCTOS_QUERY, 
   DIARIO_TALLER_QUERY 
 } from '@/lib/queries'
@@ -49,6 +50,7 @@ export default async function Home() {
     fraseData,
     productosData,
     procesoData,
+    homeEstudioData,
     fallbackProductos,
     diario
   ] = await Promise.all([
@@ -58,6 +60,7 @@ export default async function Home() {
     client.fetch(FRASE_SECTION_QUERY),
     client.fetch(PRODUCTOS_SECTION_QUERY),
     client.fetch(PROCESO_SECTION_QUERY),
+    client.fetch(HOME_ESTUDIO_SECTION_QUERY),
     client.fetch<Producto[]>(PRODUCTOS_QUERY),
     client.fetch(DIARIO_TALLER_QUERY)
   ])
@@ -69,6 +72,8 @@ export default async function Home() {
   const fraseConfig = fraseData || { activo: false }
   const productosConfig = productosData || { productosDestacados: [] }
   const procesoConfig = procesoData || { activo: false }
+  const homeEstudioConfig = homeEstudioData || { activo: false }
+
 
   // Resolución de textos
   const heroTitle = hero?.tituloHero || 'Joyas de\nAutor'
@@ -425,35 +430,48 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* ── PARTE INFERIOR: Pasos del proceso ── */}
-          {procesoPasos.length > 0 && (
-            <div className="border-t border-outline-variant/10">
-              <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 divide-y sm:divide-y-0 sm:divide-x divide-outline-variant/10">
-                  {procesoPasos.map((step: any, i: number) => (
-                    <div key={i} className="px-0 sm:px-8 py-8 sm:py-0 first:pl-0">
-                      <span
-                        className="text-primary/40 text-xs font-bold tracking-[0.3em] mb-4 block"
-                        style={{ fontFamily: 'var(--font-label)' }}
-                      >
-                        {String(i + 1).padStart(2, '0')} {'//'}
-                      </span>
-                      <h3
-                        className="text-lg text-on-surface mb-3"
-                        style={{ fontFamily: 'var(--font-display)' }}
-                      >
-                        {step.titulo}
-                      </h3>
-                      <p className="text-on-surface-variant text-sm leading-relaxed">
-                        {step.descripcion}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
+        </section>
+      )}
 
+      {/* ── SECCIÓN EL ESTUDIO (ACCESO) ────────────────────────── */}
+      {homeEstudioConfig?.activo !== false && (
+        <section className="relative py-32 lg:py-56 overflow-hidden flex items-center justify-center">
+          {/* Background Image with Overlay */}
+          <div className="absolute inset-0 z-0">
+            {homeEstudioConfig?.imagen ? (
+              <Image
+                src={urlFor(homeEstudioConfig.imagen).width(2000).url()}
+                alt={homeEstudioConfig.titulo || 'El Estudio'}
+                fill
+                className="object-cover"
+                sizes="100vw"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-surface-container-lowest" />
+            )}
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
+          </div>
+
+          <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
+            <p className="text-[10px] tracking-[0.5em] text-gold font-bold uppercase mb-8" style={{ fontFamily: 'var(--font-label)' }}>
+              EL TALLER
+            </p>
+            <h2 className="text-5xl lg:text-8xl text-on-primary mb-10 leading-none" style={{ fontFamily: 'var(--font-display)' }}>
+              {homeEstudioConfig?.titulo || 'El Alma del Vidrio'}
+            </h2>
+            <p className="text-xl lg:text-2xl text-on-primary/80 font-serif italic leading-relaxed mb-16 max-w-2xl mx-auto">
+              {homeEstudioConfig?.descripcion || 'Adéntrate en el proceso donde el fuego y la paciencia se encuentran. Conoce nuestro taller y la filosofía detrás de cada pieza única.'}
+            </p>
+            <Link
+              href={homeEstudioConfig?.ctaLink || '/estudio'}
+              className="group inline-flex items-center gap-4 text-xs tracking-[0.4em] text-on-primary uppercase border border-on-primary/30 px-12 py-6 hover:border-gold hover:text-gold transition-all duration-500 overflow-hidden relative"
+              style={{ fontFamily: 'var(--font-label)' }}
+            >
+              <span className="relative z-10">{homeEstudioConfig?.ctaTexto || 'Explorar el Estudio'}</span>
+              <span className="relative z-10 group-hover:translate-x-1 transition-transform duration-300">→</span>
+              <div className="absolute inset-0 translate-x-full group-hover:translate-x-0 bg-surface-deep/20 transition-transform duration-500 ease-out" />
+            </Link>
+          </div>
         </section>
       )}
 

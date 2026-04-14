@@ -11,6 +11,7 @@ import { alquimiaSectionSchema } from './alquimiaSectionConfig'
 import { fraseSectionSchema } from './fraseSectionConfig'
 import { productosSectionSchema } from './productosSectionConfig'
 import { procesoSectionSchema } from './procesoSectionConfig'
+import { homeEstudioSectionSchema } from './homeEstudioSectionConfig'
 
 export const schemaTypes = [
   productSchema,
@@ -26,4 +27,5 @@ export const schemaTypes = [
   fraseSectionSchema,
   productosSectionSchema,
   procesoSectionSchema,
+  homeEstudioSectionSchema,
 ]

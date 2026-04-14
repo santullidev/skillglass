@@ -100,9 +100,17 @@ export const structure: StructureResolver = (S) =>
                     .documentId('procesoSectionConfig')
                     .title('Proceso de Creación')
                 ),
+              S.listItem()
+                .title('7 · 🏛️  El Estudio (Sección Home)')
+                .child(
+                  S.document()
+                    .schemaType('homeEstudioSectionConfig')
+                    .documentId('homeEstudioSectionConfig')
+                    .title('Acceso al Estudio')
+                ),
               S.divider(),
               S.listItem()
-                .title('7 · 📸  Diario del Taller')
+                .title('8 · 📸  Diario del Taller')
                 .child(
                   S.document()
                     .schemaType('diarioTaller')

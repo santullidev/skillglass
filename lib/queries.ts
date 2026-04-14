@@ -162,6 +162,17 @@ export const PROCESO_SECTION_QUERY = defineQuery(`
   }
 `)
 
+export const HOME_ESTUDIO_SECTION_QUERY = defineQuery(`
+  *[_type == "homeEstudioSectionConfig" && _id == "homeEstudioSectionConfig"][0] {
+    activo,
+    titulo,
+    descripcion,
+    imagen,
+    ctaTexto,
+    ctaLink
+  }
+`)
+
 
 export const PRODUCT_CONFIG_QUERY = defineQuery(`
   *[_type == "productoConfig"][0] {
