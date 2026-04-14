@@ -1,3 +1,4 @@
+import React from 'react'
 import { defineField, defineType } from 'sanity'
 
 export const procesoSectionSchema = defineType({
@@ -40,9 +41,27 @@ export const procesoSectionSchema = defineType({
       name: 'pasosProceso',
       title: 'Pasos o Pilares (Max 4)',
       type: 'array',
+      options: {
+        editModal: 'popover',
+      },
       of: [
         {
           type: 'object',
+          title: 'Pilar / Paso',
+          preview: {
+            select: {
+              title: 'titulo',
+              subtitle: 'descripcion',
+            },
+            prepare({ title, subtitle }) {
+              return {
+                title: title || 'Nuevo Pilar',
+                subtitle: subtitle || 'Sin descripción',
+                // Usamos un emoji como icono visual rápido y liviano
+                media: () => <div style={{ fontSize: '1.2rem' }}>💎</div>
+              }
+            }
+          },
           fields: [
             { name: 'titulo', title: 'Título del paso', type: 'string' },
             { name: 'descripcion', title: 'Descripción', type: 'text', rows: 2 },
