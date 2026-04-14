@@ -142,7 +142,7 @@ export default function EnvioPage() {
       <div className="flex flex-col gap-12">
         
         {/* PASO 1: TIPO DE ENVIO */}
-        <section className={`transition-all duration-500 ${step > 1 ? 'opacity-40 grayscale pointer-events-none' : ''}`}>
+        <section className={`transition-all duration-500 ${step > 1 ? 'opacity-60 grayscale pointer-events-none' : ''}`}>
           <div className="flex items-center gap-4 mb-8">
             <span className="w-8 h-8 rounded-full border border-primary flex items-center justify-center text-xs font-bold text-primary">01</span>
             <h2 className="text-2xl font-serif text-on-surface">¿Cómo querés recibir tu pieza?</h2>
@@ -178,48 +178,49 @@ export default function EnvioPage() {
         </section>
 
         {/* PASO 2: DATOS */}
-        <section className={`transition-all duration-500 ${step < 2 ? 'opacity-30 translate-y-4' : step > 2 ? 'opacity-40 grayscale pointer-events-none' : ''}`}>
+        <section className={`transition-all duration-500 ${step < 2 ? 'opacity-50 translate-y-4' : step > 2 ? 'opacity-60 grayscale pointer-events-none' : ''}`}>
            <div className={`flex items-center gap-4 mb-8 transition-colors ${step === 2 ? 'text-on-surface' : 'text-on-surface/40'}`}>
             <span className="w-8 h-8 rounded-full border border-primary flex items-center justify-center text-xs font-bold text-primary">02</span>
             <h2 className="text-2xl font-serif text-on-surface">Tus datos de envío</h2>
           </div>
+          <p className="text-[11px] text-on-surface/60 uppercase tracking-widest mb-6 -mt-4">Completá los campos para calcular el costo de Andreani</p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-surface-container-low/60 p-10 border border-outline-variant/30 rounded-[8px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-surface-container/60 p-10 border border-outline-variant/50 rounded-[8px]">
             <div className="space-y-3">
-              <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface/80">Nombre Completo</label>
-              <input name="nombre" value={formData.nombre} onChange={handleInputChange} className="w-full bg-surface border border-outline-variant/50 p-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none rounded-[4px]" placeholder="Ej: Juan Pérez" />
+              <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Nombre Completo</label>
+              <input name="nombre" value={formData.nombre} onChange={handleInputChange} className="w-full bg-surface-container-low border border-outline/30 p-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none rounded-[4px] placeholder:text-on-surface/30 text-on-surface" placeholder="Ej: Juan Pérez" />
               {errors.nombre && <span className="text-[9px] text-primary italic font-bold">{errors.nombre}</span>}
             </div>
             <div className="space-y-3">
-              <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface/80">Email</label>
-              <input name="email" value={formData.email} onChange={handleInputChange} className="w-full bg-surface border border-outline-variant/50 p-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none rounded-[4px]" placeholder="ejemplo@correo.com" />
+              <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Email</label>
+              <input name="email" value={formData.email} onChange={handleInputChange} className="w-full bg-surface-container-low border border-outline/30 p-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none rounded-[4px] placeholder:text-on-surface/30 text-on-surface" placeholder="ejemplo@correo.com" />
               {errors.email && <span className="text-[9px] text-primary italic font-bold">{errors.email}</span>}
             </div>
             <div className="space-y-3">
-              <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface/80">Teléfono</label>
-              <input name="telefono" value={formData.telefono} onChange={handleInputChange} className="w-full bg-surface border border-outline-variant/50 p-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none rounded-[4px]" placeholder="11 2345 6789" />
+              <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Teléfono</label>
+              <input name="telefono" value={formData.telefono} onChange={handleInputChange} className="w-full bg-surface-container-low border border-outline/30 p-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none rounded-[4px] placeholder:text-on-surface/30 text-on-surface" placeholder="11 2345 6789" />
               {errors.telefono && <span className="text-[9px] text-primary italic font-bold">{errors.telefono}</span>}
             </div>
             <div className="space-y-3">
-              <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface/80">Código Postal</label>
-              <input name="codigoPostal" value={formData.codigoPostal} onChange={handleInputChange} className="w-full bg-surface border border-outline-variant/50 p-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none rounded-[4px]" placeholder="7600" />
+              <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Código Postal</label>
+              <input name="codigoPostal" value={formData.codigoPostal} onChange={handleInputChange} className="w-full bg-surface-container-low border border-outline/30 p-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none rounded-[4px] placeholder:text-on-surface/30 text-on-surface font-bold text-lg" placeholder="7600" />
               {errors.codigoPostal && <span className="text-[9px] text-primary italic font-bold">{errors.codigoPostal}</span>}
             </div>
             
             {tipoEnvio === 'domicilio' && (
               <>
                 <div className="space-y-3 md:col-span-2">
-                  <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface/80">Calle y Número</label>
-                  <input name="direccion" value={formData.direccion} onChange={handleInputChange} className="w-full bg-surface border border-outline-variant/50 p-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none rounded-[4px]" />
+                  <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Calle y Número</label>
+                  <input name="direccion" value={formData.direccion} onChange={handleInputChange} className="w-full bg-surface-container-low border border-outline/30 p-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none rounded-[4px] text-on-surface" />
                   {errors.direccion && <span className="text-[9px] text-primary italic font-bold">{errors.direccion}</span>}
                 </div>
                 <div className="space-y-3">
-                  <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface/80">Ciudad</label>
-                  <input name="ciudad" value={formData.ciudad} onChange={handleInputChange} className="w-full bg-surface border border-outline-variant/50 p-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none rounded-[4px]" />
+                  <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Ciudad</label>
+                  <input name="ciudad" value={formData.ciudad} onChange={handleInputChange} className="w-full bg-surface-container-low border border-outline/30 p-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none rounded-[4px] text-on-surface" />
                 </div>
                 <div className="space-y-3">
-                  <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface/80">Provincia</label>
-                  <select name="provincia" value={formData.provincia} onChange={handleInputChange} className="w-full bg-surface border border-outline-variant/50 p-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none rounded-[4px] transition-all">
+                  <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Provincia</label>
+                  <select name="provincia" value={formData.provincia} onChange={handleInputChange} className="w-full bg-surface-container-low border border-outline/30 p-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none rounded-[4px] transition-all text-on-surface">
                     <option value="">Seleccionar...</option>
                     {PROVINCIAS.map(p => <option key={p} value={p}>{p}</option>)}
                   </select>
