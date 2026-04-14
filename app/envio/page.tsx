@@ -272,7 +272,7 @@ export default function EnvioPage() {
                      <button 
                        onClick={handleFinalizarYPay}
                        disabled={isLoading}
-                       className="bg-on-surface text-surface py-5 px-10 text-[11px] tracking-[0.3em] uppercase font-bold hover:bg-primary transition-colors disabled:opacity-50"
+                       className="bg-on-surface text-white py-5 px-10 text-[11px] tracking-[0.3em] uppercase font-bold hover:bg-primary transition-colors disabled:opacity-50"
                      >
                        {isLoading ? 'Conectando...' : 'Pagar con Mercado Pago'}
                      </button>
