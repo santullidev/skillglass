@@ -58,10 +58,9 @@ export const productSchema = defineType({
       description: '🏷️ ¿En qué categoría entra esta pieza? Ayuda a filtrar en el catálogo.',
       options: {
         list: [
-          { title: '💍  Anillos', value: 'anillos' },
-          { title: '✨  Aros', value: 'aros' },
-          { title: '🔗  Brazaletes', value: 'brazaletes' },
+          { title: '👂  Pendiente', value: 'pendiente' },
           { title: '💎  Dijes', value: 'dijes' },
+          { title: '💍  Anillos', value: 'anillos' },
           { title: '📦  Otros', value: 'otros' },
         ],
         layout: 'radio',
