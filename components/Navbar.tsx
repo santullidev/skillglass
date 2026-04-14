@@ -16,7 +16,7 @@ function CartIcon() {
       </svg>
       {totalItems > 0 && (
         <span 
-          className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-primary text-on-primary min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center text-[10px] font-bold leading-none z-20 shadow-sm"
+          className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-primary text-white min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center text-[10px] font-bold leading-none z-20 shadow-sm"
           style={{ 
             fontFamily: 'var(--font-label)',
             borderRadius: '9999px' // Usar inline para saltar el * { border-radius: 0 !important } de globals.css
