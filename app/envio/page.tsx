@@ -1,10 +1,9 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { useCart } from '@/lib/cart-context'
 import { initMercadoPago, Payment } from '@mercadopago/sdk-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 
 const PROVINCIAS = [
   "Buenos Aires", "CABA", "Catamarca", "Chaco", "Chubut", "Córdoba", "Corrientes", 
@@ -15,10 +14,8 @@ const PROVINCIAS = [
 
 export default function EnvioPage() {
   const { items, totalPrice } = useCart()
-  const router = useRouter()
   
-  // State del Proceso
-  const [step, setStep] = useState(1) // 1: Tipo, 2: Datos, 3: Pago
+  // State del Proceso (Step eliminado)
   const [tipoEnvio, setTipoEnvio] = useState<'domicilio' | 'sucursal'>('domicilio')
   const [preferenceId, setPreferenceId] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -46,8 +43,8 @@ export default function EnvioPage() {
     }
   }, [])
 
-  // Si el carrito está vacío, volver
-  if (items.length === 0 && step < 3) {
+  // Si el carrito está vacío
+  if (items.length === 0) {
      return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center bg-surface">
         <h1 className="text-2xl mb-4 font-serif text-on-surface">Tu carrito está vacío</h1>
@@ -60,22 +57,8 @@ export default function EnvioPage() {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }))
-  }
-
-  const validateStep2 = () => {
-    const newErrors: Record<string, string> = {}
-    if (!formData.nombre) newErrors.nombre = 'Requerido'
-    if (!formData.email || !formData.email.includes('@')) newErrors.email = 'Email inválido'
-    if (!formData.telefono) newErrors.telefono = 'Requerido'
-    if (!formData.codigoPostal) newErrors.codigoPostal = 'Requerido'
-    if (tipoEnvio === 'domicilio') {
-      if (!formData.direccion) newErrors.direccion = 'Requerido'
-      if (!formData.provincia) newErrors.provincia = 'Requerido'
-      if (!formData.ciudad) newErrors.ciudad = 'Requerido'
-    }
-    
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
+    // Resetear cotización si cambia el CP o tipo
+    if (name === 'codigoPostal') setShippingCost(null)
   }
 
   const handleCalcularEnvio = async () => {
@@ -85,6 +68,7 @@ export default function EnvioPage() {
     }
 
     setIsQuoting(true)
+    setPreferenceId(null) // Resetear pago si cambia el envío
     try {
       const res = await fetch('/api/andreani/cotizar', {
         method: 'POST',
@@ -97,7 +81,6 @@ export default function EnvioPage() {
         const quote = data.cotizaciones.find((c: any) => c.tipo === tipoEnvio)
         if (quote) {
           setShippingCost(quote.tarifa)
-          setStep(3) // Avanzar al resumen si cotizó bien
         } else {
           alert('No encontramos métodos de Andreani para este CP.')
         }
@@ -120,8 +103,15 @@ export default function EnvioPage() {
           items,
           montoEnvio: shippingCost,
           shippingData: {
-            ...formData,
-            tipoEnvio
+            nombre: formData.nombre,
+            email: formData.email,
+            telefono: formData.telefono,
+            provincia: formData.provincia,
+            ciudad: formData.ciudad,
+            direccion: formData.direccion,
+            codigoPostal: formData.codigoPostal,
+            notas: formData.notas,
+            tipoEnvio,
           } 
         }),
       })
@@ -138,187 +128,176 @@ export default function EnvioPage() {
   }
 
   return (
-    <div className="min-h-screen pt-32 pb-24 px-6 max-w-4xl mx-auto">
-      <div className="flex flex-col gap-12">
+    <main className="min-h-screen bg-surface pt-32 pb-24 px-6">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl font-serif italic mb-12 text-on-surface">Checkout</h1>
         
-        {/* PASO 1: TIPO DE ENVIO */}
-        <section className={`transition-all duration-500 ${step > 1 ? 'opacity-60 grayscale pointer-events-none' : ''}`}>
-          <div className="flex items-center gap-4 mb-8">
-            <span className="w-8 h-8 rounded-full border border-primary flex items-center justify-center text-xs font-bold text-primary">01</span>
-            <h2 className="text-2xl font-serif text-on-surface">¿Cómo querés recibir tu pieza?</h2>
-          </div>
+        <div className="flex flex-col lg:flex-row gap-16 items-start">
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <button 
-              onClick={() => setTipoEnvio('domicilio')}
-              className={`p-6 border transition-all flex flex-col items-center gap-3 ${tipoEnvio === 'domicilio' ? 'border-primary bg-primary/5' : 'border-outline-variant/20 hover:border-primary/40'}`}
-            >
-              <span className="text-2xl">🏠</span>
-              <span className="text-xs tracking-widest uppercase font-bold text-on-surface">A domicilio</span>
-              <p className="text-[10px] text-on-surface-variant text-center leading-relaxed">Entregamos en la puerta de tu casa a través de Andreani Express.</p>
-            </button>
-            <button 
-              onClick={() => setTipoEnvio('sucursal')}
-              className={`p-6 border transition-all flex flex-col items-center gap-3 ${tipoEnvio === 'sucursal' ? 'border-primary bg-primary/5' : 'border-outline-variant/20 hover:border-primary/40'}`}
-            >
-              <span className="text-2xl">🏪</span>
-              <span className="text-xs tracking-widest uppercase font-bold text-on-surface">Retiro en Sucursal</span>
-              <p className="text-[10px] text-on-surface-variant text-center leading-relaxed">Retirá en la sucursal de Andreani más cercana a tu ubicación.</p>
-            </button>
-          </div>
-          
-          {step === 1 && (
-            <button 
-              onClick={() => setStep(2)}
-              className="mt-8 bg-on-surface !text-white py-4 px-12 text-[10px] tracking-[0.3em] uppercase font-bold hover:bg-on-surface/90 transition-all font-serif italic"
-              style={{ color: 'white' }}
-            >
-              Siguiente →
-            </button>
-          )}
-        </section>
-
-        {/* PASO 2: DATOS */}
-        <section className={`transition-all duration-500 ${step < 2 ? 'opacity-50 translate-y-4' : step > 2 ? 'opacity-60 grayscale pointer-events-none' : ''}`}>
-           <div className={`flex items-center gap-4 mb-8 transition-colors ${step === 2 ? 'text-on-surface' : 'text-on-surface/40'}`}>
-            <span className="w-8 h-8 rounded-full border border-primary flex items-center justify-center text-xs font-bold text-primary">02</span>
-            <h2 className="text-2xl font-serif text-on-surface">Tus datos de envío</h2>
-          </div>
-          <p className="text-[11px] text-on-surface/80 uppercase tracking-widest mb-8 -mt-4 font-bold border-l-2 border-primary pl-4">Completá los campos para calcular el costo de envío</p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-surface-container/40 p-10 border border-outline-variant rounded-[8px]">
-            <div className="space-y-3">
-              <label className="text-[11px] tracking-widest uppercase font-bold text-on-surface">Nombre Completo</label>
-              <input name="nombre" value={formData.nombre} onChange={handleInputChange} className="w-full bg-white border border-on-surface/30 p-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none rounded-[4px] placeholder:text-on-surface/40 text-on-surface" placeholder="Ej: Juan Pérez" />
-              {errors.nombre && <span className="text-[9px] text-primary italic font-bold">{errors.nombre}</span>}
-            </div>
-            <div className="space-y-3">
-              <label className="text-[11px] tracking-widest uppercase font-bold text-on-surface">Email</label>
-              <input name="email" value={formData.email} onChange={handleInputChange} className="w-full bg-white border border-on-surface/30 p-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none rounded-[4px] placeholder:text-on-surface/40 text-on-surface" placeholder="ejemplo@correo.com" />
-              {errors.email && <span className="text-[9px] text-primary italic font-bold">{errors.email}</span>}
-            </div>
-            <div className="space-y-3">
-              <label className="text-[11px] tracking-widest uppercase font-bold text-on-surface">Teléfono</label>
-              <input name="telefono" value={formData.telefono} onChange={handleInputChange} className="w-full bg-white border border-on-surface/30 p-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none rounded-[4px] placeholder:text-on-surface/40 text-on-surface" placeholder="11 2345 6789" />
-              {errors.telefono && <span className="text-[9px] text-primary italic font-bold">{errors.telefono}</span>}
-            </div>
-            <div className="space-y-3">
-              <label className="text-[11px] tracking-widest uppercase font-bold text-on-surface">Código Postal</label>
-              <input name="codigoPostal" value={formData.codigoPostal} onChange={handleInputChange} className="w-full bg-white border border-on-surface/30 p-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none rounded-[4px] placeholder:text-on-surface/40 text-on-surface font-bold text-lg" placeholder="7600" />
-              {errors.codigoPostal && <span className="text-[9px] text-primary italic font-bold">{errors.codigoPostal}</span>}
-            </div>
+          {/* COLUMNA IZQUIERDA: DATOS Y ENVIO */}
+          <section className="lg:w-7/12 w-full space-y-12">
             
-            {tipoEnvio === 'domicilio' && (
-              <>
-                <div className="space-y-3 md:col-span-2">
-                  <label className="text-[11px] tracking-widest uppercase font-bold text-on-surface">Calle y Número</label>
-                  <input name="direccion" value={formData.direccion} onChange={handleInputChange} className="w-full bg-white border border-on-surface/30 p-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none rounded-[4px] text-on-surface" />
-                  {errors.direccion && <span className="text-[9px] text-primary italic font-bold">{errors.direccion}</span>}
-                </div>
-                <div className="space-y-3">
-                  <label className="text-[11px] tracking-widest uppercase font-bold text-on-surface">Ciudad</label>
-                  <input name="ciudad" value={formData.ciudad} onChange={handleInputChange} className="w-full bg-white border border-on-surface/30 p-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none rounded-[4px] text-on-surface" />
-                </div>
-                <div className="space-y-3">
-                  <label className="text-[11px] tracking-widest uppercase font-bold text-on-surface">Provincia</label>
-                  <select name="provincia" value={formData.provincia} onChange={handleInputChange} className="w-full bg-white border border-on-surface/30 p-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none rounded-[4px] transition-all text-on-surface">
-                    <option value="">Seleccionar...</option>
-                    {PROVINCIAS.map(p => <option key={p} value={p}>{p}</option>)}
-                  </select>
-                </div>
-              </>
-            )}
-          </div>
-
-          {step === 2 && (
-            <div className="mt-8 flex gap-4">
-              <button onClick={() => setStep(1)} className="text-[10px] tracking-widest uppercase underline opacity-60">Volver</button>
-              <button 
-                onClick={handleCalcularEnvio}
-                disabled={isQuoting}
-                className="bg-primary text-on-primary py-4 px-12 text-[10px] tracking-[0.3em] uppercase font-bold hover:brightness-110 transition-all disabled:opacity-50"
-              >
-                {isQuoting ? 'Calculando...' : 'Calcular Envío'}
-              </button>
+            {/* TIPO DE ENVIO */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-4">
+                <span className="w-8 h-8 rounded-full border border-primary flex items-center justify-center text-xs font-bold text-primary">01</span>
+                <h2 className="text-xl font-serif text-on-surface">Método de entrega</h2>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button 
+                  onClick={() => { setTipoEnvio('domicilio'); setShippingCost(null); }}
+                  className={`p-6 border transition-all flex flex-col items-center gap-3 ${tipoEnvio === 'domicilio' ? 'border-primary bg-primary/5' : 'border-outline-variant/20 hover:border-primary/40'}`}
+                >
+                  <span className="text-2xl">🏠</span>
+                  <span className="text-[10px] tracking-widest uppercase font-bold text-on-surface">A domicilio</span>
+                </button>
+                <button 
+                  onClick={() => { setTipoEnvio('sucursal'); setShippingCost(null); }}
+                  className={`p-6 border transition-all flex flex-col items-center gap-3 ${tipoEnvio === 'sucursal' ? 'border-primary bg-primary/5' : 'border-outline-variant/20 hover:border-primary/40'}`}
+                >
+                  <span className="text-2xl">🏪</span>
+                  <span className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Retiro en Sucursal</span>
+                </button>
+              </div>
             </div>
-          )}
-        </section>
 
-        {/* PASO 3: RESUMEN Y PAGO */}
-        <section className={`transition-all duration-500 ${step < 3 ? 'opacity-20 translate-y-4' : ''}`}>
-          <div className="flex items-center gap-4 mb-8">
-            <span className="w-8 h-8 rounded-full border border-primary flex items-center justify-center text-xs font-bold text-primary">03</span>
-            <h2 className="text-2xl font-serif text-on-surface">Resumen y Pago</h2>
-          </div>
+            {/* FORMULARIO */}
+            <div className="space-y-8">
+              <div className="flex items-center gap-4">
+                <span className="w-8 h-8 rounded-full border border-primary flex items-center justify-center text-xs font-bold text-primary">02</span>
+                <h2 className="text-xl font-serif text-on-surface">Tus datos</h2>
+              </div>
 
-          {step === 3 && (
-            <div className="bg-surface-container/40 p-10 border border-primary/20 relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl rounded-full" />
-               
-               <div className="space-y-6 relative z-10">
-                 <div className="flex justify-between text-xs tracking-widest uppercase opacity-70">
-                   <span>Subtotal</span>
-                   <span>$ {totalPrice.toLocaleString('es-AR')} ARS</span>
-                 </div>
-                 <div className="flex justify-between text-xs tracking-widest uppercase text-primary font-bold">
-                   <span>Envío Andreani {tipoEnvio === 'domicilio' ? 'Home' : 'Sucursal'}</span>
-                   <span>$ {shippingCost?.toLocaleString('es-AR')} ARS</span>
-                 </div>
-                 <div className="pt-6 border-t border-outline-variant/20 flex justify-between items-end">
-                   <div className="flex flex-col">
-                     <span className="text-[9px] tracking-[0.4em] uppercase opacity-50 mb-1">Total a pagar</span>
-                     <span className="text-3xl font-bold text-on-surface">$ {(totalPrice + (shippingCost || 0)).toLocaleString('es-AR')} ARS</span>
-                   </div>
-                   
-                   {!preferenceId ? (
-                     <button
-                       onClick={handleFinalizarYPay}
-                       disabled={isLoading}
-                       className="w-full bg-on-surface text-white py-4 px-12 text-[10px] tracking-[0.3em] uppercase font-bold hover:bg-on-surface/90 transition-all font-serif italic disabled:opacity-50"
-                       style={{ color: 'white' }}
-                     >
-                       {isLoading ? 'Conectando...' : 'Continuar al pago →'}
-                     </button>
-                   ) : (
-                     <Payment
-                       initialization={{
-                         amount: totalPrice + (shippingCost || 0),
-                         preferenceId: preferenceId,
-                       }}
-                       customization={{
-                         paymentMethods: {
-                           creditCard: 'all',
-                           debitCard: 'all',
-                           ticket: 'all',
-                           bankTransfer: 'all',
-                           atm: 'all',
-                         },
-                       }}
-                       onSubmit={async (param) => {
-                         console.log('Payment submitted', param)
-                       }}
-                       onError={(error) => {
-                         console.error('Payment Brick error', error)
-                       }}
-                       onReady={() => {
-                         console.log('Payment Brick ready')
-                       }}
-                     />
-                   )}
-                 </div>
-               </div>
-               
-               <button 
-                onClick={() => setStep(2)}
-                className="mt-12 text-[9px] tracking-[0.2em] uppercase opacity-40 hover:opacity-100 transition-opacity"
-               >
-                 ← Modificar dirección o método
-               </button>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-surface-container/40 p-8 border border-outline-variant rounded-[8px]">
+                <div className="space-y-2">
+                  <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Nombre Completo</label>
+                  <input name="nombre" value={formData.nombre} onChange={handleInputChange} className="w-full bg-white border border-on-surface/20 p-3 text-sm focus:border-primary outline-none rounded-[4px]" placeholder="Juan Pérez" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Email</label>
+                  <input name="email" value={formData.email} onChange={handleInputChange} className="w-full bg-white border border-on-surface/20 p-3 text-sm focus:border-primary outline-none rounded-[4px]" placeholder="ejemplo@correo.com" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Teléfono</label>
+                  <input name="telefono" value={formData.telefono} onChange={handleInputChange} className="w-full bg-white border border-on-surface/20 p-3 text-sm focus:border-primary outline-none rounded-[4px]" placeholder="11 2345 6789" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Código Postal</label>
+                  <input name="codigoPostal" value={formData.codigoPostal} onChange={handleInputChange} className="w-full bg-white border border-on-surface/20 p-3 text-sm focus:border-primary outline-none rounded-[4px] font-bold" placeholder="7600" />
+                </div>
+                
+                {tipoEnvio === 'domicilio' && (
+                  <>
+                    <div className="space-y-2 md:col-span-2">
+                      <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Dirección</label>
+                      <input name="direccion" value={formData.direccion} onChange={handleInputChange} className="w-full bg-white border border-on-surface/20 p-3 text-sm focus:border-primary outline-none rounded-[4px]" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Ciudad</label>
+                      <input name="ciudad" value={formData.ciudad} onChange={handleInputChange} className="w-full bg-white border border-on-surface/20 p-3 text-sm focus:border-primary outline-none rounded-[4px]" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Provincia</label>
+                      <select name="provincia" value={formData.provincia} onChange={handleInputChange} className="w-full bg-white border border-on-surface/20 p-3 text-sm focus:border-primary outline-none rounded-[4px]">
+                        <option value="">Seleccionar...</option>
+                        {PROVINCIAS.map(p => <option key={p} value={p}>{p}</option>)}
+                      </select>
+                    </div>
+                  </>
+                )}
+
+                <div className="md:col-span-2 pt-4">
+                  <button 
+                    onClick={handleCalcularEnvio}
+                    disabled={isQuoting}
+                    className="bg-primary text-on-primary py-4 px-10 text-[10px] tracking-[0.3em] uppercase font-bold hover:brightness-110 transition-all disabled:opacity-50"
+                  >
+                    {isQuoting ? 'Calculando...' : 'Calcular Envío →'}
+                  </button>
+                </div>
+              </div>
             </div>
-          )}
-        </section>
+          </section>
 
+          {/* COLUMNA DERECHA: RESUMEN Y PAGO */}
+          <section className="lg:w-5/12 w-full sticky top-32">
+            <div className="bg-surface-container/30 border border-outline-variant/30 p-8 rounded-[8px] space-y-8">
+              <h2 className="text-xl font-serif text-on-surface border-b border-outline-variant/20 pb-4">Resumen</h2>
+              
+              {/* LISTA ITEMS */}
+              <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
+                {items.map((item) => (
+                  <div key={item.id} className="flex justify-between items-center text-xs">
+                    <div className="flex flex-col">
+                      <span className="font-bold text-on-surface uppercase tracking-wider">{item.nombre}</span>
+                      <span className="text-[10px] opacity-60">Cant: {item.quantity}</span>
+                    </div>
+                    <span className="font-serif italic">$ {(item.precio * item.quantity).toLocaleString('es-AR')}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* COSTOS */}
+              <div className="pt-6 border-t border-outline-variant/20 space-y-3 text-xs tracking-widest uppercase">
+                <div className="flex justify-between opacity-60">
+                  <span>Subtotal</span>
+                  <span>$ {totalPrice.toLocaleString('es-AR')}</span>
+                </div>
+                <div className="flex justify-between text-primary font-bold">
+                  <span>Envío Andreani</span>
+                  <span>{shippingCost !== null ? `$ ${shippingCost.toLocaleString('es-AR')}` : '---'}</span>
+                </div>
+                <div className="flex justify-between text-lg font-bold pt-4 text-on-surface border-t border-outline-variant/10">
+                  <span className="font-serif italic capitalize tracking-normal">Total</span>
+                  <span>$ {(totalPrice + (shippingCost || 0)).toLocaleString('es-AR')}</span>
+                </div>
+              </div>
+
+              {/* ACCIONES DE PAGO */}
+              <div className="pt-8">
+                {shippingCost === null ? (
+                  <div className="bg-primary/5 border border-primary/20 p-4 text-center rounded-[4px]">
+                    <p className="text-[10px] tracking-widest uppercase text-primary font-bold">Calculá el envío para continuar</p>
+                  </div>
+                ) : !preferenceId ? (
+                  <button
+                    onClick={handleFinalizarYPay}
+                    disabled={isLoading}
+                    className="w-full bg-on-surface text-white py-5 px-6 text-[10px] tracking-[0.3em] uppercase font-bold hover:bg-on-surface/90 transition-all disabled:opacity-50"
+                  >
+                    {isLoading ? 'Conectando...' : `Pagar $ ${(totalPrice + shippingCost).toLocaleString('es-AR')} →`}
+                  </button>
+                ) : (
+                  <div className="bg-white p-4 rounded-[4px] border border-outline-variant/30">
+                    <Payment
+                      initialization={{
+                        amount: totalPrice + shippingCost,
+                        preferenceId: preferenceId,
+                      }}
+                      customization={{
+                        paymentMethods: {
+                          creditCard: 'all',
+                          debitCard: 'all',
+                          ticket: 'all',
+                          bankTransfer: 'all',
+                          atm: 'all',
+                        },
+                      }}
+                      onSubmit={async (param) => { console.log('Payment submitted', param) }}
+                      onError={(error) => { console.error('Payment Brick error', error) }}
+                      onReady={() => { console.log('Payment Brick ready') }}
+                    />
+                  </div>
+                )}
+              </div>
+
+              <p className="text-[9px] text-center opacity-40 uppercase tracking-widest">Transacción Segura por Mercado Pago</p>
+            </div>
+          </section>
+
+        </div>
       </div>
-    </div>
+    </main>
   )
 }
