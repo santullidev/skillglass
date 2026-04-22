@@ -21,6 +21,7 @@ export default function EnvioPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [isQuoting, setIsQuoting] = useState(false)
   const [shippingCost, setShippingCost] = useState<number | null>(null)
+  const [usandoFallback, setUsandoFallback] = useState(false)
   
   // Form Data
   const [formData, setFormData] = useState({
@@ -81,6 +82,7 @@ export default function EnvioPage() {
         const quote = data.cotizaciones.find((c: any) => c.tipo === tipoEnvio)
         if (quote) {
           setShippingCost(quote.tarifa)
+          setUsandoFallback(data.fallback === true)
         } else {
           alert('No encontramos métodos de Andreani para este CP.')
         }
@@ -248,6 +250,11 @@ export default function EnvioPage() {
                   <span>Envío Andreani</span>
                   <span>{shippingCost !== null ? `$ ${shippingCost.toLocaleString('es-AR')}` : '---'}</span>
                 </div>
+                {usandoFallback && shippingCost !== null && (
+                  <p className="text-[10px] text-on-surface/50 normal-case tracking-normal">
+                    * Costo estimado por zona. Se confirma al despachar.
+                  </p>
+                )}
                 <div className="flex justify-between text-lg font-bold pt-4 text-on-surface border-t border-outline-variant/10">
                   <span className="font-serif italic capitalize tracking-normal">Total</span>
                   <span>$ {(totalPrice + (shippingCost || 0)).toLocaleString('es-AR')}</span>
@@ -257,8 +264,10 @@ export default function EnvioPage() {
               {/* ACCIONES DE PAGO */}
               <div className="pt-8">
                 {shippingCost === null ? (
-                  <div className="bg-primary/5 border border-primary/20 p-4 text-center rounded-[4px]">
-                    <p className="text-[10px] tracking-widest uppercase text-primary font-bold">Calculá el envío para continuar</p>
+                  <div className="border border-dashed border-on-surface/20 p-6 text-center">
+                    <p className="text-[10px] text-on-surface/50 tracking-widest uppercase leading-relaxed">
+                      Completá los datos y calculá el envío para continuar
+                    </p>
                   </div>
                 ) : !preferenceId ? (
                   <button

@@ -2,8 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cotizarEnvio } from '@/lib/andreani';
 
 export async function POST(req: NextRequest) {
+  let cpDestino = ''
   try {
-    const { cpDestino, items } = await req.json();
+    const body = await req.json()
+    cpDestino = body.cpDestino || ''
+    const { items } = body
 
     if (!cpDestino || !items || !Array.isArray(items)) {
       return NextResponse.json({ error: 'CP y productos son requeridos' }, { status: 400 });
@@ -33,10 +36,28 @@ export async function POST(req: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error al cotizar Andreani:', error);
-    return NextResponse.json({ 
-      error: 'No se pudo obtener la cotización de Andreani',
-      detail: error instanceof Error ? error.message : String(error)
-    }, { status: 500 });
+    console.warn('Andreani no disponible, usando tabla de costos fija:', error instanceof Error ? error.message : String(error));
+    
+    // Fallback: tabla estática de costos por CP
+    const { getCostoEnvioPorCP } = await import('@/lib/shipping-fallback');
+    const zona = getCostoEnvioPorCP(cpDestino || '1000');
+    
+    return NextResponse.json({
+      success: true,
+      fallback: true, // indica que se usó la tabla fija
+      cotizaciones: [
+        {
+          tipo: 'domicilio',
+          tarifa: zona.costoADomicilio,
+          diasEntrega: zona.diasEstimados,
+        },
+        {
+          tipo: 'sucursal',
+          tarifa: zona.costoSucursal,
+          diasEntrega: zona.diasEstimados,
+        },
+      ],
+      detalles: { zona: zona.zona, mensaje: 'Costo estimado por zona. El costo final puede variar.' }
+    });
   }
 }
