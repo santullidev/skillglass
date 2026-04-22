@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
     // ✅ FIX 5: Validación robusta del lado servidor
     const validateServerField = (name: string, value: any) => {
       const v = String(value || '').trim()
-      if (name === 'nombre') return v.length >= 3 && /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/.test(v) && v.split(' ').length >= 2
+      if (name === 'nombre') return v.length >= 2
       if (name === 'email') return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
       if (name === 'telefono') return v.replace(/\D/g, '').length >= 10
       if (name === 'codigoPostal') return /^\d{4}([A-Z]{3})?$/.test(v)
