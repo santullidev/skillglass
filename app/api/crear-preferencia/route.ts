@@ -21,6 +21,7 @@ interface CartItem {
   imagenUrl?: string    // legacy — se sigue soportando
   picture_url?: string
   numeroCertificado?: string
+  peso?: number         // ✅ FIX 3: Agregar campo peso
 }
 
 // ✅ FIX 2b: Tipo del item ya normalizado para MP (evita el `any` en el webhook)
@@ -32,6 +33,7 @@ interface MpItem {
   currency_id: string
   picture_url?: string
   numeroCertificado?: string
+  peso?: number
 }
 
 export async function POST(req: NextRequest) {
@@ -61,7 +63,8 @@ export async function POST(req: NextRequest) {
       unit_price: Number(item.precio || item.unit_price || 0),
       currency_id: 'ARS',
       picture_url: item.imagenUrl || item.picture_url,
-      numeroCertificado: item.numeroCertificado
+      numeroCertificado: item.numeroCertificado,
+      peso: item.peso || 300
     }))
 
     // Agregar el costo de envío como un item adicional
@@ -81,7 +84,7 @@ export async function POST(req: NextRequest) {
     // ✅ FIX 5: Validación robusta del lado servidor
     const validateServerField = (name: string, value: any) => {
       const v = String(value || '').trim()
-      if (name === 'nombre') return v.length >= 2
+      if (name === 'nombre') return v.split(' ').filter(Boolean).length >= 2
       if (name === 'email') return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
       if (name === 'telefono') return v.replace(/\D/g, '').length >= 10
       if (name === 'codigoPostal') return /^\d{4}([A-Z]{3})?$/.test(v)
@@ -89,7 +92,12 @@ export async function POST(req: NextRequest) {
       return true
     }
 
-    const requiredFields = ['nombre', 'email', 'telefono', 'provincia', 'ciudad', 'codigoPostal', 'direccion']
+    // ✅ FIX 2: Validación condicional por tipo de envío
+    const tipoEnvio = shippingData.tipoEnvio || 'domicilio'
+    const requiredFields = tipoEnvio === 'domicilio'
+      ? ['nombre', 'email', 'telefono', 'provincia', 'ciudad', 'codigoPostal', 'direccion']
+      : ['nombre', 'email', 'telefono', 'codigoPostal']
+
     for (const field of requiredFields) {
       if (!validateServerField(field, shippingData[field])) {
         return NextResponse.json({ error: `Campo inválido o faltante: ${field}` }, { status: 400 })
