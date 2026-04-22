@@ -36,6 +36,7 @@ export default function EnvioPage() {
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [serverError, setServerError] = useState<string | null>(null)
 
   useEffect(() => {
     const key = process.env.NEXT_PUBLIC_MP_PUBLIC_KEY
@@ -60,6 +61,49 @@ export default function EnvioPage() {
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }))
     // Resetear cotización si cambia el CP o tipo
     if (name === 'codigoPostal') setShippingCost(null)
+  }
+
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {}
+
+    // Nombre y apellido
+    const nombre = formData.nombre.trim()
+    if (!nombre || nombre.split(' ').filter(Boolean).length < 2) {
+      newErrors.nombre = 'Ingresá nombre y apellido completos'
+    } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/.test(nombre)) {
+      newErrors.nombre = 'Solo letras, sin números ni caracteres especiales'
+    }
+
+    // Email
+    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Ingresá un email válido'
+    }
+
+    // Teléfono — al menos 10 dígitos numéricos
+    if (!formData.telefono || formData.telefono.replace(/\D/g, '').length < 10) {
+      newErrors.telefono = 'Ingresá el teléfono con código de área (mín. 10 dígitos)'
+    }
+
+    // Código postal
+    if (!formData.codigoPostal || !/^\d{4}([A-Z]{3})?$/.test(formData.codigoPostal)) {
+      newErrors.codigoPostal = 'CP inválido (ej: 7600 o 1414ABC)'
+    }
+
+    // Campos solo para domicilio
+    if (tipoEnvio === 'domicilio') {
+      if (!formData.direccion || formData.direccion.trim().length < 2) {
+        newErrors.direccion = 'Ingresá la dirección'
+      }
+      if (!formData.ciudad || formData.ciudad.trim().length < 2) {
+        newErrors.ciudad = 'Ingresá la ciudad'
+      }
+      if (!formData.provincia) {
+        newErrors.provincia = 'Seleccioná la provincia'
+      }
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
   }
 
   const handleCalcularEnvio = async () => {
@@ -96,7 +140,16 @@ export default function EnvioPage() {
   }
 
   const handleFinalizarYPay = async () => {
+    if (!validateForm()) {
+      // Scroll al primer error
+      const firstErrorEl = document.querySelector('[data-error="true"]')
+      firstErrorEl?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return
+    }
+    
     setIsLoading(true)
+    setServerError(null)
+
     try {
       const response = await fetch('/api/crear-preferencia', {
         method: 'POST',
@@ -119,11 +172,33 @@ export default function EnvioPage() {
       })
 
       const data = await response.json()
+      
+      if (!response.ok) {
+        // Mapear el mensaje de error del servidor al campo correcto
+        const serverField = data.error?.replace('Campo inválido o faltante: ', '')
+        if (serverField) {
+          setErrors(prev => ({
+            ...prev,
+            [serverField]: `${serverField} inválido o faltante`
+          }))
+          // Scroll al campo con error
+          setTimeout(() => {
+            document.querySelector(`[name="${serverField}"]`)
+              ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          }, 100)
+        } else {
+          setServerError(data.error || 'Ocurrió un error al procesar el pago')
+        }
+        setIsLoading(false)
+        return
+      }
+
       if (data.id) {
         setPreferenceId(data.id)
       }
     } catch (error) {
       console.error('Error:', error)
+      setServerError('Ocurrió un error inesperado. Por favor intentá de nuevo.')
     } finally {
       setIsLoading(false)
     }
@@ -174,37 +249,111 @@ export default function EnvioPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-surface-container/40 p-8 border border-outline-variant rounded-[8px]">
                 <div className="space-y-2">
                   <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Nombre Completo</label>
-                  <input name="nombre" value={formData.nombre} onChange={handleInputChange} className="w-full bg-white border border-on-surface/20 p-3 text-sm focus:border-primary outline-none rounded-[4px]" placeholder="Juan Pérez" />
+                  <input
+                    name="nombre"
+                    value={formData.nombre}
+                    onChange={handleInputChange}
+                    data-error={!!errors.nombre}
+                    className={`w-full bg-white border p-3 text-sm focus:border-primary outline-none rounded-[4px] transition-colors
+                      ${errors.nombre ? 'border-red-500 bg-red-50' : 'border-on-surface/20'}`}
+                    placeholder="Juan Pérez"
+                  />
+                  {errors.nombre && (
+                    <p className="text-[11px] text-red-500 font-medium mt-1">{errors.nombre}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Email</label>
-                  <input name="email" value={formData.email} onChange={handleInputChange} className="w-full bg-white border border-on-surface/20 p-3 text-sm focus:border-primary outline-none rounded-[4px]" placeholder="ejemplo@correo.com" />
+                  <input
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    data-error={!!errors.email}
+                    className={`w-full bg-white border p-3 text-sm focus:border-primary outline-none rounded-[4px] transition-colors
+                      ${errors.email ? 'border-red-500 bg-red-50' : 'border-on-surface/20'}`}
+                    placeholder="ejemplo@correo.com"
+                  />
+                  {errors.email && (
+                    <p className="text-[11px] text-red-500 font-medium mt-1">{errors.email}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Teléfono</label>
-                  <input name="telefono" value={formData.telefono} onChange={handleInputChange} className="w-full bg-white border border-on-surface/20 p-3 text-sm focus:border-primary outline-none rounded-[4px]" placeholder="11 2345 6789" />
+                  <input
+                    name="telefono"
+                    value={formData.telefono}
+                    onChange={handleInputChange}
+                    data-error={!!errors.telefono}
+                    className={`w-full bg-white border p-3 text-sm focus:border-primary outline-none rounded-[4px] transition-colors
+                      ${errors.telefono ? 'border-red-500 bg-red-50' : 'border-on-surface/20'}`}
+                    placeholder="11 2345 6789"
+                  />
+                  {errors.telefono && (
+                    <p className="text-[11px] text-red-500 font-medium mt-1">{errors.telefono}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Código Postal</label>
-                  <input name="codigoPostal" value={formData.codigoPostal} onChange={handleInputChange} className="w-full bg-white border border-on-surface/20 p-3 text-sm focus:border-primary outline-none rounded-[4px] font-bold" placeholder="7600" />
+                  <input
+                    name="codigoPostal"
+                    value={formData.codigoPostal}
+                    onChange={handleInputChange}
+                    data-error={!!errors.codigoPostal}
+                    className={`w-full bg-white border p-3 text-sm focus:border-primary outline-none rounded-[4px] font-bold transition-colors
+                      ${errors.codigoPostal ? 'border-red-500 bg-red-50' : 'border-on-surface/20'}`}
+                    placeholder="7600"
+                  />
+                  {errors.codigoPostal && (
+                    <p className="text-[11px] text-red-500 font-medium mt-1">{errors.codigoPostal}</p>
+                  )}
                 </div>
                 
                 {tipoEnvio === 'domicilio' && (
                   <>
                     <div className="space-y-2 md:col-span-2">
                       <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Dirección</label>
-                      <input name="direccion" value={formData.direccion} onChange={handleInputChange} className="w-full bg-white border border-on-surface/20 p-3 text-sm focus:border-primary outline-none rounded-[4px]" />
+                      <input
+                        name="direccion"
+                        value={formData.direccion}
+                        onChange={handleInputChange}
+                        data-error={!!errors.direccion}
+                        className={`w-full bg-white border p-3 text-sm focus:border-primary outline-none rounded-[4px] transition-colors
+                          ${errors.direccion ? 'border-red-500 bg-red-50' : 'border-on-surface/20'}`}
+                      />
+                      {errors.direccion && (
+                        <p className="text-[11px] text-red-500 font-medium mt-1">{errors.direccion}</p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Ciudad</label>
-                      <input name="ciudad" value={formData.ciudad} onChange={handleInputChange} className="w-full bg-white border border-on-surface/20 p-3 text-sm focus:border-primary outline-none rounded-[4px]" />
+                      <input
+                        name="ciudad"
+                        value={formData.ciudad}
+                        onChange={handleInputChange}
+                        data-error={!!errors.ciudad}
+                        className={`w-full bg-white border p-3 text-sm focus:border-primary outline-none rounded-[4px] transition-colors
+                          ${errors.ciudad ? 'border-red-500 bg-red-50' : 'border-on-surface/20'}`}
+                      />
+                      {errors.ciudad && (
+                        <p className="text-[11px] text-red-500 font-medium mt-1">{errors.ciudad}</p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Provincia</label>
-                      <select name="provincia" value={formData.provincia} onChange={handleInputChange} className="w-full bg-white border border-on-surface/20 p-3 text-sm focus:border-primary outline-none rounded-[4px]">
+                      <select
+                        name="provincia"
+                        value={formData.provincia}
+                        onChange={handleInputChange}
+                        data-error={!!errors.provincia}
+                        className={`w-full bg-white border p-3 text-sm focus:border-primary outline-none rounded-[4px] transition-colors
+                          ${errors.provincia ? 'border-red-500 bg-red-50' : 'border-on-surface/20'}`}
+                      >
                         <option value="">Seleccionar...</option>
                         {PROVINCIAS.map(p => <option key={p} value={p}>{p}</option>)}
                       </select>
+                      {errors.provincia && (
+                        <p className="text-[11px] text-red-500 font-medium mt-1">{errors.provincia}</p>
+                      )}
                     </div>
                   </>
                 )}
@@ -262,7 +411,14 @@ export default function EnvioPage() {
               </div>
 
               {/* ACCIONES DE PAGO */}
-              <div className="pt-8">
+              <div className="pt-8 space-y-4">
+                {serverError && (
+                  <div className="bg-red-50 border border-red-200 p-4 rounded-[4px] text-xs text-red-600 flex gap-3 items-center">
+                    <span>⚠️</span>
+                    <p>{serverError}</p>
+                  </div>
+                )}
+
                 {shippingCost === null ? (
                   <div className="border border-dashed border-on-surface/20 p-6 text-center">
                     <p className="text-[10px] text-on-surface/50 tracking-widest uppercase leading-relaxed">
