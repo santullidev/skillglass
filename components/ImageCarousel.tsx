@@ -39,10 +39,21 @@ export default function ImageCarousel({ images, alt }: Props) {
     setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
   }
 
+  const validImages = images.filter(img => img && img.asset)
+  const currentImage = validImages[currentIndex]
+
+  if (!currentImage) {
+    return (
+      <div className="relative aspect-square w-full bg-surface-container-low iridescent-edge flex items-center justify-center">
+        <span className="text-on-surface-variant font-serif">Imagen no disponible</span>
+      </div>
+    )
+  }
+
   return (
     <div className="relative aspect-square w-full bg-surface-container-low iridescent-edge group overflow-hidden">
       <Image
-        src={urlFor(images[currentIndex]).width(800).height(800).fit('crop').url()}
+        src={urlFor(currentImage).width(800).height(800).fit('crop').url()}
         alt={`${alt} - Imagen ${currentIndex + 1}`}
         fill
         className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"

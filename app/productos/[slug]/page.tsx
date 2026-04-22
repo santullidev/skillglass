@@ -105,7 +105,7 @@ export default async function ProductDetailPage({
               {producto.nombre}
             </h1>
             <p className="text-2xl text-tertiary tracking-wider" style={{ fontFamily: 'var(--font-label)' }}>
-              $ {producto.precio.toLocaleString('es-AR')} ARS
+              {producto.precio ? `$ ${producto.precio.toLocaleString('es-AR')} ARS` : 'Precio a consultar'}
             </p>
           </div>
 
@@ -142,7 +142,7 @@ export default async function ProductDetailPage({
                   id={producto._id}
                   nombre={producto.nombre}
                   slug={producto.slug}
-                  precio={producto.precio}
+                  precio={producto.precio || 0}
                   imagenUrl={firstImageUrl}
                   numeroCertificado={producto.numeroCertificado}
                   peso={producto.peso}
@@ -150,7 +150,7 @@ export default async function ProductDetailPage({
                 <BuyButton 
                   id={producto._id}
                   nombre={producto.nombre}
-                  precio={producto.precio}
+                  precio={producto.precio || 0}
                   slug={producto.slug}
                   imagenUrl={firstImageUrl}
                   numeroCertificado={producto.numeroCertificado}
