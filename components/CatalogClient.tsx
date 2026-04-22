@@ -44,24 +44,21 @@ export default function CatalogClient({ initialProductos }: Props) {
         ))}
       </div>
 
-      {/* --- GRID EDITORIAL ASIMETRICO --- */}
+      {/* --- GRID EDITORIAL --- */}
       {filteredProductos.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-8 lg:gap-12 transition-all duration-700">
-          {filteredProductos.map((producto, index) => {
-            // Solución B: Primera fila 2 columnas grandes (3 de 6), resto 3 columnas (2 de 6)
-            const isTopRow = index < 2
-            const gridSpan = isTopRow ? 'md:col-span-3' : 'md:col-span-2'
-            
-            return (
-              <div key={producto._id} className={`${gridSpan} animate-in fade-in zoom-in duration-1000`} style={{ animationDelay: `${index * 100}ms` }}>
-                <ProductCard 
-                  producto={producto} 
-                  index={index} 
-                  variant={isTopRow ? 'featured' : 'normal'}
-                />
-              </div>
-            )
-          })}
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 lg:gap-12 transition-all duration-700">
+          {filteredProductos.map((producto, index) => (
+            <div 
+              key={producto._id} 
+              className="animate-in fade-in zoom-in duration-1000" 
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <ProductCard 
+                producto={producto} 
+                index={index} 
+              />
+            </div>
+          ))}
         </div>
       ) : (
         <div className="h-64 flex flex-col items-center justify-center text-center gap-4 border border-outline-variant/20 bg-surface-container-low glass-panel rounded-lg">

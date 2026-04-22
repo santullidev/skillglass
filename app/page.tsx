@@ -192,22 +192,18 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* Editorial Grid: 1st featured (2 cols), rest 3 columns */}
+        {/* Standardized Grid */}
         {productos.length > 0 && (
           <div className="max-w-360 mx-auto px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-px bg-outline-gold/10 border border-outline-gold/10">
-              {productos.map((producto, idx) => {
-                const isFirst = idx === 0
-                return (
-                  <div key={producto._id} className={`flex flex-col w-full h-full ${isFirst ? 'md:col-span-6 lg:col-span-8' : 'md:col-span-3 lg:col-span-4'}`}>
-                    <ProductCard 
-                      producto={producto} 
-                      index={idx} 
-                      variant={isFirst ? 'featured' : 'normal'} 
-                    />
-                  </div>
-                )
-              })}
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 lg:gap-12 transition-all duration-700">
+              {productos.map((producto, idx) => (
+                <div key={producto._id} className="flex flex-col w-full h-full">
+                  <ProductCard 
+                    producto={producto} 
+                    index={idx} 
+                  />
+                </div>
+              ))}
             </div>
           </div>
         )}

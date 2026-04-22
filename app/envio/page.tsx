@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { useCart } from '@/lib/cart-context'
-import { initMercadoPago, Wallet } from '@mercadopago/sdk-react'
+import { initMercadoPago, Payment } from '@mercadopago/sdk-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -271,18 +271,39 @@ export default function EnvioPage() {
                    </div>
                    
                    {!preferenceId ? (
-                     <button 
+                     <button
                        onClick={handleFinalizarYPay}
                        disabled={isLoading}
-                       className="bg-on-surface !text-white py-5 px-10 text-[11px] tracking-[0.3em] uppercase font-bold hover:bg-primary transition-colors disabled:opacity-50"
+                       className="w-full bg-on-surface text-white py-4 px-12 text-[10px] tracking-[0.3em] uppercase font-bold hover:bg-on-surface/90 transition-all font-serif italic disabled:opacity-50"
                        style={{ color: 'white' }}
                      >
-                       {isLoading ? 'Conectando...' : 'Pagar con Mercado Pago'}
+                       {isLoading ? 'Conectando...' : 'Continuar al pago →'}
                      </button>
                    ) : (
-                     <div className="w-full max-w-[280px]">
-                        <Wallet initialization={{ preferenceId }} customization={{ valueProp: 'practicality' }} />
-                     </div>
+                     <Payment
+                       initialization={{
+                         amount: totalPrice + (shippingCost || 0),
+                         preferenceId: preferenceId,
+                       }}
+                       customization={{
+                         paymentMethods: {
+                           creditCard: 'all',
+                           debitCard: 'all',
+                           ticket: 'all',
+                           bankTransfer: 'all',
+                           atm: 'all',
+                         },
+                       }}
+                       onSubmit={async (param) => {
+                         console.log('Payment submitted', param)
+                       }}
+                       onError={(error) => {
+                         console.error('Payment Brick error', error)
+                       }}
+                       onReady={() => {
+                         console.log('Payment Brick ready')
+                       }}
+                     />
                    )}
                  </div>
                </div>

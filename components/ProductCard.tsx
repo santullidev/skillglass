@@ -5,111 +5,73 @@ import type { Producto } from '@/types/producto'
 
 interface Props {
   producto: Producto
-  variant?: 'normal' | 'featured' | 'tall' | 'stacked' | 'wide'
   index?: number
 }
 
-export default function ProductCard({ producto, variant = 'normal', index = 0 }: Props) {
+export default function ProductCard({ producto, index = 0 }: Props) {
   const imagenUrl = producto.imagenes?.[0]
-    ? urlFor(producto.imagenes[0]).width(900).height(1100).fit('crop').url()
+    ? urlFor(producto.imagenes[0]).width(900).height(1125).fit('crop').url() // 4:5 ratio
     : '/product-necklace.png'
 
   const safeSlug = typeof producto.slug === 'object' && producto.slug !== null
     ? (producto.slug as { current: string }).current
     : producto.slug
 
-  const isFeatured = variant === 'featured'
-  const isTall = variant === 'tall'
-  const isStacked = variant === 'stacked'
-  const isWide = variant === 'wide'
-
   return (
     <Link
       href={`/productos/${safeSlug}`}
-      className={`group relative overflow-hidden flex flex-col w-full h-full glass-card transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)] hover:tinted-shadow ${
-        isFeatured ? 'col-span-2 row-span-2' :
-        isTall     ? 'row-span-2' :
-        isWide     ? 'col-span-2' : ''
-      }`}
+      className="group relative block w-full aspect-[4/5] bg-surface-container-low overflow-hidden transition-all duration-500"
     >
-      {/* Full-bleed image */}
-      <div className={`relative w-full flex-1 overflow-hidden bg-surface-container-low ${
-        isFeatured ? 'min-h-[70vh]' :
-        isTall     ? 'min-h-[60vh]' :
-        isStacked  ? 'min-h-[35vh]' :
-        isWide     ? 'min-h-[45vh]' :
-                     'min-h-[50vh] md:min-h-[55vh]'
-      }`}>
-        <Image
-          src={imagenUrl}
-          alt={producto.nombre}
-          fill
-          className="object-cover transition-transform duration-3000 ease-out group-hover:scale-105"
-          sizes={isFeatured 
-            ? "(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 66vw" 
-            : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
-          priority={index < 2 || isFeatured}
-        />
+      {/* Background Image */}
+      <Image
+        src={imagenUrl}
+        alt={producto.nombre}
+        fill
+        className="object-cover transition-transform duration-400 ease-in-out group-hover:scale-[1.03]"
+        sizes="(max-width: 768px) 50vw, 33vw"
+        priority={index < 4}
+      />
 
-        {/* Iridescent edge */}
-        <div className="absolute inset-0 border border-white/5 pointer-events-none z-10" />
+      {/* Gradient Overlay - Deepened for maximum contrast */}
+      <div 
+        className="absolute inset-0 z-10 transition-opacity duration-500 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-95 group-hover:opacity-100"
+      />
 
-        {/* Deep gradient from bottom */}
-        <div className="absolute inset-0 bg-linear-to-t from-surface-deep/90 via-surface-deep/20 to-transparent z-10" />
+      {/* Badge: Pieza Única */}
+      <div className="absolute top-3 right-3 md:top-4 md:right-4 z-30">
+        <span className="text-[9px] md:text-[10px] font-bold tracking-[0.2em] bg-[#8B1A1A] !text-white px-3 py-1 rounded-full uppercase shadow-xl"
+          style={{ fontFamily: 'var(--font-label)' }}>
+          Pieza Única
+        </span>
+      </div>
 
-        {/* Caustic glow on hover */}
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 z-10"
-          style={{ background: 'radial-gradient(ellipse at 50% 100%, rgba(201,168,76,0.15) 0%, transparent 70%)' }}
-        />
-
-        {/* Top-left index - Serial number style */}
-        <div className="absolute top-4 left-4 z-20 opacity-60 group-hover:opacity-100 transition-opacity duration-500">
-          <span className="text-[10px] tracking-[0.4em] text-gold font-bold"
+      {/* Info Container - Forced to bottom */}
+      <div className="absolute inset-0 z-20 p-5 md:p-8 flex flex-col justify-end pointer-events-none">
+        <div className="flex flex-col gap-1 md:gap-2">
+          {/* Category */}
+          <p className="text-[10px] md:text-xs tracking-[0.3em] !text-white/80 uppercase font-bold"
             style={{ fontFamily: 'var(--font-label)' }}>
-            #{String(index + 1).padStart(3, '0')}
-          </span>
-        </div>
-
-        {/* Top-right badge: Pieza Única */}
-        <div className="absolute top-4 right-4 z-20">
-          <span className="text-[9px] font-bold tracking-[0.2em] bg-gold text-[#080305] px-3 py-1.5 uppercase shadow-xl"
-            style={{ fontFamily: 'var(--font-label)' }}>
-            ✦ Pieza Única
-          </span>
-        </div>
-
-        {/* Bottom info overlay */}
-        <div className="absolute bottom-0 left-0 right-0 z-20 p-5 lg:p-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-          <p className="text-[10px] tracking-[0.25em] text-white/40 uppercase mb-2"
-            style={{ fontFamily: 'var(--font-label)' }}>
-            {producto.categoria || 'Joyería en vidrio de autor'}
+            {producto.categoria || 'Joyería de autor'}
           </p>
 
-          <div className="flex items-end justify-between gap-4">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 md:gap-4">
+            {/* Name */}
             <h2
-              className={`text-on-surface leading-tight ${isFeatured ? 'text-3xl' : 'text-xl'}`}
+              className="!text-white text-2xl md:text-3xl lg:text-4xl leading-tight font-medium drop-shadow-md"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               {producto.nombre}
             </h2>
 
+            {/* Price */}
             {producto.precio && (
               <span
-                className="text-gold font-bold text-sm shrink-0 pb-0.5"
-                style={{ fontFamily: 'var(--font-label)', letterSpacing: '0.05em' }}
+                className="!text-white text-sm md:text-base tracking-widest font-bold shrink-0 mb-1"
+                style={{ fontFamily: 'var(--font-label)' }}
               >
                 ${producto.precio.toLocaleString('es-AR')}
               </span>
             )}
-          </div>
-
-          <div className="mt-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100">
-            <span className="flex-1 h-px bg-gold/40" />
-            <span className="text-gold text-[9px] tracking-[0.3em] uppercase font-bold whitespace-nowrap"
-              style={{ fontFamily: 'var(--font-label)' }}>
-              Inspeccionar Obra -&gt;
-            </span>
-            <span className="flex-1 h-px bg-gold/40" />
           </div>
         </div>
       </div>
