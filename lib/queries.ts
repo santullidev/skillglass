@@ -23,6 +23,7 @@ export const PRODUCTO_BY_SLUG_QUERY = defineQuery(`
     precio,
     descripcion,
     disponible,
+    categoria,
     imagenes,
     numeroCertificado,
     peso

@@ -231,9 +231,9 @@ export default function EnvioPage() {
                   <div key={item.id} className="flex justify-between items-center text-xs">
                     <div className="flex flex-col">
                       <span className="font-bold text-on-surface uppercase tracking-wider">{item.nombre}</span>
-                      <span className="text-[10px] opacity-60">Cant: {item.quantity}</span>
+                      <span className="text-[10px] opacity-60">Cant: {item.cantidad}</span>
                     </div>
-                    <span className="font-serif italic">$ {(item.precio * item.quantity).toLocaleString('es-AR')}</span>
+                    <span className="font-serif italic">$ {(item.precio * item.cantidad).toLocaleString('es-AR')}</span>
                   </div>
                 ))}
               </div>
