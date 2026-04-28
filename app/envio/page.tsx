@@ -15,8 +15,8 @@ const PROVINCIAS = [
 export default function EnvioPage() {
   const { items, totalPrice } = useCart()
   
-  // State del Proceso (Step eliminado)
-  const [tipoEnvio, setTipoEnvio] = useState<'domicilio' | 'sucursal'>('domicilio')
+  // State del Proceso
+
   const [preferenceId, setPreferenceId] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isQuoting, setIsQuoting] = useState(false)
@@ -89,17 +89,15 @@ export default function EnvioPage() {
       newErrors.codigoPostal = 'CP inválido (ej: 7600 o 1414ABC)'
     }
 
-    // Campos solo para domicilio
-    if (tipoEnvio === 'domicilio') {
-      if (!formData.direccion || formData.direccion.trim().length < 2) {
-        newErrors.direccion = 'Ingresá la dirección'
-      }
-      if (!formData.ciudad || formData.ciudad.trim().length < 2) {
-        newErrors.ciudad = 'Ingresá la ciudad'
-      }
-      if (!formData.provincia) {
-        newErrors.provincia = 'Seleccioná la provincia'
-      }
+    // Campos de domicilio obligatorios
+    if (!formData.direccion || formData.direccion.trim().length < 2) {
+      newErrors.direccion = 'Ingresá la dirección'
+    }
+    if (!formData.ciudad || formData.ciudad.trim().length < 2) {
+      newErrors.ciudad = 'Ingresá la ciudad'
+    }
+    if (!formData.provincia) {
+      newErrors.provincia = 'Seleccioná la provincia'
     }
 
     setErrors(newErrors)
@@ -123,7 +121,7 @@ export default function EnvioPage() {
       const data = await res.json()
       
       if (data.cotizaciones) {
-        const quote = data.cotizaciones.find((c: any) => c.tipo === tipoEnvio)
+        const quote = data.cotizaciones.find((c: any) => c.tipo === 'domicilio')
         if (quote) {
           setShippingCost(quote.tarifa)
           setUsandoFallback(data.fallback === true)
@@ -166,7 +164,7 @@ export default function EnvioPage() {
             direccion: formData.direccion,
             codigoPostal: formData.codigoPostal,
             notas: formData.notas,
-            tipoEnvio,
+            tipoEnvio: 'domicilio',
           } 
         }),
       })
@@ -214,35 +212,10 @@ export default function EnvioPage() {
           {/* COLUMNA IZQUIERDA: DATOS Y ENVIO */}
           <section className="lg:w-7/12 w-full space-y-12">
             
-            {/* TIPO DE ENVIO */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-4">
-                <span className="w-8 h-8 rounded-full border border-primary flex items-center justify-center text-xs font-bold text-primary">01</span>
-                <h2 className="text-xl font-serif text-on-surface">Método de entrega</h2>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <button 
-                  onClick={() => { setTipoEnvio('domicilio'); setShippingCost(null); }}
-                  className={`p-6 border transition-all flex flex-col items-center gap-3 ${tipoEnvio === 'domicilio' ? 'border-primary bg-primary/5' : 'border-outline-variant/20 hover:border-primary/40'}`}
-                >
-                  <span className="text-2xl">🏠</span>
-                  <span className="text-[10px] tracking-widest uppercase font-bold text-on-surface">A domicilio</span>
-                </button>
-                <button 
-                  onClick={() => { setTipoEnvio('sucursal'); setShippingCost(null); }}
-                  className={`p-6 border transition-all flex flex-col items-center gap-3 ${tipoEnvio === 'sucursal' ? 'border-primary bg-primary/5' : 'border-outline-variant/20 hover:border-primary/40'}`}
-                >
-                  <span className="text-2xl">🏪</span>
-                  <span className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Retiro en Sucursal</span>
-                </button>
-              </div>
-            </div>
-
             {/* FORMULARIO */}
             <div className="space-y-8">
               <div className="flex items-center gap-4">
-                <span className="w-8 h-8 rounded-full border border-primary flex items-center justify-center text-xs font-bold text-primary">02</span>
+                <span className="w-8 h-8 rounded-full border border-primary flex items-center justify-center text-xs font-bold text-primary">01</span>
                 <h2 className="text-xl font-serif text-on-surface">Tus datos</h2>
               </div>
 
@@ -308,55 +281,51 @@ export default function EnvioPage() {
                   )}
                 </div>
                 
-                {tipoEnvio === 'domicilio' && (
-                  <>
-                    <div className="space-y-2 md:col-span-2">
-                      <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Dirección</label>
-                      <input
-                        name="direccion"
-                        value={formData.direccion}
-                        onChange={handleInputChange}
-                        data-error={!!errors.direccion}
-                        className={`w-full bg-white border p-3 text-sm focus:border-primary outline-none rounded-[4px] transition-colors
-                          ${errors.direccion ? 'border-red-500 bg-red-50' : 'border-on-surface/20'}`}
-                      />
-                      {errors.direccion && (
-                        <p className="text-[11px] text-red-500 font-medium mt-1">{errors.direccion}</p>
-                      )}
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Ciudad</label>
-                      <input
-                        name="ciudad"
-                        value={formData.ciudad}
-                        onChange={handleInputChange}
-                        data-error={!!errors.ciudad}
-                        className={`w-full bg-white border p-3 text-sm focus:border-primary outline-none rounded-[4px] transition-colors
-                          ${errors.ciudad ? 'border-red-500 bg-red-50' : 'border-on-surface/20'}`}
-                      />
-                      {errors.ciudad && (
-                        <p className="text-[11px] text-red-500 font-medium mt-1">{errors.ciudad}</p>
-                      )}
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Provincia</label>
-                      <select
-                        name="provincia"
-                        value={formData.provincia}
-                        onChange={handleInputChange}
-                        data-error={!!errors.provincia}
-                        className={`w-full bg-white border p-3 text-sm focus:border-primary outline-none rounded-[4px] transition-colors
-                          ${errors.provincia ? 'border-red-500 bg-red-50' : 'border-on-surface/20'}`}
-                      >
-                        <option value="">Seleccionar...</option>
-                        {PROVINCIAS.map(p => <option key={p} value={p}>{p}</option>)}
-                      </select>
-                      {errors.provincia && (
-                        <p className="text-[11px] text-red-500 font-medium mt-1">{errors.provincia}</p>
-                      )}
-                    </div>
-                  </>
-                )}
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Dirección</label>
+                  <input
+                    name="direccion"
+                    value={formData.direccion}
+                    onChange={handleInputChange}
+                    data-error={!!errors.direccion}
+                    className={`w-full bg-white border p-3 text-sm focus:border-primary outline-none rounded-[4px] transition-colors
+                      ${errors.direccion ? 'border-red-500 bg-red-50' : 'border-on-surface/20'}`}
+                  />
+                  {errors.direccion && (
+                    <p className="text-[11px] text-red-500 font-medium mt-1">{errors.direccion}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Ciudad</label>
+                  <input
+                    name="ciudad"
+                    value={formData.ciudad}
+                    onChange={handleInputChange}
+                    data-error={!!errors.ciudad}
+                    className={`w-full bg-white border p-3 text-sm focus:border-primary outline-none rounded-[4px] transition-colors
+                      ${errors.ciudad ? 'border-red-500 bg-red-50' : 'border-on-surface/20'}`}
+                  />
+                  {errors.ciudad && (
+                    <p className="text-[11px] text-red-500 font-medium mt-1">{errors.ciudad}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] tracking-widest uppercase font-bold text-on-surface">Provincia</label>
+                  <select
+                    name="provincia"
+                    value={formData.provincia}
+                    onChange={handleInputChange}
+                    data-error={!!errors.provincia}
+                    className={`w-full bg-white border p-3 text-sm focus:border-primary outline-none rounded-[4px] transition-colors
+                      ${errors.provincia ? 'border-red-500 bg-red-50' : 'border-on-surface/20'}`}
+                  >
+                    <option value="">Seleccionar...</option>
+                    {PROVINCIAS.map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
+                  {errors.provincia && (
+                    <p className="text-[11px] text-red-500 font-medium mt-1">{errors.provincia}</p>
+                  )}
+                </div>
 
                 <div className="md:col-span-2 pt-4">
                   <button 

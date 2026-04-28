@@ -41,9 +41,8 @@ interface ShippingData {
   direccion: string
   codigoPostal: string
   notas?: string
-  tipoEnvio: 'domicilio' | 'sucursal'
+  tipoEnvio: 'domicilio'
   montoEnvio: number
-  sucursalId?: string
 }
 
 // ✅ FIX 2b: Función para validar la firma de MP
@@ -143,9 +142,8 @@ export async function POST(req: NextRequest) {
         direccion:    raw.direccion    || '',
         codigoPostal: raw.codigo_postal || raw.codigoPostal || '',
         notas:        raw.notas        || '',
-        tipoEnvio:    (raw.tipo_envio as any) || 'domicilio',
+        tipoEnvio:    'domicilio',
         montoEnvio:   Number(raw.monto_envio || 0),
-        sucursalId:   raw.sucursal_id || '',
       }
 
       // Items también llegan en snake_case desde el metadata de MP
@@ -196,7 +194,6 @@ export async function POST(req: NextRequest) {
           codigoPostal: shippingData.codigoPostal || 'N/A',
           costo:        shippingData.montoEnvio,
           notas:        shippingData.notas        || '',
-          sucursalId:   shippingData.sucursalId   || '',
         },
         estadoEnvio: 'pendiente',
         fecha: new Date().toISOString(),
@@ -210,7 +207,7 @@ export async function POST(req: NextRequest) {
         const pesoTotal = meta.items?.reduce((acc: number, item: any) => acc + (Number(item.peso || 300) * Number(item.quantity || 1)), 0) || 300
 
         const andreaniPayload = {
-          contrato: shippingData.tipoEnvio === 'domicilio' ? process.env.ANDREANI_CONTRATO_DOMICILIO : process.env.ANDREANI_CONTRATO_SUCURSAL,
+          contrato: process.env.ANDREANI_CONTRATO_DOMICILIO,
           cliente: process.env.ANDREANI_CLIENTE,
           sucursalDeEnvio: process.env.ANDREANI_CP_ORIGEN || '7600',
           bultos: [{
@@ -224,17 +221,13 @@ export async function POST(req: NextRequest) {
             documentoTipo: "DNI",
             documentoNumero: "0", // Fallback si no lo pedimos
           },
-          destino: shippingData.tipoEnvio === 'domicilio' ? {
-             postal: {
-               codigoPostal: shippingData.codigoPostal,
-               provincia: shippingData.provincia,
-               localidad: shippingData.ciudad,
-               calle: shippingData.direccion,
-               numero: "0" // Andreani suele requerir separar calle de número, pero si viene todo junto pasamos 0
-             }
-          } : {
-            sucursal: {
-              id: shippingData.sucursalId
+          destino: {
+            postal: {
+              codigoPostal: shippingData.codigoPostal,
+              provincia: shippingData.provincia,
+              localidad: shippingData.ciudad,
+              calle: shippingData.direccion,
+              numero: "0" // Andreani suele requerir separar calle de número, pero si viene todo junto pasamos 0
             }
           }
         }

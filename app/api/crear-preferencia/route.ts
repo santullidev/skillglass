@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
     if (montoEnvio > 0) {
       mpItems.push({
         id: 'shipping_andreani',
-        title: `Envío Andreani (${body.shippingData?.tipoEnvio || 'Estándar'})`,
+        title: 'Envío Andreani a domicilio',
         quantity: 1,
         unit_price: montoEnvio,
         currency_id: 'ARS',
@@ -92,11 +92,8 @@ export async function POST(req: NextRequest) {
       return true
     }
 
-    // ✅ FIX 2: Validación condicional por tipo de envío
-    const tipoEnvio = shippingData.tipoEnvio || 'domicilio'
-    const requiredFields = tipoEnvio === 'domicilio'
-      ? ['nombre', 'email', 'telefono', 'provincia', 'ciudad', 'codigoPostal', 'direccion']
-      : ['nombre', 'email', 'telefono', 'codigoPostal']
+    // ✅ FIX 2: Validación requerida (siempre domicilio)
+    const requiredFields = ['nombre', 'email', 'telefono', 'provincia', 'ciudad', 'codigoPostal', 'direccion']
 
     for (const field of requiredFields) {
       if (!validateServerField(field, shippingData[field])) {
