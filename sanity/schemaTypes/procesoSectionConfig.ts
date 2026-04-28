@@ -6,6 +6,12 @@ export const procesoSectionSchema = defineType({
   title: '6 · Proceso de Creación',
   type: 'document',
   __experimental_actions: ['update', 'publish'],
+  fieldsets: [
+    { name: 'paso1', title: 'Pilar / Paso 1', options: { collapsible: true, collapsed: false } },
+    { name: 'paso2', title: 'Pilar / Paso 2', options: { collapsible: true, collapsed: false } },
+    { name: 'paso3', title: 'Pilar / Paso 3', options: { collapsible: true, collapsed: false } },
+    { name: 'paso4', title: 'Pilar / Paso 4', options: { collapsible: true, collapsed: false } },
+  ],
   fields: [
     defineField({
       name: 'activo',
@@ -37,39 +43,17 @@ export const procesoSectionSchema = defineType({
       type: 'text',
       rows: 3,
     }),
-    defineField({
-      name: 'pasosProceso',
-      title: 'Pasos o Pilares (Max 4)',
-      type: 'array',
-      options: {
-        editModal: 'popover',
-      },
-      of: [
-        {
-          type: 'object',
-          title: 'Pilar / Paso',
-          preview: {
-            select: {
-              title: 'titulo',
-              subtitle: 'descripcion',
-            },
-            prepare({ title, subtitle }) {
-              return {
-                title: title || 'Nuevo Pilar',
-                subtitle: subtitle || 'Sin descripción',
-                // Usamos un emoji como icono visual rápido y liviano
-                media: () => React.createElement('div', { style: { fontSize: '1.2rem' } }, '💎')
-              }
-            }
-          },
-          fields: [
-            { name: 'titulo', title: 'Título del paso', type: 'string' },
-            { name: 'descripcion', title: 'Descripción', type: 'text', rows: 2 },
-          ],
-        },
-      ],
-      validation: (Rule) => Rule.max(4),
-    }),
+    defineField({ name: 'paso1Titulo', title: 'Título', type: 'string', fieldset: 'paso1' }),
+    defineField({ name: 'paso1Descripcion', title: 'Descripción', type: 'text', rows: 2, fieldset: 'paso1' }),
+
+    defineField({ name: 'paso2Titulo', title: 'Título', type: 'string', fieldset: 'paso2' }),
+    defineField({ name: 'paso2Descripcion', title: 'Descripción', type: 'text', rows: 2, fieldset: 'paso2' }),
+
+    defineField({ name: 'paso3Titulo', title: 'Título', type: 'string', fieldset: 'paso3' }),
+    defineField({ name: 'paso3Descripcion', title: 'Descripción', type: 'text', rows: 2, fieldset: 'paso3' }),
+
+    defineField({ name: 'paso4Titulo', title: 'Título', type: 'string', fieldset: 'paso4' }),
+    defineField({ name: 'paso4Descripcion', title: 'Descripción', type: 'text', rows: 2, fieldset: 'paso4' }),
     defineField({
       name: 'ctaTexto',
       title: 'Texto del botón',

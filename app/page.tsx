@@ -90,8 +90,14 @@ export default async function Home() {
   const mostrarProceso = procesoConfig?.activo !== false
   const procesoEtiqueta = procesoConfig?.etiqueta || DEFAULTS.procesoEtiqueta
   const procesoTitulo = procesoConfig?.tituloProceso || DEFAULTS.procesoTitulo
-  const procesoPasos = (procesoConfig?.pasosProceso && procesoConfig.pasosProceso.length > 0) 
-    ? procesoConfig.pasosProceso 
+  const customPasos = []
+  if (procesoConfig?.paso1Titulo) customPasos.push({ titulo: procesoConfig.paso1Titulo, descripcion: procesoConfig.paso1Descripcion })
+  if (procesoConfig?.paso2Titulo) customPasos.push({ titulo: procesoConfig.paso2Titulo, descripcion: procesoConfig.paso2Descripcion })
+  if (procesoConfig?.paso3Titulo) customPasos.push({ titulo: procesoConfig.paso3Titulo, descripcion: procesoConfig.paso3Descripcion })
+  if (procesoConfig?.paso4Titulo) customPasos.push({ titulo: procesoConfig.paso4Titulo, descripcion: procesoConfig.paso4Descripcion })
+
+  const procesoPasos = customPasos.length > 0 
+    ? customPasos 
     : DEFAULTS.procesoPasos
 
   // Alquimia

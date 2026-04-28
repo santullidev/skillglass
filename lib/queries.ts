@@ -161,7 +161,14 @@ export const PROCESO_SECTION_QUERY = defineQuery(`
     etiqueta,
     tituloProceso,
     descripcion,
-    pasosProceso,
+    paso1Titulo,
+    paso1Descripcion,
+    paso2Titulo,
+    paso2Descripcion,
+    paso3Titulo,
+    paso3Descripcion,
+    paso4Titulo,
+    paso4Descripcion,
     ctaTexto,
     ctaLink
   }
