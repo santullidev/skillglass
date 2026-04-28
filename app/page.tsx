@@ -156,93 +156,6 @@ export default async function Home() {
         </section>
       )}
 
-      {/* ── PRODUCTOS DESTACADOS ──────────────────────────────── */}
-      <section id="piezas" className="py-32 lg:py-48 bg-surface-lowest overflow-hidden relative">
-        <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-gold/20 to-transparent" />
-        
-        {/* Section Header — editorial, off-center */}
-        <div className="max-w-360 mx-auto px-6 lg:px-8 mb-24">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-12">
-            <div className="relative">
-              <div className="absolute -left-6 top-2 bottom-0 w-px bg-gold/30 hidden md:block" />
-              <p
-                className="text-[10px] tracking-[0.5em] text-gold font-bold uppercase mb-6"
-                style={{ fontFamily: 'var(--font-label)' }}
-              >
-                Sala de exposición
-              </p>
-              <h2
-                className="text-6xl lg:text-9xl text-on-surface leading-none tracking-tight"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                {tituloPiezas}
-              </h2>
-            </div>
-            <div className="lg:max-w-sm lg:pb-3 border-l border-outline-gold/20 pl-6">
-              <p className="text-on-surface-variant font-serif italic text-xl leading-relaxed mb-8">
-                Joyería que nace de la pura destreza térmica. Un catálogo donde el asombro artesanal se encuentra con la fluidez del cristal soplado a la flama.
-              </p>
-              <Link
-                href="/productos"
-                className="group inline-flex items-center gap-3 text-[10px] tracking-[0.4em] text-gold font-bold uppercase border-b border-gold/30 pb-2 hover:border-gold transition-all duration-500"
-                style={{ fontFamily: 'var(--font-label)' }}
-              >
-                Catálogo Flameworking
-                <span className="text-gold group-hover:translate-x-2 transition-transform duration-500">→</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Standardized Grid */}
-        {productos.length > 0 && (
-          <div className="max-w-360 mx-auto px-6 lg:px-8">
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 lg:gap-12 transition-all duration-700">
-              {productos.map((producto, idx) => (
-                <div key={producto._id} className="flex flex-col w-full h-full">
-                  <ProductCard 
-                    producto={producto} 
-                    index={idx} 
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Tagline footer */}
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 mt-12 flex items-center gap-6">
-          <span className="flex-1 h-px bg-outline-variant/20" />
-          <p
-            className="text-[10px] tracking-[0.4em] text-outline-variant/40 uppercase shrink-0"
-            style={{ fontFamily: 'var(--font-label)' }}
-          >
-            Joyería en Vidrio de Autor · Buenos Aires
-          </p>
-          <span className="flex-1 h-px bg-outline-variant/20" />
-        </div>
-      </section>
-
-      {/* ── FRASE EDITORIAL ───────────────────────────────────── */}
-      {mostrarFrase && (
-        <section className="py-20 lg:py-28 bg-surface-deep relative overflow-hidden flex items-center justify-center">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,168,76,0.1)_0%,transparent_60%)] blur-[120px] pointer-events-none" />
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 text-[240px] text-surface-container opacity-10 font-serif leading-none select-none pointer-events-none">
-            &ldquo;
-          </div>
-          
-          <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
-            <p className="text-2xl md:text-3xl lg:text-4xl leading-[1.6] text-gradient-gold font-serif italic drop-shadow-2xl text-balance animate-in fade-in slide-in-from-bottom-8 duration-1000">
-              {frase}
-            </p>
-            <div className="mt-12 inline-flex flex-col items-center gap-4 animate-in fade-in zoom-in duration-1000 delay-500">
-              <span className="w-px h-12 bg-gold/40 shadow-[0_0_10px_rgba(201,168,76,0.5)]" />
-              <span className="text-[10px] tracking-[0.4em] text-gold uppercase" style={{ fontFamily: 'var(--font-label)' }}>{autorFrase}</span>
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* ── PIEZA DESTACADA (ALQUIMIA) ────────────────────────── */}
       {alquimia?.activo && (
         <section className="py-24 lg:py-40 bg-surface relative overflow-hidden border-y border-outline-gold/10">
@@ -323,6 +236,93 @@ export default async function Home() {
           </div>
         </section>
       )}
+
+      {/* ── FRASE EDITORIAL ───────────────────────────────────── */}
+      {mostrarFrase && (
+        <section className="py-20 lg:py-28 bg-surface-deep relative overflow-hidden flex items-center justify-center">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,168,76,0.1)_0%,transparent_60%)] blur-[120px] pointer-events-none" />
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 text-[240px] text-surface-container opacity-10 font-serif leading-none select-none pointer-events-none">
+            &ldquo;
+          </div>
+          
+          <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
+            <p className="text-2xl md:text-3xl lg:text-4xl leading-[1.6] text-gradient-gold font-serif italic drop-shadow-2xl text-balance animate-in fade-in slide-in-from-bottom-8 duration-1000">
+              {frase}
+            </p>
+            <div className="mt-12 inline-flex flex-col items-center gap-4 animate-in fade-in zoom-in duration-1000 delay-500">
+              <span className="w-px h-12 bg-gold/40 shadow-[0_0_10px_rgba(201,168,76,0.5)]" />
+              <span className="text-[10px] tracking-[0.4em] text-gold uppercase" style={{ fontFamily: 'var(--font-label)' }}>{autorFrase}</span>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── PRODUCTOS DESTACADOS ──────────────────────────────── */}
+      <section id="piezas" className="py-32 lg:py-48 bg-surface-lowest overflow-hidden relative">
+        <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-gold/20 to-transparent" />
+        
+        {/* Section Header — editorial, off-center */}
+        <div className="max-w-360 mx-auto px-6 lg:px-8 mb-24">
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-12">
+            <div className="relative">
+              <div className="absolute -left-6 top-2 bottom-0 w-px bg-gold/30 hidden md:block" />
+              <p
+                className="text-[10px] tracking-[0.5em] text-gold font-bold uppercase mb-6"
+                style={{ fontFamily: 'var(--font-label)' }}
+              >
+                Sala de exposición
+              </p>
+              <h2
+                className="text-6xl lg:text-9xl text-on-surface leading-none tracking-tight"
+                style={{ fontFamily: 'var(--font-display)' }}
+              >
+                {tituloPiezas}
+              </h2>
+            </div>
+            <div className="lg:max-w-sm lg:pb-3 border-l border-outline-gold/20 pl-6">
+              <p className="text-on-surface-variant font-serif italic text-xl leading-relaxed mb-8">
+                Joyería que nace de la pura destreza térmica. Un catálogo donde el asombro artesanal se encuentra con la fluidez del cristal soplado a la flama.
+              </p>
+              <Link
+                href="/productos"
+                className="group inline-flex items-center gap-3 text-[10px] tracking-[0.4em] text-gold font-bold uppercase border-b border-gold/30 pb-2 hover:border-gold transition-all duration-500"
+                style={{ fontFamily: 'var(--font-label)' }}
+              >
+                Catálogo Flameworking
+                <span className="text-gold group-hover:translate-x-2 transition-transform duration-500">→</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Standardized Grid */}
+        {productos.length > 0 && (
+          <div className="max-w-360 mx-auto px-6 lg:px-8">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 lg:gap-12 transition-all duration-700">
+              {productos.map((producto, idx) => (
+                <div key={producto._id} className="flex flex-col w-full h-full">
+                  <ProductCard 
+                    producto={producto} 
+                    index={idx} 
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Tagline footer */}
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 mt-12 flex items-center gap-6">
+          <span className="flex-1 h-px bg-outline-variant/20" />
+          <p
+            className="text-[10px] tracking-[0.4em] text-outline-variant/40 uppercase shrink-0"
+            style={{ fontFamily: 'var(--font-label)' }}
+          >
+            Joyería en Vidrio de Autor · Buenos Aires
+          </p>
+          <span className="flex-1 h-px bg-outline-variant/20" />
+        </div>
+      </section>
 
       {/* ── MANIFIESTO / EL CAOS CONTROLADO ──────────────────── */}
       {mostrarProceso && (
