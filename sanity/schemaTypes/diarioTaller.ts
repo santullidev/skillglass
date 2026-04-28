@@ -90,8 +90,17 @@ export const diarioTallerSchema = defineType({
               title: 'Video (archivo)',
               type: 'file',
               options: { accept: 'video/*' },
-              description: 'Sube un video mp4. Máximo recomendado: 30 segundos.',
+              description: 'Sube un video mp4. Máximo recomendado: 15MB.',
               hidden: ({ parent }) => parent?.tipo !== 'video',
+              validation: (Rule) => Rule.custom(async (value, context) => {
+                if (!value?.asset?._ref) return true
+                const client = context.getClient({ apiVersion: '2023-01-01' })
+                const asset = await client.getDocument(value.asset._ref)
+                if (asset && asset.size > 15 * 1024 * 1024) { // 15MB
+                  return '🛑 El video pesa más de 15MB. Comprimilo antes de subirlo para no afectar la velocidad web.'
+                }
+                return true
+              })
             },
             {
               name: 'descripcion',

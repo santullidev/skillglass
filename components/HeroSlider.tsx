@@ -6,9 +6,10 @@ import Link from 'next/link'
 import { urlFor } from '@/lib/sanity'
 import type { HeroMetadata } from '@/types/producto'
 
-interface SanityImage {
+interface SanityMedia {
   _key?: string
-  _type?: 'image'
+  _type?: 'image' | 'file'
+  videoUrl?: string
   asset: {
     _ref: string
     _type: 'reference'
@@ -16,7 +17,7 @@ interface SanityImage {
 }
 
 interface Props {
-  images?: SanityImage[]
+  images?: SanityMedia[]
   metadata?: HeroMetadata
   title?: string
   subtitle?: string
@@ -42,18 +43,32 @@ export default function HeroSlider({ images, metadata, title, subtitle, ctaTexto
       {/* Background Images */}
       <div className="absolute inset-0 z-0 bg-surface-lowest">
         {images && images.length > 0 ? (
-          images.map((img, i) => (
-            <Image
-              key={img._key || i}
-              src={urlFor(img).width(1920).height(1080).url()}
-              alt={`Joyería en vidrio Hero ${i + 1}`}
-              fill
-              className={`object-cover transition-opacity duration-1500 ease-in-out ${
-                i === index ? 'opacity-60 z-10' : 'opacity-0 z-0'
-              }`}
-              priority={i === 0}
-              sizes="100vw"
-            />
+          images.map((media, i) => (
+            media._type === 'file' || media.videoUrl ? (
+              <video
+                key={media._key || i}
+                src={media.videoUrl}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1500 ease-in-out ${
+                  i === index ? 'opacity-60 z-10' : 'opacity-0 z-0'
+                }`}
+              />
+            ) : (
+              <Image
+                key={media._key || i}
+                src={urlFor(media).width(1920).height(1080).url()}
+                alt={`Joyería en vidrio Hero ${i + 1}`}
+                fill
+                className={`object-cover transition-opacity duration-1500 ease-in-out ${
+                  i === index ? 'opacity-60 z-10' : 'opacity-0 z-0'
+                }`}
+                priority={i === 0}
+                sizes="100vw"
+              />
+            )
           ))
         ) : (
           <Image

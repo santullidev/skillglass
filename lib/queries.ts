@@ -81,7 +81,10 @@ export const COLECCION_BY_SLUG_QUERY = defineQuery(`
 
 export const HERO_CONFIG_QUERY = defineQuery(`
   *[_type == "heroConfig" && _id == "heroConfig"][0] {
-    fotosPortada,
+    fotosPortada[]{
+      ...,
+      "videoUrl": asset->url
+    },
     tituloHero,
     subtituloHero,
     metadata,
