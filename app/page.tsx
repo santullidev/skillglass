@@ -117,6 +117,8 @@ export default async function Home() {
         metadata={hero?.metadata}
         title={heroTitle}
         subtitle={heroSubtitle}
+        ctaTexto={hero?.ctaTexto}
+        ctaLink={hero?.ctaLink}
       />
 
       {/* ── COLECCIONES ───────────────────────────────────────── */}

@@ -20,9 +20,11 @@ interface Props {
   metadata?: HeroMetadata
   title?: string
   subtitle?: string
+  ctaTexto?: string
+  ctaLink?: string
 }
 
-export default function HeroSlider({ images, metadata, title, subtitle }: Props) {
+export default function HeroSlider({ images, metadata, title, subtitle, ctaTexto, ctaLink }: Props) {
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
@@ -121,11 +123,11 @@ export default function HeroSlider({ images, metadata, title, subtitle }: Props)
 
         {/* High-Impact CTA Button */}
         <Link
-          href="/capsulas"
+          href={ctaLink || "/capsulas"}
           className="btn-luxury group"
         >
           <span className="relative z-10 font-bold group-hover:text-surface-deep transition-colors flex items-center gap-6">
-            Explorar Cápsulas
+            {ctaTexto || "Explorar Cápsulas"}
             <span className="text-gold group-hover:text-surface-deep text-lg group-hover:translate-x-2 transition-all duration-300">→</span>
           </span>
         </Link>

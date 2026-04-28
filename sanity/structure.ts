@@ -1,5 +1,4 @@
 import type { StructureResolver } from 'sanity/structure'
-import CertificadoView from './components/CertificadoView'
 
 // Estructura del panel de administración de SKILGLASS
 export const structure: StructureResolver = (S) =>
@@ -17,37 +16,9 @@ export const structure: StructureResolver = (S) =>
 
       S.divider(),
 
-      // ─── CATÁLOGO ───────────────────────────────────────────────────────
+      // ─── PÁGINA DE INICIO — primera porque es lo más usado ──────────────
       S.listItem()
-        .title('💎  Piezas (Productos)')
-        .id('catalogo-piezas')
-        .child(
-          S.documentTypeList('producto')
-            .title('Todas las piezas del catálogo')
-        ),
-
-      S.listItem()
-        .title('🗂️  Cápsulas')
-        .id('menu-capsulas')
-        .child(
-          S.documentTypeList('coleccion')
-            .title('Cápsulas de piezas')
-        ),
-
-      S.listItem()
-        .title('📜  Certificados Emitidos')
-        .id('certificados-emitidos')
-        .child(
-          S.documentTypeList('producto')
-            .title('Registro de Certificados')
-            .defaultOrdering([{ field: 'numeroCertificado', direction: 'asc' }])
-        ),
-
-      S.divider(),
-
-      // ─── CONFIGURACIÓN DEL SITIO ─────────────────────────────────────────
-      S.listItem()
-        .title('🖼️ Página de Inicio (Home)')
+        .title('🖼️  Página de Inicio (Home)')
         .child(
           S.list()
             .title('Secciones del Home')
@@ -61,12 +32,12 @@ export const structure: StructureResolver = (S) =>
                     .title('Portada — Título, fotos y subtítulo')
                 ),
               S.listItem()
-                .title('2 · 🗂️  Cápsulas')
+                .title('2 · 🗂️  Cápsulas en Home')
                 .child(
                   S.document()
                     .schemaType('capsulasSectionConfig')
                     .documentId('capsulasSectionConfig')
-                    .title('Cápsulas — Series Conceptuales')
+                    .title('Cápsulas — ¿cuáles mostrar en el Home?')
                 ),
               S.listItem()
                 .title('3 · 💎  Pieza Destacada')
@@ -85,12 +56,12 @@ export const structure: StructureResolver = (S) =>
                     .title('Frase Editorial')
                 ),
               S.listItem()
-                .title('5 · 📦  Productos Destacados')
+                .title('5 · 📦  Productos Destacados en Home')
                 .child(
                   S.document()
                     .schemaType('productosSectionConfig')
                     .documentId('productosSectionConfig')
-                    .title('Productos Destacados')
+                    .title('Productos Destacados — ¿cuáles mostrar en el Home?')
                 ),
               S.listItem()
                 .title('6 · ⚙️  Proceso de Creación')
@@ -120,6 +91,37 @@ export const structure: StructureResolver = (S) =>
             ])
         ),
 
+      S.divider(),
+
+      // ─── CATÁLOGO — gestión de contenido ────────────────────────────────
+      S.listItem()
+        .title('💎  Piezas (Productos)')
+        .id('catalogo-piezas')
+        .child(
+          S.documentTypeList('producto')
+            .title('Todas las piezas del catálogo')
+        ),
+
+      S.listItem()
+        .title('🗂️  Cápsulas (Catálogo completo)')
+        .id('menu-capsulas')
+        .child(
+          S.documentTypeList('coleccion')
+            .title('Crear y editar cápsulas')
+        ),
+
+      S.listItem()
+        .title('📜  Certificados Emitidos')
+        .id('certificados-emitidos')
+        .child(
+          S.documentTypeList('producto')
+            .title('Registro de Certificados de Unicidad')
+            .defaultOrdering([{ field: 'numeroCertificado', direction: 'asc' }])
+        ),
+
+      S.divider(),
+
+      // ─── CONFIGURACIÓN DEL SITIO ─────────────────────────────────────────
       S.listItem()
         .title('💎  Página de Producto')
         .child(
