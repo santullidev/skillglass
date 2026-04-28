@@ -32,12 +32,12 @@ export const structure: StructureResolver = (S) =>
                     .title('Portada — Título, fotos y subtítulo')
                 ),
               S.listItem()
-                .title('2 · 🗂️  Cápsulas en Home')
+                .title('2 · 📦  Productos Destacados en Home')
                 .child(
                   S.document()
-                    .schemaType('capsulasSectionConfig')
-                    .documentId('capsulasSectionConfig')
-                    .title('Cápsulas — ¿cuáles mostrar en el Home?')
+                    .schemaType('productosSectionConfig')
+                    .documentId('productosSectionConfig')
+                    .title('Productos Destacados — ¿cuáles mostrar en el Home?')
                 ),
               S.listItem()
                 .title('3 · 💎  Pieza Destacada')
@@ -56,12 +56,12 @@ export const structure: StructureResolver = (S) =>
                     .title('Frase Editorial')
                 ),
               S.listItem()
-                .title('5 · 📦  Productos Destacados en Home')
+                .title('5 · 🗂️  Cápsulas en Home')
                 .child(
                   S.document()
-                    .schemaType('productosSectionConfig')
-                    .documentId('productosSectionConfig')
-                    .title('Productos Destacados — ¿cuáles mostrar en el Home?')
+                    .schemaType('capsulasSectionConfig')
+                    .documentId('capsulasSectionConfig')
+                    .title('Cápsulas — ¿cuáles mostrar en el Home?')
                 ),
               S.listItem()
                 .title('6 · ⚙️  Proceso de Creación')

@@ -121,40 +121,72 @@ export default async function Home() {
         ctaLink={hero?.ctaLink}
       />
 
-      {/* ── COLECCIONES ───────────────────────────────────────── */}
-      {capsulas?.coleccionesDestacadas && capsulas.coleccionesDestacadas.length > 0 && (
-        <section id="colecciones" className="py-24 lg:py-40 px-6 lg:px-8 max-w-360 mx-auto w-full relative bg-surface-deep">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8 relative z-10">
-            <div>
-              <p className="text-[10px] tracking-[0.5em] text-gold uppercase mb-6 font-bold" style={{ fontFamily: 'var(--font-label)' }}>
-                CÁPSULAS
+      {/* ── PRODUCTOS DESTACADOS ──────────────────────────────── */}
+      <section id="piezas" className="py-32 lg:py-48 bg-surface-lowest overflow-hidden relative">
+        <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-gold/20 to-transparent" />
+        
+        {/* Section Header — editorial, off-center */}
+        <div className="max-w-360 mx-auto px-6 lg:px-8 mb-24">
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-12">
+            <div className="relative">
+              <div className="absolute -left-6 top-2 bottom-0 w-px bg-gold/30 hidden md:block" />
+              <p
+                className="text-[10px] tracking-[0.5em] text-gold font-bold uppercase mb-6"
+                style={{ fontFamily: 'var(--font-label)' }}
+              >
+                Sala de exposición
               </p>
               <h2
-                className="text-5xl lg:text-7xl xl:text-8xl text-on-surface max-w-2xl leading-none"
+                className="text-6xl lg:text-9xl text-on-surface leading-none tracking-tight"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
-                {tituloColecciones}
+                {tituloPiezas}
               </h2>
             </div>
-            <Link
-              href="/capsulas"
-              className="group inline-flex items-center gap-3 text-[10px] tracking-[0.4em] text-gold uppercase border-b border-gold/30 pb-2 hover:border-gold transition-all duration-500"
-              style={{ fontFamily: 'var(--font-label)' }}
-            >
-              Explorar Series
-              <span className="group-hover:translate-x-2 transition-transform duration-500">→</span>
-            </Link>
+            <div className="lg:max-w-sm lg:pb-3 border-l border-outline-gold/20 pl-6">
+              <p className="text-on-surface-variant font-serif italic text-xl leading-relaxed mb-8">
+                Joyería que nace de la pura destreza térmica. Un catálogo donde el asombro artesanal se encuentra con la fluidez del cristal soplado a la flama.
+              </p>
+              <Link
+                href="/productos"
+                className="group inline-flex items-center gap-3 text-[10px] tracking-[0.4em] text-gold font-bold uppercase border-b border-gold/30 pb-2 hover:border-gold transition-all duration-500"
+                style={{ fontFamily: 'var(--font-label)' }}
+              >
+                Catálogo Flameworking
+                <span className="text-gold group-hover:translate-x-2 transition-transform duration-500">→</span>
+              </Link>
+            </div>
           </div>
-          {/* Glass framing line */}
-          <div className="w-full h-px bg-linear-to-r from-outline-gold/5 via-outline-gold/40 to-outline-gold/5 mb-12" />
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
-            {capsulas.coleccionesDestacadas.map((coleccion: any) => (
-              <CollectionCard key={coleccion._id} coleccion={coleccion} />
-            ))}
+        </div>
+
+        {/* Standardized Grid */}
+        {productos.length > 0 && (
+          <div className="max-w-360 mx-auto px-6 lg:px-8">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 lg:gap-12 transition-all duration-700">
+              {productos.map((producto, idx) => (
+                <div key={producto._id} className="flex flex-col w-full h-full">
+                  <ProductCard 
+                    producto={producto} 
+                    index={idx} 
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-        </section>
-      )}
+        )}
+
+        {/* Tagline footer */}
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 mt-12 flex items-center gap-6">
+          <span className="flex-1 h-px bg-outline-variant/20" />
+          <p
+            className="text-[10px] tracking-[0.4em] text-outline-variant/40 uppercase shrink-0"
+            style={{ fontFamily: 'var(--font-label)' }}
+          >
+            Joyería en Vidrio de Autor · Buenos Aires
+          </p>
+          <span className="flex-1 h-px bg-outline-variant/20" />
+        </div>
+      </section>
 
       {/* ── PIEZA DESTACADA (ALQUIMIA) ────────────────────────── */}
       {alquimia?.activo && (
@@ -257,72 +289,40 @@ export default async function Home() {
         </section>
       )}
 
-      {/* ── PRODUCTOS DESTACADOS ──────────────────────────────── */}
-      <section id="piezas" className="py-32 lg:py-48 bg-surface-lowest overflow-hidden relative">
-        <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-gold/20 to-transparent" />
-        
-        {/* Section Header — editorial, off-center */}
-        <div className="max-w-360 mx-auto px-6 lg:px-8 mb-24">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-12">
-            <div className="relative">
-              <div className="absolute -left-6 top-2 bottom-0 w-px bg-gold/30 hidden md:block" />
-              <p
-                className="text-[10px] tracking-[0.5em] text-gold font-bold uppercase mb-6"
-                style={{ fontFamily: 'var(--font-label)' }}
-              >
-                Sala de exposición
+      {/* ── COLECCIONES ───────────────────────────────────────── */}
+      {capsulas?.coleccionesDestacadas && capsulas.coleccionesDestacadas.length > 0 && (
+        <section id="colecciones" className="py-24 lg:py-40 px-6 lg:px-8 max-w-360 mx-auto w-full relative bg-surface-deep">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8 relative z-10">
+            <div>
+              <p className="text-[10px] tracking-[0.5em] text-gold uppercase mb-6 font-bold" style={{ fontFamily: 'var(--font-label)' }}>
+                CÁPSULAS
               </p>
               <h2
-                className="text-6xl lg:text-9xl text-on-surface leading-none tracking-tight"
+                className="text-5xl lg:text-7xl xl:text-8xl text-on-surface max-w-2xl leading-none"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
-                {tituloPiezas}
+                {tituloColecciones}
               </h2>
             </div>
-            <div className="lg:max-w-sm lg:pb-3 border-l border-outline-gold/20 pl-6">
-              <p className="text-on-surface-variant font-serif italic text-xl leading-relaxed mb-8">
-                Joyería que nace de la pura destreza térmica. Un catálogo donde el asombro artesanal se encuentra con la fluidez del cristal soplado a la flama.
-              </p>
-              <Link
-                href="/productos"
-                className="group inline-flex items-center gap-3 text-[10px] tracking-[0.4em] text-gold font-bold uppercase border-b border-gold/30 pb-2 hover:border-gold transition-all duration-500"
-                style={{ fontFamily: 'var(--font-label)' }}
-              >
-                Catálogo Flameworking
-                <span className="text-gold group-hover:translate-x-2 transition-transform duration-500">→</span>
-              </Link>
-            </div>
+            <Link
+              href="/capsulas"
+              className="group inline-flex items-center gap-3 text-[10px] tracking-[0.4em] text-gold uppercase border-b border-gold/30 pb-2 hover:border-gold transition-all duration-500"
+              style={{ fontFamily: 'var(--font-label)' }}
+            >
+              Explorar Series
+              <span className="group-hover:translate-x-2 transition-transform duration-500">→</span>
+            </Link>
           </div>
-        </div>
-
-        {/* Standardized Grid */}
-        {productos.length > 0 && (
-          <div className="max-w-360 mx-auto px-6 lg:px-8">
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 lg:gap-12 transition-all duration-700">
-              {productos.map((producto, idx) => (
-                <div key={producto._id} className="flex flex-col w-full h-full">
-                  <ProductCard 
-                    producto={producto} 
-                    index={idx} 
-                  />
-                </div>
-              ))}
-            </div>
+          {/* Glass framing line */}
+          <div className="w-full h-px bg-linear-to-r from-outline-gold/5 via-outline-gold/40 to-outline-gold/5 mb-12" />
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
+            {capsulas.coleccionesDestacadas.map((coleccion: any) => (
+              <CollectionCard key={coleccion._id} coleccion={coleccion} />
+            ))}
           </div>
-        )}
-
-        {/* Tagline footer */}
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 mt-12 flex items-center gap-6">
-          <span className="flex-1 h-px bg-outline-variant/20" />
-          <p
-            className="text-[10px] tracking-[0.4em] text-outline-variant/40 uppercase shrink-0"
-            style={{ fontFamily: 'var(--font-label)' }}
-          >
-            Joyería en Vidrio de Autor · Buenos Aires
-          </p>
-          <span className="flex-1 h-px bg-outline-variant/20" />
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ── MANIFIESTO / EL CAOS CONTROLADO ──────────────────── */}
       {mostrarProceso && (

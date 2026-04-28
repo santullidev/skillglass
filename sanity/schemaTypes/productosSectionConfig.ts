@@ -2,7 +2,7 @@ import { defineField, defineType } from 'sanity'
 
 export const productosSectionSchema = defineType({
   name: 'productosSectionConfig',
-  title: '5 · Productos Destacados en Home',
+  title: '2 · Productos Destacados en Home',
   type: 'document',
   __experimental_actions: ['update', 'publish'],
   fields: [
