@@ -10,9 +10,8 @@ interface Props {
 
 const CATEGORIAS = [
   { label: 'TODOS', value: 'todos' },
+  { label: 'PENDIENTES', value: 'pendientes' },
   { label: 'ANILLOS', value: 'anillos' },
-  { label: 'AROS', value: 'aros' },
-  { label: 'BRAZALETES', value: 'brazaletes' },
   { label: 'DIJES', value: 'dijes' },
 ]
 

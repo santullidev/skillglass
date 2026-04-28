@@ -58,10 +58,9 @@ export const productSchema = defineType({
       description: '🏷️ ¿En qué categoría entra esta pieza? Ayuda a filtrar en el catálogo.',
       options: {
         list: [
-          { title: '👂  Pendiente', value: 'pendiente' },
-          { title: '💎  Dijes', value: 'dijes' },
+          { title: '👂  Pendientes', value: 'pendientes' },
           { title: '💍  Anillos', value: 'anillos' },
-          { title: '📦  Otros', value: 'otros' },
+          { title: '💎  Dijes', value: 'dijes' },
         ],
         layout: 'radio',
       },
