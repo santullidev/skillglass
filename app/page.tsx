@@ -85,6 +85,10 @@ export default async function Home() {
   const autorFrase = fraseConfig?.autorFrase || 'SKILGLASS'
   const mostrarFrase = fraseConfig?.activo !== false
   const tituloPiezas = productosConfig?.tituloSeccionProductos || DEFAULTS.tituloPiezasDestacadas
+  const productosDescripcion = productosConfig?.descripcion || 'Joyería que nace de la pura destreza térmica. Un catálogo donde el asombro artesanal se encuentra con la fluidez del cristal soplado a la flama.'
+  const productosCtaTexto = productosConfig?.ctaTexto || 'Catálogo Flameworking'
+  const productosCtaLink = productosConfig?.ctaLink || '/productos'
+
 
   // Proceso
   const mostrarProceso = procesoConfig?.activo !== false
@@ -151,14 +155,14 @@ export default async function Home() {
             </div>
             <div className="lg:max-w-sm lg:pb-3 border-l border-outline-gold/20 pl-6">
               <p className="text-on-surface-variant font-serif italic text-xl leading-relaxed mb-8">
-                Joyería que nace de la pura destreza térmica. Un catálogo donde el asombro artesanal se encuentra con la fluidez del cristal soplado a la flama.
+                {productosDescripcion}
               </p>
               <Link
-                href="/productos"
+                href={productosCtaLink}
                 className="group inline-flex items-center gap-3 text-[10px] tracking-[0.4em] text-gold font-bold uppercase border-b border-gold/30 pb-2 hover:border-gold transition-all duration-500"
                 style={{ fontFamily: 'var(--font-label)' }}
               >
-                Catálogo Flameworking
+                {productosCtaTexto}
                 <span className="text-gold group-hover:translate-x-2 transition-transform duration-500">→</span>
               </Link>
             </div>

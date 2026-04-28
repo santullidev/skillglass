@@ -143,6 +143,9 @@ export const FRASE_SECTION_QUERY = defineQuery(`
 export const PRODUCTOS_SECTION_QUERY = defineQuery(`
   *[_type == "productosSectionConfig" && _id == "productosSectionConfig"][0] {
     tituloSeccionProductos,
+    descripcion,
+    ctaTexto,
+    ctaLink,
     productosDestacados[]->{
       _id,
       nombre,
