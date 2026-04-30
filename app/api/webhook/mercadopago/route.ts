@@ -49,7 +49,8 @@ interface ShippingData {
 function validateMpSignature(
   req: NextRequest,
   rawBody: string,
-  id: string
+  id: string,
+  isIpn: boolean
 ): boolean {
   // Si no hay secret configurado, salteamos en desarrollo pero advertimos
   if (!webhookSecret) {
@@ -74,32 +75,38 @@ function validateMpSignature(
 
   if (!ts || !receivedHash) return false
 
-  // ✅ FIX: El manifest para Webhooks (no IPN) es ts:[ts];request-id:[id];[body]
-  const manifest = `ts:${ts};request-id:${xRequestId};${rawBody}`
+  // ✅ El manifest cambia según si es IPN (lo que envía notification_url) o Webhook
+  const manifest = isIpn 
+    ? `id:${id};request-id:${xRequestId};ts:${ts};` 
+    : `ts:${ts};request-id:${xRequestId};${rawBody}`
+
   const expectedHash = createHmac('sha256', webhookSecret)
     .update(manifest)
     .digest('hex')
 
-  // Comparación segura (evita timing attacks)
   return expectedHash === receivedHash
 }
 
 export async function POST(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
-    const type = searchParams.get('type')
-    const id = searchParams.get('data.id')
+    
+    // ✅ Mercado Pago envía 'type' y 'data.id' para Webhooks
+    // Pero envía 'topic' e 'id' para IPN (lo que usa notification_url de la preferencia)
+    const type = searchParams.get('type') || searchParams.get('topic')
+    const id = searchParams.get('data.id') || searchParams.get('id')
+    const isIpn = searchParams.has('topic')
 
     // Ignorar notificaciones que no son pagos
     if (type !== 'payment' || !id) {
       return NextResponse.json({ received: true })
     }
 
-    // Validar firma de MP (no bloqueante — la seguridad real viene de verificar contra la API de MP con accessToken)
+    // Validar firma de MP
     const rawBody = await req.text()
-    const signatureValid = validateMpSignature(req, rawBody, id)
+    const signatureValid = validateMpSignature(req, rawBody, id, isIpn)
     if (!signatureValid) {
-      console.error(`❌ Webhook rechazado: Firma inválida para pago ${id}`)
+      console.error(`❌ Webhook rechazado: Firma inválida para pago ${id} (isIpn: ${isIpn})`)
       return NextResponse.json({ error: 'Signature mismatch' }, { status: 401 })
     }
 
