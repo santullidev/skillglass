@@ -172,11 +172,11 @@ export async function POST(req: NextRequest) {
             ...shippingData,
             monto_envio: montoEnvio,
           },
-          items: requestItems.map((item) => ({
-            id: item.id || item.slug,
-            title: item.nombre || item.title,
-            quantity: item.cantidad,
-            unit_price: item.precio || item.unit_price,
+          items: mpItems.map((item) => ({
+            id: item.id,
+            title: item.title,
+            quantity: item.quantity,
+            unit_price: item.unit_price,
             numero_certificado: item.numeroCertificado || null,
             peso: item.peso || 300,
           })),

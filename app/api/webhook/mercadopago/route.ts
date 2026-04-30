@@ -74,8 +74,8 @@ function validateMpSignature(
 
   if (!ts || !receivedHash) return false
 
-  // Construir el string a firmar según la doc de MP
-  const manifest = `id:${id};request-id:${xRequestId};ts:${ts};`
+  // ✅ FIX: El manifest para Webhooks (no IPN) es ts:[ts];request-id:[id];[body]
+  const manifest = `ts:${ts};request-id:${xRequestId};${rawBody}`
   const expectedHash = createHmac('sha256', webhookSecret)
     .update(manifest)
     .digest('hex')
