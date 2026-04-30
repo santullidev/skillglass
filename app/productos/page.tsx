@@ -1,5 +1,5 @@
 import { client } from '@/lib/sanity'
-import { PRODUCTOS_QUERY } from '@/lib/queries'
+import { PRODUCTOS_QUERY, PRODUCTOS_SECTION_QUERY, PROCESO_SECTION_QUERY, SETTINGS_QUERY } from '@/lib/queries'
 import CatalogClient from '@/components/CatalogClient'
 import type { Producto } from '@/types/producto'
 import type { Metadata } from 'next'
@@ -12,7 +12,14 @@ export const metadata: Metadata = {
 export const revalidate = 60 // Revalidate every minute
 
 export default async function ProductosPage() {
-  const productos: Producto[] = await client.fetch(PRODUCTOS_QUERY)
+  const [productos, productosConfig, procesoConfig, settings] = await Promise.all([
+    client.fetch<Producto[]>(PRODUCTOS_QUERY),
+    client.fetch(PRODUCTOS_SECTION_QUERY),
+    client.fetch(PROCESO_SECTION_QUERY),
+    client.fetch(SETTINGS_QUERY)
+  ])
+
+  const descripcionHero = productosConfig?.descripcion || 'Cada joya es un fragmento de luz congelada, esculpida a través del calor extremo para capturar la fluidez orgánica del cristal en su estado más puro.'
 
   return (
     <div className="min-h-screen pt-32 pb-24 px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
@@ -33,7 +40,7 @@ export default async function ProductosPage() {
 
           <div className="flex-1 max-w-lg">
             <p className="text-on-surface-variant font-serif text-lg leading-relaxed italic mb-8 border-l-2 border-gold/20 pl-6">
-              Cada joya es un fragmento de luz congelada, esculpida a través del calor extremo para capturar la fluidez orgánica del cristal en su estado más puro.
+              {descripcionHero}
             </p>
             
             <div className="flex items-center gap-6 text-[10px] tracking-[0.3em] uppercase text-outline-variant" style={{ fontFamily: 'var(--font-label)' }}>
@@ -46,7 +53,11 @@ export default async function ProductosPage() {
         </div>
 
         {/* --- CATALOG CLIENT (FILTERS + ASYMMETRIC GRID) --- */}
-        <CatalogClient initialProductos={productos} />
+        <CatalogClient 
+          initialProductos={productos} 
+          procesoConfig={procesoConfig}
+          settings={settings}
+        />
       </header>
     </div>
   )

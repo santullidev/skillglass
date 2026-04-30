@@ -141,6 +141,15 @@ export const structure: StructureResolver = (S) =>
         ),
 
       S.listItem()
+        .title('🏛️  Página El Estudio (Interna)')
+        .child(
+          S.document()
+            .schemaType('estudioPageConfig')
+            .documentId('estudioPageConfig')
+            .title('Diseño de Página El Estudio')
+        ),
+
+      S.listItem()
         .title('❓  Ayuda y Preguntas Frecuentes')
         .child(
           S.document()

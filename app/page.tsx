@@ -516,29 +516,29 @@ export default async function Home() {
             </a>
           </div>
 
-          {/* Feed Grid: 4 columnas desktop, 2 columnas mobile */}
-          <div className="grid grid-cols-2 md:grid-cols-4 w-full">
+          {/* Feed Grid: Masonry style para no cortar videos */}
+          <div className="columns-2 md:columns-4 gap-0 w-full">
             {diario?.posts?.map((post: any) => (
               <a
                 key={post._key}
                 href={post.linkPost || diario.urlInstagram || '#'}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative aspect-square overflow-hidden bg-surface-container-lowest border border-outline-variant/5"
+                className="group relative block w-full overflow-hidden bg-surface-container-lowest border border-outline-variant/5"
               >
                 {post.tipo === 'video' && post.videoUrl ? (
                   <video
                     src={post.videoUrl}
                     autoPlay muted loop playsInline
-                    className="w-full h-full object-cover"
+                    className="w-full h-auto block object-cover"
                   />
                 ) : post.imagen?.asset?.url ? (
                   <Image
                     src={post.imagen.asset.url}
                     alt={post.descripcion || 'Diario del Taller'}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-1000"
-                    sizes="(max-width: 768px) 50vw, 25vw"
+                    width={800}
+                    height={800}
+                    className="w-full h-auto block object-cover group-hover:scale-105 transition-transform duration-1000"
                   />
                 ) : null}
 

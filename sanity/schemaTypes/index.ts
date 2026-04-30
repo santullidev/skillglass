@@ -12,6 +12,7 @@ import { fraseSectionSchema } from './fraseSectionConfig'
 import { productosSectionSchema } from './productosSectionConfig'
 import { procesoSectionSchema } from './procesoSectionConfig'
 import { homeEstudioSectionSchema } from './homeEstudioSectionConfig'
+import { estudioPageSchema } from './estudioPageConfig'
 
 export const schemaTypes = [
   productSchema,
@@ -28,4 +29,5 @@ export const schemaTypes = [
   productosSectionSchema,
   procesoSectionSchema,
   homeEstudioSectionSchema,
+  estudioPageSchema,
 ]

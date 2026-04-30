@@ -6,6 +6,8 @@ import type { Producto } from '@/types/producto'
 
 interface Props {
   initialProductos: Producto[]
+  procesoConfig?: any
+  settings?: any
 }
 
 const CATEGORIAS = [
@@ -15,7 +17,7 @@ const CATEGORIAS = [
   { label: 'DIJES', value: 'dijes' },
 ]
 
-export default function CatalogClient({ initialProductos }: Props) {
+export default function CatalogClient({ initialProductos, procesoConfig, settings }: Props) {
   const [filter, setFilter] = useState('todos')
 
   const filteredProductos = useMemo(() => {
@@ -77,17 +79,26 @@ export default function CatalogClient({ initialProductos }: Props) {
         <div className="relative z-10 max-w-2xl mx-auto">
           <div className="w-12 h-px bg-gold/50 mx-auto mb-8 transition-all duration-1000 group-hover:w-32" />
           
+          <p className="text-[10px] tracking-[0.5em] text-gold font-bold uppercase mb-4" style={{ fontFamily: 'var(--font-label)' }}>
+            {procesoConfig?.etiqueta || 'LA TÉCNICA'}
+          </p>
+          
           <h2 className="text-3xl lg:text-4xl text-on-surface mb-6" style={{ fontFamily: 'var(--font-display)' }}>
-            Buscas una pieza <span className="italic font-serif">a medida</span>?
+            {procesoConfig?.tituloProceso ? (
+              procesoConfig.tituloProceso
+            ) : (
+              <>Buscas una pieza <span className="italic font-serif">a medida</span>?</>
+            )}
           </h2>
           
           <p className="text-on-surface-variant font-serif text-lg leading-relaxed mb-10 text-balance">
-            Cada creación de SKILGLASS puede ser habitada por tus propios colores. 
-            Realizamos encargos personalizados respetando la nobleza del cristal y la técnica flameworking.
+            {procesoConfig?.descripcion || 'Cada creación de SKILGLASS puede ser habitada por tus propios colores. Realizamos encargos personalizados respetando la nobleza del cristal y la técnica flameworking.'}
           </p>
           
           <a
-            href="https://wa.me/tu-numero" 
+            href={settings?.telefono ? `https://wa.me/${settings.telefono.replace(/\\D/g, '')}` : '#'} 
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-4 px-8 py-4 border border-gold text-gold text-[10px] tracking-[0.4em] uppercase font-bold hover:bg-gold hover:text-surface-deep transition-all duration-700 shadow-[0_0_20px_rgba(201,168,76,0.1)] group"
             style={{ fontFamily: 'var(--font-label)' }}
           >

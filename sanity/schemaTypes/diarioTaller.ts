@@ -53,12 +53,19 @@ export const diarioTallerSchema = defineType({
           preview: {
             select: {
               title: 'descripcion',
-              media: 'imagen',
+              mediaImagen: 'imagen',
+              mediaThumbnail: 'thumbnail',
+              tipo: 'tipo'
             },
-            prepare({ title, media }) {
+            prepare({ title, mediaImagen, mediaThumbnail, tipo }) {
+              const esVideo = tipo === 'video'
+              const media = esVideo ? mediaThumbnail : mediaImagen
+              const defaultTitle = esVideo ? '🎬 Video' : '📷 Imagen'
+              
               return {
-                title: title || 'Sin descripción',
-                media,
+                title: title || defaultTitle,
+                subtitle: esVideo ? 'Video' : 'Imagen',
+                media: media,
               }
             },
           },
@@ -101,6 +108,14 @@ export const diarioTallerSchema = defineType({
                 }
                 return true
               })
+            },
+            {
+              name: 'thumbnail',
+              title: 'Miniatura (Opcional)',
+              type: 'image',
+              options: { hotspot: true },
+              description: 'Miniatura para mostrar en el listado del panel y antes de cargar el video.',
+              hidden: ({ parent }) => parent?.tipo !== 'video',
             },
             {
               name: 'descripcion',
