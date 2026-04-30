@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import MercadoPagoConfig, { Preference } from 'mercadopago'
+import { backendClient } from '@/lib/sanity'
+import { cotizarEnvio } from '@/lib/andreani'
+import { getCostoEnvioPorCP } from '@/lib/shipping-fallback'
 
 // ✅ FIX 1: Validar env var al inicio, falla claro si no está configurada
 const accessToken = process.env.MP_ACCESS_TOKEN
@@ -56,19 +59,63 @@ export async function POST(req: NextRequest) {
     }
     const resolvedBaseUrl = baseUrl || 'http://localhost:3000'
 
-    const mpItems: MpItem[] = requestItems.map((item) => ({
-      id: item.id || item.slug || 'N/A',
-      title: item.nombre || item.title || 'Producto SKILLGLASS',
-      quantity: Number(item.cantidad || 1),
-      unit_price: Number(item.precio || item.unit_price || 0),
-      currency_id: 'ARS',
-      picture_url: item.imagenUrl || item.picture_url,
-      numeroCertificado: item.numeroCertificado,
-      peso: item.peso || 300
-    }))
+    // ✅ FIX: Verificar precios reales y disponibilidad contra Sanity (CRIT-2)
+    const productIds = requestItems.map(item => item.id).filter(Boolean) as string[]
+    const realProducts = await backendClient.fetch(
+      `*[_type == "producto" && _id in $ids]{ _id, precio, disponible, peso, nombre }`,
+      { ids: productIds }
+    )
 
-    // Agregar el costo de envío como un item adicional
-    const montoEnvio = Number(body.montoEnvio || 0)
+    const mpItems: MpItem[] = requestItems.map((item) => {
+      const realProduct = realProducts.find((p: any) => p._id === item.id)
+      
+      if (!realProduct) {
+        throw new Error(`Producto no encontrado: ${item.id}`)
+      }
+      
+      if (!realProduct.disponible) {
+        throw new Error(`Producto no disponible: ${realProduct.nombre}`)
+      }
+
+      return {
+        id: realProduct._id,
+        title: realProduct.nombre || 'Producto SKILLGLASS',
+        quantity: Number(item.cantidad || 1),
+        unit_price: Number(realProduct.precio || 0), // PRECIO REAL, NO DEL CLIENTE
+        currency_id: 'ARS',
+        picture_url: item.imagenUrl || item.picture_url,
+        numeroCertificado: item.numeroCertificado,
+        peso: realProduct.peso || 300
+      }
+    })
+
+    // ✅ FIX: Recalcular costo de envío en el servidor (CRIT-1)
+    let pesoTotal = 0
+    let valorTotalMercaderia = 0
+    mpItems.forEach(item => {
+      pesoTotal += (item.peso || 300) * item.quantity
+      valorTotalMercaderia += item.unit_price * item.quantity
+    })
+
+    const shippingData = body.shippingData || {}
+    const cpDestino = shippingData.codigoPostal || ''
+    
+    let montoEnvio = 0
+    if (cpDestino) {
+      try {
+        const cotizaciones = await cotizarEnvio(cpDestino, pesoTotal, valorTotalMercaderia)
+        const quote = cotizaciones.find(c => c.tipo === 'domicilio')
+        if (quote) {
+          montoEnvio = quote.tarifa
+        } else {
+          // Fallback a tabla estática si Andreani no devuelve cotización específica
+          montoEnvio = getCostoEnvioPorCP(cpDestino).costoADomicilio
+        }
+      } catch (e) {
+        montoEnvio = getCostoEnvioPorCP(cpDestino).costoADomicilio
+      }
+    }
+    
     if (montoEnvio > 0) {
       mpItems.push({
         id: 'shipping_andreani',
@@ -78,8 +125,6 @@ export async function POST(req: NextRequest) {
         currency_id: 'ARS',
       })
     }
-
-    const shippingData = body.shippingData || {}
 
     // ✅ FIX 5: Validación robusta del lado servidor
     const validateServerField = (name: string, value: any) => {

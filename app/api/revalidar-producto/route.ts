@@ -8,7 +8,10 @@ export async function POST(req: NextRequest) {
     const { slug, token } = await req.json()
 
     // Validar token interno para evitar uso no autorizado
-    const expected = process.env.REVALIDATE_SECRET || process.env.MP_ACCESS_TOKEN?.slice(-12)
+    const expected = process.env.REVALIDATE_SECRET
+    if (!expected) {
+      throw new Error('REVALIDATE_SECRET no configurado')
+    }
     if (token !== expected) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     }
