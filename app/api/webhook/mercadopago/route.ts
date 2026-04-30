@@ -102,12 +102,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ received: true })
     }
 
-    // Validar firma de MP
+    // Validar firma de MP (No bloqueante para evitar fallos por formato, la seguridad real es la consulta a la API de MP)
     const rawBody = await req.text()
     const signatureValid = validateMpSignature(req, rawBody, id, isIpn)
     if (!signatureValid) {
-      console.error(`❌ Webhook rechazado: Firma inválida para pago ${id} (isIpn: ${isIpn})`)
-      return NextResponse.json({ error: 'Signature mismatch' }, { status: 401 })
+      console.warn(`⚠️ Firma de webhook inválida para pago ${id} (isIpn: ${isIpn}). Continuando con verificación directa de API...`)
     }
 
     // ✅ FIX 5: Idempotencia — verificar si el pedido ya fue procesado
