@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { useCart } from '@/lib/cart-context'
-import { initMercadoPago, Payment } from '@mercadopago/sdk-react'
 import Link from 'next/link'
 
 const PROVINCIAS = [
@@ -17,7 +16,7 @@ export default function EnvioPage() {
   
   // State del Proceso
 
-  const [preferenceId, setPreferenceId] = useState<string | null>(null)
+
   const [isLoading, setIsLoading] = useState(false)
   const [isQuoting, setIsQuoting] = useState(false)
   const [shippingCost, setShippingCost] = useState<number | null>(null)
@@ -38,12 +37,7 @@ export default function EnvioPage() {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [serverError, setServerError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const key = process.env.NEXT_PUBLIC_MP_PUBLIC_KEY
-    if (key) {
-      initMercadoPago(key, { locale: 'es-AR' })
-    }
-  }, [])
+
 
   // Si el carrito está vacío
   if (items.length === 0) {
@@ -111,7 +105,7 @@ export default function EnvioPage() {
     }
 
     setIsQuoting(true)
-    setPreferenceId(null) // Resetear pago si cambia el envío
+
     try {
       const res = await fetch('/api/andreani/cotizar', {
         method: 'POST',
@@ -191,8 +185,9 @@ export default function EnvioPage() {
         return
       }
 
-      if (data.id) {
-        setPreferenceId(data.id)
+      if (data.url) {
+        // Redirigir a Mercado Pago Checkout Pro
+        window.location.href = data.url
       }
     } catch (error) {
       console.error('Error:', error)
@@ -394,35 +389,14 @@ export default function EnvioPage() {
                       Completá los datos y calculá el envío para continuar
                     </p>
                   </div>
-                ) : !preferenceId ? (
+                ) : (
                   <button
                     onClick={handleFinalizarYPay}
                     disabled={isLoading}
                     className="w-full bg-on-surface text-white py-5 px-6 text-[10px] tracking-[0.3em] uppercase font-bold hover:bg-on-surface/90 transition-all disabled:opacity-50"
                   >
-                    {isLoading ? 'Conectando...' : `Pagar $ ${(totalPrice + shippingCost).toLocaleString('es-AR')} →`}
+                    {isLoading ? 'Redirigiendo a Mercado Pago...' : `Pagar $ ${(totalPrice + shippingCost).toLocaleString('es-AR')} →`}
                   </button>
-                ) : (
-                  <div className="bg-white p-4 rounded-[4px] border border-outline-variant/30">
-                    <Payment
-                      initialization={{
-                        amount: totalPrice + shippingCost,
-                        preferenceId: preferenceId,
-                      }}
-                      customization={{
-                        paymentMethods: {
-                          creditCard: 'all',
-                          debitCard: 'all',
-                          ticket: 'all',
-                          bankTransfer: 'all',
-                          atm: 'all',
-                        },
-                      }}
-                      onSubmit={async (param) => { console.log('Payment submitted', param) }}
-                      onError={(error) => { console.error('Payment Brick error', error) }}
-                      onReady={() => { console.log('Payment Brick ready') }}
-                    />
-                  </div>
                 )}
               </div>
 
