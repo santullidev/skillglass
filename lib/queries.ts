@@ -259,11 +259,21 @@ export const ESTUDIO_PAGE_QUERY = defineQuery(`
   *[_type == "estudioPageConfig" && _id == "estudioPageConfig"][0] {
     heroLabel,
     heroTitle,
-    heroImage,
-    manifiestoTitle,
-    manifiestoCita,
-    manifiestoTexto,
-    fases,
+    fases[]{
+      ...,
+      imagen{
+        asset->{
+          _id,
+          url
+        }
+      }
+    },
+    heroImage{
+      asset->{
+        _id,
+        url
+      }
+    },
     texturaFinalTexto,
     ctaEtiqueta,
     ctaTitulo,

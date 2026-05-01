@@ -53,7 +53,7 @@ export default async function EstudioPage() {
               src={urlFor(heroImage).width(1920).url()} 
               alt="Estudio Skilglass Hero"
               fill
-              className="w-full h-full object-cover opacity-50 mix-blend-screen"
+              className="w-full h-full object-cover opacity-80"
               priority
               sizes="100vw"
             />
@@ -62,7 +62,7 @@ export default async function EstudioPage() {
               src="https://placehold.co/1920x1080/1a1215/e8def8?text=STUDIO+HERO\n(Macro+Torch+Shot)&font=Playfair+Display" 
               alt="Estudio Skilglass Hero"
               fill
-              className="w-full h-full object-cover opacity-50 mix-blend-screen"
+              className="w-full h-full object-cover opacity-30"
               priority
               sizes="100vw"
             />
@@ -114,127 +114,68 @@ export default async function EstudioPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-1 lg:gap-1 border border-outline-variant/10 bg-outline-variant/10 shadow-2xl p-px">
             
             {fases.map((fase: any, i: number) => {
-              // Layout: Img-Txt-Img o Txt-Img-Img?
-              // El diseño original era:
-              // F1 (col 1) | Img1 (col 2-3)
-              // Img2 (col 1-2) | F2 (col 3)
-              // F3 (col 1) | Textura (col 2-3)
+              const isEven = i % 2 === 0
               
-              if (i === 0) {
-                return (
-                  <div key={i} className="contents">
-                    {/* Feature 1 */}
-                    <div className="bg-surface p-12 lg:p-16 col-span-1 flex flex-col justify-between min-h-[400px]">
-                      <div>
-                        <span className="text-primary/60 text-[10px] tracking-widest uppercase block mb-4" style={{ fontFamily: 'var(--font-label)' }}>{fase.etiqueta || 'Fase I'}</span>
-                        <h3 className="text-2xl text-on-surface mb-4" style={{ fontFamily: 'var(--font-display)' }}>{fase.titulo}</h3>
-                        <p className="text-sm text-on-surface-variant leading-relaxed">
-                          {fase.descripcion}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Feature Image 1 */}
-                    <div className="bg-surface col-span-1 md:col-span-2 relative overflow-hidden h-[400px]">
-                      {fase.imagen ? (
-                        <Image 
-                          src={urlFor(fase.imagen).width(1200).url()} 
-                          alt={fase.titulo}
-                          fill
-                          className="w-full h-full object-cover mix-blend-screen opacity-70"
-                          sizes="(max-width: 768px) 100vw, 66vw"
-                        />
-                      ) : (
-                        <Image 
-                          src="https://placehold.co/1200x800/100a0b/a9c7ff?text=Materia+Bruta&font=Playfair+Display" 
-                          alt="Varillas de cristal"
-                          fill
-                          className="w-full h-full object-cover mix-blend-screen opacity-70"
-                          sizes="(max-width: 768px) 100vw, 66vw"
-                        />
-                      )}
-                      <div className="absolute inset-0 bg-linear-to-t from-surface via-transparent to-transparent" />
-                    </div>
-                  </div>
-                )
-              }
-
-              if (i === 1) {
-                return (
-                  <div key={i} className="contents">
-                    {/* Feature Image 2 */}
-                    <div className="bg-surface col-span-1 md:col-span-2 relative overflow-hidden h-[400px]">
-                      {fase.imagen ? (
-                        <Image 
-                          src={urlFor(fase.imagen).width(1200).url()} 
-                          alt={fase.titulo}
-                          fill
-                          className="w-full h-full object-cover mix-blend-screen opacity-80"
-                          sizes="(max-width: 768px) 100vw, 66vw"
-                        />
-                      ) : (
-                        <Image 
-                          src="https://placehold.co/1200x800/220c11/e8def8?text=La+Llama&font=Playfair+Display" 
-                          alt="Soplete de vidrio"
-                          fill
-                          className="w-full h-full object-cover mix-blend-screen opacity-80"
-                          sizes="(max-width: 768px) 100vw, 66vw"
-                        />
-                      )}
-                      <div className="absolute inset-0 bg-linear-to-r from-surface via-transparent to-transparent" />
-                    </div>
-
-                    {/* Feature 2 */}
-                    <div className="bg-surface p-12 lg:p-16 col-span-1 flex flex-col justify-between min-h-[400px]">
-                      <div>
-                        <span className="text-primary/60 text-[10px] tracking-widest uppercase block mb-4" style={{ fontFamily: 'var(--font-label)' }}>{fase.etiqueta || 'Fase II'}</span>
-                        <h3 className="text-2xl text-on-surface mb-4" style={{ fontFamily: 'var(--font-display)' }}>{fase.titulo}</h3>
-                        <p className="text-sm text-on-surface-variant leading-relaxed">
-                          {fase.descripcion}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )
-              }
-
-              if (i === 2) {
-                return (
-                  <div key={i} className="contents">
-                    {/* Feature 3 (Half width) */}
-                    <div className="bg-surface p-12 lg:p-16 col-span-1 md:col-span-1 flex flex-col justify-between min-h-[400px]">
-                      <div>
-                        <span className="text-primary/60 text-[10px] tracking-widest uppercase block mb-4" style={{ fontFamily: 'var(--font-label)' }}>{fase.etiqueta || 'Fase III'}</span>
-                        <h3 className="text-2xl text-on-surface mb-4" style={{ fontFamily: 'var(--font-display)' }}>{fase.titulo}</h3>
-                        <p className="text-sm text-on-surface-variant leading-relaxed">
-                          {fase.descripcion}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Textura final */}
-                    <div className="bg-surface col-span-1 md:col-span-2 relative overflow-hidden h-[400px] flex items-center justify-center p-12 text-balance">
-                      <div className="absolute inset-0 opacity-20"
-                            style={{ backgroundImage: 'repeating-linear-gradient(45deg, var(--color-primary) 0px, transparent 1px, transparent 10px, var(--color-primary) 10px)' }}
-                      />
-                      <h3 className="text-3xl md:text-5xl text-on-surface z-10 text-center whitespace-pre-line" style={{ fontFamily: 'var(--font-display)' }}>
-                        {texturaFinalTexto}
+              return (
+                <div key={fase._key || i} className="contents">
+                  {/* Bloque de Texto */}
+                  <div className={`bg-surface p-12 lg:p-16 flex flex-col justify-between min-h-[400px] ${
+                    isEven ? 'col-span-1 order-1' : 'col-span-1 md:order-2'
+                  }`}>
+                    <div>
+                      <span className="text-primary/60 text-[10px] tracking-widest uppercase block mb-4" style={{ fontFamily: 'var(--font-label)' }}>
+                        {fase.etiqueta || `Fase ${i + 1}`}
+                      </span>
+                      <h3 className="text-2xl text-on-surface mb-4" style={{ fontFamily: 'var(--font-display)' }}>
+                        {fase.titulo}
                       </h3>
+                      <p className="text-sm text-on-surface-variant leading-relaxed">
+                        {fase.descripcion}
+                      </p>
                     </div>
                   </div>
-                )
-              }
 
-              return null
+                  {/* Bloque de Imagen */}
+                  <div className={`bg-surface col-span-1 md:col-span-2 relative overflow-hidden h-[400px] ${
+                    isEven ? 'order-2' : 'md:order-1'
+                  }`}>
+                    {fase.imagen ? (
+                      <Image 
+                        src={urlFor(fase.imagen).width(1200).url()} 
+                        alt={fase.titulo}
+                        fill
+                        className="w-full h-full object-cover opacity-90 transition-transform duration-1000 hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 66vw"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-surface-container-highest flex items-center justify-center">
+                         <span className="text-outline-variant font-serif italic">Imagen en proceso</span>
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-linear-to-t from-surface/20 via-transparent to-transparent" />
+                  </div>
+                </div>
+              )
             })}
+
+            {/* Bloque Final de Textura (Siempre al final) */}
+            <div className="bg-surface col-span-1 md:col-span-3 relative overflow-hidden h-[300px] md:h-[400px] flex items-center justify-center p-12 text-balance border-t border-outline-variant/10">
+              <div className="absolute inset-0 opacity-10"
+                    style={{ backgroundImage: 'repeating-linear-gradient(45deg, var(--color-primary) 0px, transparent 1px, transparent 10px, var(--color-primary) 10px)' }}
+              />
+              <div className="relative z-10 text-center">
+                <p className="text-[10px] tracking-[0.4em] text-gold uppercase mb-6" style={{ fontFamily: 'var(--font-label)' }}>El equilibrio</p>
+                <h3 className="text-3xl md:text-6xl text-on-surface whitespace-pre-line leading-none" style={{ fontFamily: 'var(--font-display)' }}>
+                  {texturaFinalTexto}
+                </h3>
+              </div>
+            </div>
 
             {/* Fallback si no hay fases cargadas */}
             {fases.length === 0 && (
-              <>
-                <div className="bg-surface p-12 lg:p-16 col-span-1 min-h-[400px]">
-                  <p className="text-sm italic opacity-50">Carga las fases técnicas en el Studio para ver el contenido.</p>
-                </div>
-              </>
+              <div className="bg-surface p-12 lg:p-16 col-span-1 md:col-span-3 min-h-[400px] flex items-center justify-center">
+                <p className="text-sm italic opacity-50 font-serif">Carga las fases técnicas en el Studio para ver el contenido.</p>
+              </div>
             )}
 
           </div>
