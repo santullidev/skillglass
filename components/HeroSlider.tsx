@@ -44,7 +44,7 @@ export default function HeroSlider({ images, metadata, title, subtitle, ctaTexto
       <div className="absolute inset-0 z-0 bg-surface-lowest">
         {images && images.length > 0 ? (
           images.map((media, i) => (
-            media._type === 'file' || media.videoUrl ? (
+            media._type === 'file' ? (
               <video
                 key={media._key || i}
                 src={media.videoUrl}
