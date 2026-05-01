@@ -22,7 +22,8 @@ export default async function ProductosPage() {
   const descripcionHero = productosConfig?.descripcion || 'Cada joya es un fragmento de luz congelada, esculpida a través del calor extremo para capturar la fluidez orgánica del cristal en su estado más puro.'
 
   return (
-    <div className="min-h-screen pt-32 pb-24 px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
+    <div className="min-h-screen bg-surface-deep">
+      <div className="pt-32 pb-24 px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
       {/* Header Section */}
       <header className="mb-20 lg:mb-32 relative">
         <div className="absolute -left-20 -top-20 w-64 h-64 bg-gold/5 blur-[120px] rounded-full pointer-events-none" />
@@ -59,6 +60,7 @@ export default async function ProductosPage() {
           settings={settings}
         />
       </header>
+      </div>
     </div>
   )
 }
