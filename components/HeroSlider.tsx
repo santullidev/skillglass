@@ -53,7 +53,7 @@ export default function HeroSlider({ images, metadata, title, subtitle, ctaTexto
                 loop
                 playsInline
                 className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1500 ease-in-out ${
-                  i === index ? 'opacity-60 z-10' : 'opacity-0 z-0'
+                  i === index ? 'opacity-100 z-10' : 'opacity-0 z-0'
                 }`}
               />
             ) : (
@@ -63,7 +63,7 @@ export default function HeroSlider({ images, metadata, title, subtitle, ctaTexto
                 alt={`Joyería en vidrio Hero ${i + 1}`}
                 fill
                 className={`object-cover transition-opacity duration-1500 ease-in-out ${
-                  i === index ? 'opacity-60 z-10' : 'opacity-0 z-0'
+                  i === index ? 'opacity-100 z-10' : 'opacity-0 z-0'
                 }`}
                 priority={i === 0}
                 sizes="100vw"
@@ -75,16 +75,17 @@ export default function HeroSlider({ images, metadata, title, subtitle, ctaTexto
             src="/hero-bg.png"
             alt="Joyería en vidrio Hero"
             fill
-            className="object-cover opacity-60"
+            className="object-cover opacity-100"
             priority
           />
         )}
         
-        {/* Horno Glow Effect */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] bg-tertiary/20 blur-[120px] rounded-full mix-blend-screen z-20 pointer-events-none" />
-        {/* Dark radial overlay to ensure text contrast over bright images */}
-        <div className="absolute inset-0 bg-radial-[50%_50%] from-surface/90 via-surface/40 to-transparent z-20 pointer-events-none" />
-        <div className="absolute inset-0 bg-linear-to-b from-surface/80 via-transparent to-surface z-20 pointer-events-none" />
+        {/* Horno Glow Effect - Sutil */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] bg-primary/5 blur-[120px] rounded-full z-20 pointer-events-none" />
+        
+        {/* Soft radial overlay - Muy sutil para no lavar la imagen */}
+        <div className="absolute inset-0 bg-radial-[50%_50%] from-surface/10 via-transparent to-transparent z-20 pointer-events-none" />
+        <div className="absolute inset-0 bg-linear-to-b from-surface/5 via-transparent to-surface/40 z-20 pointer-events-none" />
       </div>
 
       {/* Tech Metadata Overlays */}
