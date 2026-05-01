@@ -46,7 +46,7 @@ export default function Navbar() {
   const links = [
     { href: '/productos', label: 'Productos' },
     { href: '/capsulas', label: 'Cápsulas' },
-    { href: '/#proceso', label: 'El Taller' },
+    { href: '/estudio', label: 'El Estudio' },
     { href: '/#piezas', label: 'Piezas Únicas' },
   ]
 

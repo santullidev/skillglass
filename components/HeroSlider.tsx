@@ -53,7 +53,7 @@ export default function HeroSlider({ images, metadata, title, subtitle, ctaTexto
                 loop
                 playsInline
                 className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1500 ease-in-out ${
-                  i === index ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                  i === index ? 'opacity-85 z-10' : 'opacity-0 z-0'
                 }`}
               />
             ) : (
@@ -63,7 +63,7 @@ export default function HeroSlider({ images, metadata, title, subtitle, ctaTexto
                 alt={`Joyería en vidrio Hero ${i + 1}`}
                 fill
                 className={`object-cover transition-opacity duration-1500 ease-in-out ${
-                  i === index ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                  i === index ? 'opacity-85 z-10' : 'opacity-0 z-0'
                 }`}
                 priority={i === 0}
                 sizes="100vw"
@@ -81,11 +81,11 @@ export default function HeroSlider({ images, metadata, title, subtitle, ctaTexto
         )}
         
         {/* Horno Glow Effect - Sutil */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] bg-primary/5 blur-[120px] rounded-full z-20 pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] bg-primary/10 blur-[120px] rounded-full z-20 pointer-events-none" />
         
-        {/* Soft radial overlay - Muy sutil para no lavar la imagen */}
-        <div className="absolute inset-0 bg-radial-[50%_50%] from-surface/10 via-transparent to-transparent z-20 pointer-events-none" />
-        <div className="absolute inset-0 bg-linear-to-b from-surface/5 via-transparent to-surface/40 z-20 pointer-events-none" />
+        {/* Soft radial overlay - Protección de legibilidad balanceada */}
+        <div className="absolute inset-0 bg-radial-[50%_50%] from-surface/50 via-surface/10 to-transparent z-20 pointer-events-none" />
+        <div className="absolute inset-0 bg-linear-to-b from-surface/60 via-transparent to-surface/60 z-20 pointer-events-none" />
       </div>
 
       {/* Tech Metadata Overlays */}
