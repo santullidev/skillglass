@@ -59,7 +59,7 @@ export default function HeroSlider({ images, metadata, title, subtitle, ctaTexto
             ) : (
               <Image
                 key={media._key || i}
-                src={urlFor(media).width(1920).height(1080).url()}
+                src={urlFor(media).width(1920).url()}
                 alt={`Joyería en vidrio Hero ${i + 1}`}
                 fill
                 className={`object-cover transition-opacity duration-1500 ease-in-out ${
