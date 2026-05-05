@@ -525,13 +525,19 @@ export default async function Home() {
               {diario?.titulo || 'Diario del Taller'}
             </p>
             <h2
-              className="text-4xl lg:text-5xl text-on-surface mb-8"
+              className="text-4xl lg:text-5xl text-on-surface mb-8 transition-colors duration-300 hover:text-primary"
               style={{ fontFamily: 'var(--font-display)' }}
             >
-              {diario?.handle || '@skilglass'}
+              <a 
+                href={diario?.urlInstagram || 'https://www.instagram.com/skilglass'} 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                {diario?.handle || '@skilglass'}
+              </a>
             </h2>
             <a 
-              href={diario?.urlInstagram || '#'} 
+              href={diario?.urlInstagram || 'https://www.instagram.com/skilglass'} 
               target="_blank" 
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-3 text-xs tracking-[0.2em] uppercase text-on-surface-variant hover:text-primary transition-colors border-b border-primary/20 pb-1"
