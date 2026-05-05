@@ -35,13 +35,13 @@ export default function CollectionCard({ coleccion }: Props) {
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       />
       
-      {/* Overlay gradient - Consistent with ProductCard */}
+      {/* Gradient Overlay - Refined for elegance and readability */}
       <div 
-        className={`absolute inset-0 z-10 transition-opacity duration-500 bg-gradient-to-t ${
+        className={`absolute inset-0 z-10 transition-all duration-700 ${
           isDark 
-            ? 'from-black/90 via-black/40 to-transparent opacity-95' 
-            : 'from-white/80 via-white/30 to-transparent opacity-90'
-        } group-hover:opacity-100`} 
+            ? 'bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100' 
+            : 'bg-white/20 opacity-100'
+        }`} 
       />
 
       {/* Badge: Cápsula */}

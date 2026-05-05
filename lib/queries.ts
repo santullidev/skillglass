@@ -50,6 +50,7 @@ export const COLECCIONES_QUERY = defineQuery(`
         "slug": slug.current,
         precio,
         imagenes,
+        textColor,
         numeroCertificado,
         peso
       }
@@ -74,6 +75,7 @@ export const COLECCION_BY_SLUG_QUERY = defineQuery(`
         "slug": slug.current,
         precio,
         imagenes,
+        textColor,
         numeroCertificado,
         peso
       }
@@ -118,6 +120,7 @@ export const CAPSULAS_SECTION_QUERY = defineQuery(`
           "slug": slug.current,
           precio,
           imagenes,
+          textColor,
           numeroCertificado
         }
       }
