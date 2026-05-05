@@ -82,24 +82,24 @@ export default function HeroSlider({ images, metadata, title, subtitle, ctaTexto
         
       </div>
 
-      {/* Cinematic Overlay - Refined for depth */}
+      {/* Cinematic Overlay - Fixed for valid Tailwind & deep contrast */}
       <div className="absolute inset-0 z-10 pointer-events-none">
-        <div className="absolute inset-0 bg-black/30" />
-        <div className="absolute inset-0 bg-radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%)" />
-        <div className="absolute inset-x-0 bottom-0 h-64 bg-linear-to-t from-surface to-transparent" />
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.7)_100%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
       </div>
 
       {/* Tech Metadata Overlays */}
-      <div className="absolute inset-x-0 bottom-0 z-30 pointer-events-none p-6 md:p-12 pb-8 md:pb-12 flex justify-between">
-        <div className="w-full max-w-7xl mx-auto flex flex-row justify-between items-center text-[8px] md:text-[10px] tracking-[0.3em] md:tracking-[0.4em] uppercase text-white/40" style={{ fontFamily: 'var(--font-label)' }}>
+      <div className="absolute inset-x-0 bottom-0 z-30 pointer-events-none p-4 md:p-12 pb-6 md:pb-12 flex justify-between">
+        <div className="w-full max-w-7xl mx-auto flex flex-row justify-between items-center text-[8px] md:text-[10px] tracking-[0.3em] md:tracking-[0.4em] uppercase !text-white/50" style={{ fontFamily: 'var(--font-label)' }}>
           <div className="flex flex-row items-center gap-2 md:gap-4 drop-shadow-lg">
-            <span className="text-gold/80 font-bold">PIEZA //</span>
-            <span className="text-white/50">{metadata?.piezaId || 'NO. 042-BALTIC'}</span>
+            <span className="!text-[#C9A84C] font-bold">PIEZA //</span>
+            <span>{metadata?.piezaId || 'NO. 042-BALTIC'}</span>
           </div>
-          <div className="hidden md:block flex-1 mx-12 h-px bg-white/10" />
+          <div className="hidden md:block flex-1 mx-12 h-px bg-white/20" />
           <div className="flex flex-row items-center gap-2 md:gap-4 drop-shadow-lg">
-            <span className="text-gold/80 font-bold">REF //</span>
-            <span className="text-white/50">{metadata?.referencia || 'VITRO-REFRACT-01'}</span>
+            <span className="!text-[#C9A84C] font-bold">REF //</span>
+            <span>{metadata?.referencia || 'VITRO-REFRACT-01'}</span>
           </div>
         </div>
       </div>
@@ -107,21 +107,21 @@ export default function HeroSlider({ images, metadata, title, subtitle, ctaTexto
       <div className="relative z-30 text-center px-4 md:px-6 max-w-5xl mx-auto flex flex-col items-center">
         
         {/* Floating Editorial Header */}
-        <div className="mb-10 flex items-center justify-center gap-6 opacity-90">
-          <div className="w-12 h-px bg-gold/40" />
-          <p className="text-[10px] md:text-xs tracking-[0.6em] text-white font-bold uppercase drop-shadow-lg" style={{ fontFamily: 'var(--font-label)' }}>
+        <div className="mb-6 md:mb-10 flex items-center justify-center gap-4 md:gap-6 opacity-95">
+          <div className="w-8 md:w-16 h-px bg-[#C9A84C]/60" />
+          <p className="text-[9px] md:text-xs tracking-[0.4em] md:tracking-[0.6em] !text-white font-bold uppercase drop-shadow-md" style={{ fontFamily: 'var(--font-label)' }}>
             JOYERÍA EN VIDRIO DE AUTOR
           </p>
-          <div className="w-12 h-px bg-gold/40" />
+          <div className="w-8 md:w-16 h-px bg-[#C9A84C]/60" />
         </div>
 
-        {/* Main Title - Floating & High Contrast */}
+        {/* Main Title - Guaranteed White & High Contrast */}
         <h1 
-          className="text-white mb-8 leading-[0.85] tracking-tighter drop-shadow-[0_15px_40px_rgba(0,0,0,0.5)]"
-          style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3.5rem, 12vw, 10rem)' }}
+          className="!text-white mb-6 md:mb-8 leading-[0.9] tracking-tighter drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]"
+          style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3.2rem, 10vw, 8rem)' }}
         >
           {title ? title.split('\n').map((line, i, arr) => (
-            <span key={i} className={i % 2 === 1 ? 'italic font-light text-gold/90' : 'font-medium'}>
+            <span key={i} className={i % 2 === 1 ? 'italic font-light !text-white/90' : 'font-medium'}>
               {line}
               {i < arr.length - 1 && <br />}
             </span>
@@ -129,25 +129,24 @@ export default function HeroSlider({ images, metadata, title, subtitle, ctaTexto
             <>
               <span className="font-medium">Joyas de</span>
               <br />
-              <span className="italic font-light text-gold/90">Alquimia</span>
+              <span className="italic font-light !text-white/90">Alquimia</span>
             </>
           )}
         </h1>
 
         {/* Subtitle - Elegant & Floating */}
-        <p className="text-white/80 text-xl md:text-2xl lg:text-3xl max-w-2xl font-serif italic mb-14 text-balance leading-relaxed drop-shadow-lg">
+        <p className="!text-white/90 text-lg md:text-2xl lg:text-3xl max-w-2xl font-serif italic mb-10 md:mb-14 text-balance leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
           {subtitle || "Explorando el límite térmico del cristal."}
         </p>
 
-        {/* Elegant CTA */}
+        {/* Minimalist Luxury CTA */}
         <Link
           href={ctaLink || "/capsulas"}
-          className="group relative inline-flex items-center gap-8 px-12 py-6 text-[10px] tracking-[0.5em] text-white uppercase border border-white/20 bg-white/5 backdrop-blur-md hover:bg-gold hover:text-black hover:border-gold transition-all duration-700 overflow-hidden"
+          className="group relative inline-flex items-center justify-center gap-6 px-10 py-5 text-[10px] md:text-[11px] tracking-[0.4em] md:tracking-[0.5em] !text-white uppercase border border-white/50 bg-black/20 backdrop-blur-sm hover:bg-white hover:!text-black hover:border-white transition-all duration-500"
           style={{ fontFamily: 'var(--font-label)' }}
         >
-          <span className="relative z-10 font-bold">{ctaTexto || "Explorar Cápsulas"}</span>
+          <span className="relative z-10 font-bold transition-colors">{ctaTexto || "Explorar Cápsulas"}</span>
           <span className="relative z-10 text-lg group-hover:translate-x-2 transition-transform duration-500">→</span>
-          <div className="absolute inset-0 -translate-x-full group-hover:translate-x-0 bg-gold transition-transform duration-700 ease-in-out" />
         </Link>
       </div>
 
