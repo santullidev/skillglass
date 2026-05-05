@@ -18,8 +18,8 @@ export default function ProductCard({ producto, index = 0 }: Props) {
     : producto.slug
 
   const isDark = (producto.textColor || 'white') === 'white'
-  const textColorClass = isDark ? 'text-white' : 'text-black'
-  const subtextColorClass = isDark ? 'text-white/80' : 'text-black/80'
+  const textColorClass = isDark ? '!text-white' : '!text-black'
+  const subtextColorClass = isDark ? '!text-white/70' : '!text-black/70'
 
   return (
     <Link

@@ -18,8 +18,8 @@ export default function CollectionCard({ coleccion }: Props) {
     : 'Próximamente'
 
   const isDark = (coleccion.textColor || 'white') === 'white'
-  const textColorClass = isDark ? 'text-white' : 'text-black'
-  const subtextColorClass = isDark ? 'text-white/70' : 'text-black/70'
+  const textColorClass = isDark ? '!text-white' : '!text-black'
+  const subtextColorClass = isDark ? '!text-white/70' : '!text-black/70'
 
   return (
     <Link
