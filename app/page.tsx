@@ -469,52 +469,46 @@ export default async function Home() {
                   src={urlFor(homeEstudioConfig.imagen).width(2000).url()}
                   alt={homeEstudioConfig.titulo || 'El Estudio'}
                   fill
-                  className="object-cover transition-transform duration-[4s] ease-out group-hover/study:scale-110"
+                  className="object-cover transition-transform duration-[4s] ease-out group-hover/study:scale-105"
                   sizes="100vw"
                 />
                 {/* Refined Cinematic Overlays */}
-                <div className="absolute inset-0 bg-black/50" />
-                <div className="absolute inset-0 bg-radial-gradient(circle at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%)" />
-                <div className="absolute inset-0 backdrop-blur-[1px] group-hover/study:backdrop-blur-none transition-all duration-1000" />
+                <div className="absolute inset-0 bg-black/40" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)]" />
               </>
             ) : (
-              <div className="absolute inset-0 bg-surface-container-lowest" />
+              <div className="absolute inset-0 bg-black/80" />
             )}
-            
-            {/* Soft top/bottom fade to blend with other sections */}
-            <div className="absolute inset-x-0 top-0 h-32 bg-linear-to-b from-surface to-transparent opacity-100" />
-            <div className="absolute inset-x-0 bottom-0 h-32 bg-linear-to-t from-surface to-transparent opacity-100" />
           </div>
 
           <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
             {/* Decorative element */}
-            <div className="flex items-center justify-center gap-4 mb-8 opacity-60">
-              <span className="w-8 h-px bg-gold/50" />
-              <p className="text-[9px] tracking-[0.6em] text-gold font-bold uppercase" style={{ fontFamily: 'var(--font-label)' }}>
+            <div className="flex items-center justify-center gap-4 md:gap-6 mb-8 md:mb-10 opacity-95">
+              <span className="w-8 md:w-16 h-px bg-[#C9A84C]/60" />
+              <p className="text-[9px] md:text-xs tracking-[0.4em] md:tracking-[0.6em] !text-white font-bold uppercase drop-shadow-md" style={{ fontFamily: 'var(--font-label)' }}>
                 Mística del Taller
               </p>
-              <span className="w-8 h-px bg-gold/50" />
+              <span className="w-8 md:w-16 h-px bg-[#C9A84C]/60" />
             </div>
 
             <h2 
-              className="text-5xl lg:text-8xl text-white mb-10 leading-[0.85] tracking-tighter drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]" 
-              style={{ fontFamily: 'var(--font-display)' }}
+              className="!text-white mb-6 md:mb-8 leading-[0.9] tracking-tighter drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]" 
+              style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 8vw, 7rem)' }}
             >
               {homeEstudioConfig?.titulo || 'El Alma del Vidrio'}
             </h2>
 
-            <p className="text-lg lg:text-2xl text-white/80 font-serif italic leading-relaxed mb-14 max-w-2xl mx-auto drop-shadow-md">
+            <p className="text-lg lg:text-2xl !text-white/90 font-serif italic leading-relaxed mb-10 md:mb-14 max-w-2xl mx-auto drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
               {homeEstudioConfig?.descripcion || 'Adéntrate en el proceso donde el fuego y la paciencia se encuentran. Conoce nuestro taller y la filosofía detrás de cada pieza única.'}
             </p>
 
             <Link
               href={homeEstudioConfig?.ctaLink || '/estudio'}
-              className="group/btn inline-flex items-center gap-6 text-[10px] tracking-[0.5em] text-white uppercase border border-white/20 bg-white/5 backdrop-blur-md px-12 py-6 hover:border-gold hover:text-black hover:bg-gold transition-all duration-700 overflow-hidden relative"
+              className="group/btn relative inline-flex items-center justify-center gap-6 px-10 py-5 text-[10px] md:text-[11px] tracking-[0.4em] md:tracking-[0.5em] !text-white uppercase border border-white/50 bg-black/20 backdrop-blur-sm hover:bg-white hover:!text-black hover:border-white transition-all duration-500"
               style={{ fontFamily: 'var(--font-label)' }}
             >
-              <span className="relative z-10">{homeEstudioConfig?.ctaTexto || 'Explorar el Estudio'}</span>
+              <span className="relative z-10 font-bold transition-colors">{homeEstudioConfig?.ctaTexto || 'Explorar el Estudio'}</span>
               <span className="relative z-10 group-hover/btn:translate-x-2 transition-transform duration-500">→</span>
-              <div className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-0 bg-gold transition-transform duration-700 ease-in-out" />
             </Link>
           </div>
         </section>
