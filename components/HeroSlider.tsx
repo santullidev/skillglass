@@ -80,6 +80,8 @@ export default function HeroSlider({ images, metadata, title, subtitle, ctaTexto
           />
         )}
         
+      </div>
+
       {/* Cinematic Overlay - Refined for depth */}
       <div className="absolute inset-0 z-10 pointer-events-none">
         <div className="absolute inset-0 bg-black/30" />
