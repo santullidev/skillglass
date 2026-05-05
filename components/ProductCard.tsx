@@ -20,6 +20,18 @@ export default function ProductCard({ producto, index = 0 }: Props) {
   const isDark = (producto.textColor || 'white') === 'white'
   const textColorClass = isDark ? '!text-white' : '!text-black'
   const subtextColorClass = isDark ? '!text-white/70' : '!text-black/70'
+  const overlayMode = producto.overlayMode || 'subtle'
+
+  // Dynamic Overlay Logic
+  const getOverlayClasses = () => {
+    if (overlayMode === 'none') return 'opacity-0'
+    if (overlayMode === 'dark') return 'bg-black/60 opacity-100'
+    
+    // Subtle mode (Default)
+    return isDark 
+      ? 'bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100' 
+      : 'bg-white/20 opacity-100'
+  }
 
   return (
     <Link
@@ -36,14 +48,8 @@ export default function ProductCard({ producto, index = 0 }: Props) {
         priority={index < 4}
       />
 
-      {/* Gradient Overlay - Refined for elegance and readability */}
-      <div 
-        className={`absolute inset-0 z-10 transition-all duration-700 ${
-          isDark 
-            ? 'bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100' 
-            : 'bg-white/20 opacity-100'
-        }`}
-      />
+      {/* Dynamic Overlay Layer */}
+      <div className={`absolute inset-0 z-10 transition-all duration-700 ${getOverlayClasses()}`} />
 
       {/* Badge: Pieza Única */}
       <div className="absolute top-3 right-3 md:top-4 md:right-4 z-30">

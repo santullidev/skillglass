@@ -64,6 +64,22 @@ export const collectionSchema = defineType({
       },
       initialValue: 'white',
     }),
+    defineField({
+      name: 'overlayMode',
+      title: 'Modo de Sombreado (Overlay)',
+      type: 'string',
+      group: 'info',
+      description: '🌓 Controlá el oscurecimiento de la imagen para mejorar la lectura.',
+      options: {
+        list: [
+          { title: '🚫 Sin sombreado', value: 'none' },
+          { title: '💡 Tenue (Recomendado)', value: 'subtle' },
+          { title: '🌑 Intenso (Para fondos claros)', value: 'dark' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'subtle',
+    }),
 
     // ─── IMÁGENES ───────────────────────────────────────────────────────
     defineField({

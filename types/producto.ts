@@ -9,6 +9,7 @@ export interface Producto {
   categoria?: string
   imagenes: SanityImage[]
   textColor?: 'white' | 'black'
+  overlayMode?: 'none' | 'subtle' | 'dark'
   peso?: number
 }
 
@@ -32,6 +33,7 @@ export interface Coleccion {
   descripcionLarga?: string
   imagenes: SanityImage[]
   textColor?: 'white' | 'black'
+  overlayMode?: 'none' | 'subtle' | 'dark'
   productos: ProductoEnColeccion[]
 }
 

@@ -11,6 +11,7 @@ export const PRODUCTOS_QUERY = defineQuery(`
     categoria,
     imagenes,
     textColor,
+    overlayMode,
     numeroCertificado,
     peso
   }
@@ -27,6 +28,7 @@ export const PRODUCTO_BY_SLUG_QUERY = defineQuery(`
     categoria,
     imagenes,
     textColor,
+    overlayMode,
     numeroCertificado,
     peso
   }
@@ -41,6 +43,7 @@ export const COLECCIONES_QUERY = defineQuery(`
     descripcionLarga,
     imagenes,
     textColor,
+    overlayMode,
     productos[]{
       _key,
       tamanoGrilla,
@@ -51,6 +54,7 @@ export const COLECCIONES_QUERY = defineQuery(`
         precio,
         imagenes,
         textColor,
+        overlayMode,
         numeroCertificado,
         peso
       }
@@ -66,6 +70,8 @@ export const COLECCION_BY_SLUG_QUERY = defineQuery(`
     descripcion,
     descripcionLarga,
     imagenes,
+    textColor,
+    overlayMode,
     productos[]{
       _key,
       tamanoGrilla,
@@ -76,6 +82,7 @@ export const COLECCION_BY_SLUG_QUERY = defineQuery(`
         precio,
         imagenes,
         textColor,
+        overlayMode,
         numeroCertificado,
         peso
       }
@@ -111,6 +118,7 @@ export const CAPSULAS_SECTION_QUERY = defineQuery(`
       descripcion,
       imagenes,
       textColor,
+      overlayMode,
       productos[]{
         _key,
         tamanoGrilla,
@@ -121,6 +129,7 @@ export const CAPSULAS_SECTION_QUERY = defineQuery(`
           precio,
           imagenes,
           textColor,
+          overlayMode,
           numeroCertificado
         }
       }
@@ -140,6 +149,7 @@ export const ALQUIMIA_SECTION_QUERY = defineQuery(`
       descripcion,
       imagenes,
       textColor,
+      overlayMode,
       numeroCertificado
     },
     specs
@@ -167,6 +177,7 @@ export const PRODUCTOS_SECTION_QUERY = defineQuery(`
       precio,
       imagenes,
       textColor,
+      overlayMode,
       numeroCertificado
     }
   }
