@@ -6,11 +6,13 @@ import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { useCart } from '@/lib/cart-context'
 
-function CartIcon() {
+function CartIcon({ isHome, scrolled }: { isHome: boolean, scrolled: boolean }) {
   const { totalItems } = useCart()
   
+  const iconColor = isHome && !scrolled ? 'text-white hover:text-white/80' : 'text-on-surface hover:text-primary'
+
   return (
-    <Link href="/carrito" className="relative group text-on-surface hover:text-primary transition-colors duration-300 flex items-center justify-center p-2">
+    <Link href="/carrito" className={`relative group ${iconColor} transition-colors duration-300 flex items-center justify-center p-2`}>
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="square" strokeLinejoin="miter" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
       </svg>
@@ -19,7 +21,7 @@ function CartIcon() {
           className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-primary text-white min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center text-[10px] font-bold leading-none z-20 shadow-sm"
           style={{ 
             fontFamily: 'var(--font-label)',
-            borderRadius: '9999px' // Usar inline para saltar el * { border-radius: 0 !important } de globals.css
+            borderRadius: '9999px'
           }}
         >
           {totalItems > 9 ? '9+' : totalItems}
@@ -33,6 +35,8 @@ export default function Navbar() {
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  const isHome = pathname === '/'
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -62,12 +66,14 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <Link href="/" className="group flex items-center">
+            {/* Si estamos en home y NO hay scroll, mostramos un logo blanco si existe, de lo contrario usamos brightness/invert. 
+                Asumiendo que el logo es negro/oscuro, podemos invertirlo con CSS para que sea blanco. */}
             <Image
               src="/logo.png"
               alt="Skil Glass"
               width={140}
               height={40}
-              className="object-contain transition-opacity duration-300 group-hover:opacity-80"
+              className={`object-contain transition-all duration-500 group-hover:opacity-80 ${isHome && !scrolled ? 'brightness-0 invert' : ''}`}
               priority
             />
           </Link>
@@ -78,7 +84,7 @@ export default function Navbar() {
               <Link
                 key={link.label}
                 href={link.href}
-                className="text-on-surface-variant hover:text-on-surface text-sm tracking-wide transition-colors duration-300"
+                className={`${isHome && !scrolled ? 'text-white/80 hover:text-white drop-shadow-md' : 'text-on-surface-variant hover:text-on-surface'} text-sm tracking-wide transition-colors duration-300`}
                 style={{ fontFamily: 'var(--font-label)' }}
               >
                 {link.label}
@@ -86,16 +92,16 @@ export default function Navbar() {
             ))}
             
             {/* Cart Icon Desktop */}
-            <CartIcon />
+            <CartIcon isHome={isHome} scrolled={scrolled} />
           </div>
 
           <div className="flex items-center gap-4 md:hidden">
             {/* Cart Icon Mobile */}
-            <CartIcon />
+            <CartIcon isHome={isHome} scrolled={scrolled} />
             {/* Mobile Toggle */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="text-on-surface p-2"
+              className={`${isHome && !scrolled ? 'text-white drop-shadow-md' : 'text-on-surface'} p-2 transition-colors duration-300`}
               aria-label="Menú"
             >
             <svg
