@@ -460,7 +460,7 @@ export default async function Home() {
 
       {/* ── SECCIÓN EL ESTUDIO (ACCESO) ────────────────────────── */}
       {homeEstudioConfig?.activo !== false && (
-        <section className="relative py-32 lg:py-48 overflow-hidden flex items-center justify-center group/study">
+        <section className="relative py-24 lg:py-32 overflow-hidden flex items-center justify-center group/study">
           {/* Background Image with Cinematic Overlay */}
           <div className="absolute inset-0 z-0 overflow-hidden">
             {homeEstudioConfig?.imagen ? (
@@ -472,9 +472,9 @@ export default async function Home() {
                   className="object-cover transition-transform duration-[4s] ease-out group-hover/study:scale-105"
                   sizes="100vw"
                 />
-                {/* Refined Cinematic Overlays */}
-                <div className="absolute inset-0 bg-black/40" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)]" />
+                {/* Refined Cinematic Overlays - Lighter to show image, dark in center for text */}
+                <div className="absolute inset-0 bg-black/10" />
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.5)_0%,transparent_60%)]" />
               </>
             ) : (
               <div className="absolute inset-0 bg-black/80" />
