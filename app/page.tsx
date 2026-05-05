@@ -460,7 +460,7 @@ export default async function Home() {
 
       {/* ── SECCIÓN EL ESTUDIO (ACCESO) ────────────────────────── */}
       {homeEstudioConfig?.activo !== false && (
-        <section className="relative py-24 lg:py-32 overflow-hidden flex items-center justify-center group/study">
+        <section className="relative py-12 lg:py-16 overflow-hidden flex items-center justify-center group/study">
           {/* Background Image with Cinematic Overlay */}
           <div className="absolute inset-0 z-0 overflow-hidden">
             {homeEstudioConfig?.imagen ? (
@@ -483,7 +483,7 @@ export default async function Home() {
 
           <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
             {/* Decorative element */}
-            <div className="flex items-center justify-center gap-4 md:gap-6 mb-8 md:mb-10 opacity-95">
+            <div className="flex items-center justify-center gap-4 md:gap-6 mb-4 md:mb-6 opacity-95">
               <span className="w-8 md:w-16 h-px bg-[#C9A84C]/60" />
               <p className="text-[9px] md:text-xs tracking-[0.4em] md:tracking-[0.6em] !text-white font-bold uppercase drop-shadow-md" style={{ fontFamily: 'var(--font-label)' }}>
                 Mística del Taller
@@ -492,13 +492,13 @@ export default async function Home() {
             </div>
 
             <h2 
-              className="!text-white mb-6 md:mb-8 leading-[0.9] tracking-tighter drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]" 
+              className="!text-white mb-4 md:mb-6 leading-[0.9] tracking-tighter drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]" 
               style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 8vw, 7rem)' }}
             >
               {homeEstudioConfig?.titulo || 'El Alma del Vidrio'}
             </h2>
 
-            <p className="text-lg lg:text-2xl !text-white/90 font-serif italic leading-relaxed mb-10 md:mb-14 max-w-2xl mx-auto drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
+            <p className="text-lg lg:text-2xl !text-white/90 font-serif italic leading-relaxed mb-8 md:mb-10 max-w-2xl mx-auto drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
               {homeEstudioConfig?.descripcion || 'Adéntrate en el proceso donde el fuego y la paciencia se encuentran. Conoce nuestro taller y la filosofía detrás de cada pieza única.'}
             </p>
 
