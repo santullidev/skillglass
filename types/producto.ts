@@ -8,6 +8,7 @@ export interface Producto {
   numeroCertificado?: string
   categoria?: string
   imagenes: SanityImage[]
+  textColor?: 'white' | 'black'
   peso?: number
 }
 
@@ -30,6 +31,7 @@ export interface Coleccion {
   descripcion?: string
   descripcionLarga?: string
   imagenes: SanityImage[]
+  textColor?: 'white' | 'black'
   productos: ProductoEnColeccion[]
 }
 

@@ -117,10 +117,10 @@ export default async function EstudioPage() {
               const isEven = i % 2 === 0
               
               return (
-                <div key={fase._key || i} className="contents">
+                <div key={fase._key || i} className="grid grid-cols-1 md:grid-cols-3 col-span-1 md:col-span-3 gap-0">
                   {/* Bloque de Texto */}
-                  <div className={`bg-surface p-12 lg:p-16 flex flex-col justify-between min-h-[400px] ${
-                    isEven ? 'col-span-1 order-1' : 'col-span-1 md:order-2'
+                  <div className={`bg-surface p-12 lg:p-16 flex flex-col justify-center min-h-[400px] ${
+                    isEven ? 'md:order-1' : 'md:order-2'
                   }`}>
                     <div>
                       <span className="text-primary/60 text-[10px] tracking-widest uppercase block mb-4" style={{ fontFamily: 'var(--font-label)' }}>
@@ -136,12 +136,12 @@ export default async function EstudioPage() {
                   </div>
 
                   {/* Bloque de Imagen */}
-                  <div className={`bg-surface col-span-1 md:col-span-2 relative overflow-hidden h-[400px] ${
-                    isEven ? 'order-2' : 'md:order-1'
+                  <div className={`bg-surface col-span-1 md:col-span-2 relative overflow-hidden h-[400px] md:h-auto min-h-[400px] ${
+                    isEven ? 'md:order-2' : 'md:order-1'
                   }`}>
                     {fase.imagen ? (
                       <Image 
-                        src={urlFor(fase.imagen).width(1200).url()} 
+                        src={urlFor(fase.imagen).width(1200).height(800).fit('crop').auto('format').url()} 
                         alt={fase.titulo}
                         fill
                         className="w-full h-full object-cover opacity-90 transition-transform duration-1000 hover:scale-105"

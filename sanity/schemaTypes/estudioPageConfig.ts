@@ -75,7 +75,13 @@ export const estudioPageSchema = defineType({
             { name: 'etiqueta', title: 'Etiqueta (Ej: Fase I)', type: 'string' },
             { name: 'titulo', title: 'Título', type: 'string' },
             { name: 'descripcion', title: 'Descripción', type: 'text', rows: 3 },
-            { name: 'imagen', title: 'Imagen Ilustrativa', type: 'image', options: { hotspot: true } }
+            { 
+              name: 'imagen', 
+              title: 'Imagen Ilustrativa', 
+              type: 'image', 
+              options: { hotspot: true },
+              description: '✂️ Hacé clic en la imagen y luego en "Edit" para abrir el CROPER. Podés elegir qué parte de la foto se ve (Hotspot) y cómo se recorta (Crop) para que siempre quede perfecta en la grilla.'
+            }
           ]
         }
       ],

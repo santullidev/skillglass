@@ -10,6 +10,7 @@ export const PRODUCTOS_QUERY = defineQuery(`
     disponible,
     categoria,
     imagenes,
+    textColor,
     numeroCertificado,
     peso
   }
@@ -25,6 +26,7 @@ export const PRODUCTO_BY_SLUG_QUERY = defineQuery(`
     disponible,
     categoria,
     imagenes,
+    textColor,
     numeroCertificado,
     peso
   }
@@ -38,6 +40,7 @@ export const COLECCIONES_QUERY = defineQuery(`
     descripcion,
     descripcionLarga,
     imagenes,
+    textColor,
     productos[]{
       _key,
       tamanoGrilla,
@@ -98,12 +101,14 @@ export const HERO_CONFIG_QUERY = defineQuery(`
 export const CAPSULAS_SECTION_QUERY = defineQuery(`
   *[_type == "capsulasSectionConfig" && _id == "capsulasSectionConfig"][0] {
     tituloSeccionColecciones,
+    textColor,
     coleccionesDestacadas[]->{
       _id,
       nombre,
       "slug": slug.current,
       descripcion,
       imagenes,
+      textColor,
       productos[]{
         _key,
         tamanoGrilla,
@@ -131,6 +136,7 @@ export const ALQUIMIA_SECTION_QUERY = defineQuery(`
       precio,
       descripcion,
       imagenes,
+      textColor,
       numeroCertificado
     },
     specs
@@ -157,6 +163,7 @@ export const PRODUCTOS_SECTION_QUERY = defineQuery(`
       "slug": slug.current,
       precio,
       imagenes,
+      textColor,
       numeroCertificado
     }
   }
@@ -263,19 +270,9 @@ export const ESTUDIO_PAGE_QUERY = defineQuery(`
     heroTitle,
     fases[]{
       ...,
-      imagen{
-        asset->{
-          _id,
-          url
-        }
-      }
+      imagen
     },
-    heroImage{
-      asset->{
-        _id,
-        url
-      }
-    },
+    heroImage,
     texturaFinalTexto,
     ctaEtiqueta,
     ctaTitulo,

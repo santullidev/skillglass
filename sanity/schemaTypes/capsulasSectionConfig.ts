@@ -13,6 +13,20 @@ export const capsulasSectionSchema = defineType({
       initialValue: 'Series Conceptuales',
     }),
     defineField({
+      name: 'textColor',
+      title: 'Color del texto de la sección',
+      type: 'string',
+      description: '🎨 Elegí si el título y el texto de esta sección se ven en blanco o negro.',
+      options: {
+        list: [
+          { title: '⚪ Blanco', value: 'white' },
+          { title: '⚫ Negro', value: 'black' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'black',
+    }),
+    defineField({
       name: 'coleccionesDestacadas',
       title: 'Cápsulas a mostrar en el Home',
       type: 'array',

@@ -49,6 +49,21 @@ export const collectionSchema = defineType({
       description: '🖊️ Texto más extenso que aparece dentro de la página de la cápsula. Podés contar la historia detrás de esta serie, la inspiración, los materiales usados, etc.',
       placeholder: 'Esta cápsula nació de la observación del cielo nocturno sobre el taller...',
     }),
+    defineField({
+      name: 'textColor',
+      title: 'Color del texto sobre la imagen',
+      type: 'string',
+      group: 'info',
+      description: '🎨 Elegí si el nombre y la descripción se ven en blanco o negro sobre la foto de portada.',
+      options: {
+        list: [
+          { title: '⚪ Blanco', value: 'white' },
+          { title: '⚫ Negro', value: 'black' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'white',
+    }),
 
     // ─── IMÁGENES ───────────────────────────────────────────────────────
     defineField({

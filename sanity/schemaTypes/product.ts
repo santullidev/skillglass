@@ -93,6 +93,21 @@ export const productSchema = defineType({
       description: '⚖️ Peso aproximado en gramos (incluyendo packaging). Importante para calcular el costo de envío con Andreani. Valor por defecto: 300g.',
       validation: (Rule) => Rule.min(1).error('El peso debe ser mayor a 0.'),
     }),
+    defineField({
+      name: 'textColor',
+      title: 'Color del texto sobre la imagen',
+      type: 'string',
+      group: 'info',
+      description: '🎨 Elegí si el nombre y precio se ven en blanco o negro sobre la foto en el catálogo.',
+      options: {
+        list: [
+          { title: '⚪ Blanco', value: 'white' },
+          { title: '⚫ Negro', value: 'black' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'white',
+    }),
 
     // ─── IMÁGENES ───────────────────────────────────────────────────────
     defineField({

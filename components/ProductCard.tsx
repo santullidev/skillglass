@@ -17,6 +17,10 @@ export default function ProductCard({ producto, index = 0 }: Props) {
     ? (producto.slug as { current: string }).current
     : producto.slug
 
+  const isDark = (producto.textColor || 'white') === 'white'
+  const textColorClass = isDark ? 'text-white' : 'text-black'
+  const subtextColorClass = isDark ? 'text-white/80' : 'text-black/80'
+
   return (
     <Link
       href={`/productos/${safeSlug}`}
@@ -34,7 +38,11 @@ export default function ProductCard({ producto, index = 0 }: Props) {
 
       {/* Gradient Overlay - Deepened for maximum contrast */}
       <div 
-        className="absolute inset-0 z-10 transition-opacity duration-500 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-95 group-hover:opacity-100"
+        className={`absolute inset-0 z-10 transition-opacity duration-500 bg-gradient-to-t ${
+          isDark 
+            ? 'from-black/90 via-black/40 to-transparent opacity-95' 
+            : 'from-white/80 via-white/30 to-transparent opacity-90'
+        } group-hover:opacity-100`}
       />
 
       {/* Badge: Pieza Única */}
@@ -49,7 +57,7 @@ export default function ProductCard({ producto, index = 0 }: Props) {
       <div className="absolute inset-0 z-20 p-5 md:p-8 flex flex-col justify-end pointer-events-none">
         <div className="flex flex-col gap-1 md:gap-2">
           {/* Category */}
-          <p className="text-[10px] md:text-xs tracking-[0.3em] !text-white/80 uppercase font-bold"
+          <p className={`text-[10px] md:text-xs tracking-[0.3em] ${subtextColorClass} uppercase font-bold`}
             style={{ fontFamily: 'var(--font-label)' }}>
             {producto.categoria || 'Joyería de autor'}
           </p>
@@ -57,7 +65,7 @@ export default function ProductCard({ producto, index = 0 }: Props) {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 md:gap-4">
             {/* Name */}
             <h2
-              className="!text-white text-2xl md:text-3xl lg:text-4xl leading-tight font-medium drop-shadow-md"
+              className={`${textColorClass} text-2xl md:text-3xl lg:text-4xl leading-tight font-medium drop-shadow-md`}
               style={{ fontFamily: 'var(--font-display)' }}
             >
               {producto.nombre}
@@ -66,7 +74,7 @@ export default function ProductCard({ producto, index = 0 }: Props) {
             {/* Price */}
             {producto.precio && (
               <span
-                className="!text-white text-sm md:text-base tracking-widest font-bold shrink-0 mb-1"
+                className={`${textColorClass} text-sm md:text-base tracking-widest font-bold shrink-0 mb-1`}
                 style={{ fontFamily: 'var(--font-label)' }}
               >
                 ${producto.precio.toLocaleString('es-AR')}
