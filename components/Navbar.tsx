@@ -9,7 +9,7 @@ import { useCart } from '@/lib/cart-context'
 function CartIcon({ isHome, scrolled }: { isHome: boolean, scrolled: boolean }) {
   const { totalItems } = useCart()
   
-  const iconColor = isHome && !scrolled ? 'text-white hover:text-white/80' : 'text-on-surface hover:text-primary'
+  const iconColor = isHome && !scrolled ? '!text-white hover:!text-white/80' : 'text-on-surface hover:text-primary'
 
   return (
     <Link href="/carrito" className={`relative group ${iconColor} transition-colors duration-300 flex items-center justify-center p-2`}>
@@ -66,16 +66,17 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <Link href="/" className="group flex items-center">
-            {/* Si estamos en home y NO hay scroll, mostramos un logo blanco si existe, de lo contrario usamos brightness/invert. 
-                Asumiendo que el logo es negro/oscuro, podemos invertirlo con CSS para que sea blanco. */}
-            <Image
-              src="/logo.png"
-              alt="Skil Glass"
-              width={140}
-              height={40}
-              className={`object-contain transition-all duration-500 group-hover:opacity-80 ${isHome && !scrolled ? 'brightness-0 invert' : ''}`}
-              priority
-            />
+            {/* Usamos un div con estilo inline para forzar el filtro, asegurando que el logo se vuelva blanco */}
+            <div style={{ filter: isHome && !scrolled ? 'brightness(0) invert(1)' : 'none', transition: 'filter 0.5s ease' }}>
+              <Image
+                src="/logo.png"
+                alt="Skil Glass"
+                width={140}
+                height={40}
+                className="object-contain transition-opacity duration-500 group-hover:opacity-80"
+                priority
+              />
+            </div>
           </Link>
 
           {/* Desktop Nav */}
@@ -84,7 +85,7 @@ export default function Navbar() {
               <Link
                 key={link.label}
                 href={link.href}
-                className={`${isHome && !scrolled ? 'text-white/80 hover:text-white drop-shadow-md' : 'text-on-surface-variant hover:text-on-surface'} text-sm tracking-wide transition-colors duration-300`}
+                className={`${isHome && !scrolled ? '!text-white/90 hover:!text-white drop-shadow-md' : 'text-on-surface-variant hover:text-on-surface'} text-sm tracking-wide transition-colors duration-300`}
                 style={{ fontFamily: 'var(--font-label)' }}
               >
                 {link.label}
@@ -101,7 +102,7 @@ export default function Navbar() {
             {/* Mobile Toggle */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className={`${isHome && !scrolled ? 'text-white drop-shadow-md' : 'text-on-surface'} p-2 transition-colors duration-300`}
+              className={`${isHome && !scrolled ? '!text-white drop-shadow-md' : 'text-on-surface'} p-2 transition-colors duration-300`}
               aria-label="Menú"
             >
             <svg
