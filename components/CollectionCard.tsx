@@ -47,7 +47,7 @@ export default function CollectionCard({ coleccion }: Props) {
       {/* Badge: Cápsula */}
       <div className="absolute top-3 right-3 md:top-4 md:right-4 z-30">
         <span 
-          className="text-[9px] md:text-[10px] font-bold tracking-[0.2em] bg-gold !text-black px-3 py-1 rounded-full uppercase shadow-xl"
+          className="text-[9px] md:text-[10px] font-bold tracking-[0.2em] bg-gold !text-white px-3 py-1 rounded-full uppercase shadow-xl"
           style={{ fontFamily: 'var(--font-label)' }}
         >
           Cápsula
