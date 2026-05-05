@@ -80,73 +80,73 @@ export default function HeroSlider({ images, metadata, title, subtitle, ctaTexto
           />
         )}
         
-        {/* Soft protection overlay - Muy sutil para el Navbar */}
-        <div className="absolute inset-x-0 top-0 h-32 bg-linear-to-b from-white/30 to-transparent z-20 pointer-events-none" />
-        <div className="absolute inset-0 bg-white/5 z-10" />
+      {/* Cinematic Overlay - Refined for depth */}
+      <div className="absolute inset-0 z-10 pointer-events-none">
+        <div className="absolute inset-0 bg-black/30" />
+        <div className="absolute inset-0 bg-radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%)" />
+        <div className="absolute inset-x-0 bottom-0 h-64 bg-linear-to-t from-surface to-transparent" />
       </div>
 
       {/* Tech Metadata Overlays */}
       <div className="absolute inset-x-0 bottom-0 z-30 pointer-events-none p-6 md:p-12 pb-8 md:pb-12 flex justify-between">
-        <div className="w-full max-w-7xl mx-auto flex flex-row justify-between items-center text-[8px] md:text-[10px] tracking-[0.3em] md:tracking-[0.4em] uppercase text-on-surface/60" style={{ fontFamily: 'var(--font-label)' }}>
-          <div className="flex flex-row items-center gap-2 md:gap-4 drop-shadow-md">
-            <span className="text-gold font-bold">PIEZA //</span>
-            <span className="text-on-surface/70">{metadata?.piezaId || 'NO. 042-BALTIC'}</span>
+        <div className="w-full max-w-7xl mx-auto flex flex-row justify-between items-center text-[8px] md:text-[10px] tracking-[0.3em] md:tracking-[0.4em] uppercase text-white/40" style={{ fontFamily: 'var(--font-label)' }}>
+          <div className="flex flex-row items-center gap-2 md:gap-4 drop-shadow-lg">
+            <span className="text-gold/80 font-bold">PIEZA //</span>
+            <span className="text-white/50">{metadata?.piezaId || 'NO. 042-BALTIC'}</span>
           </div>
-          <div className="hidden md:block flex-1 mx-12 h-px bg-gold/10" />
-          <div className="flex flex-row items-center gap-2 md:gap-4 drop-shadow-md">
-            <span className="text-gold font-bold">REF //</span>
-            <span className="text-on-surface/70">{metadata?.referencia || 'VITRO-REFRACT-01'}</span>
+          <div className="hidden md:block flex-1 mx-12 h-px bg-white/10" />
+          <div className="flex flex-row items-center gap-2 md:gap-4 drop-shadow-lg">
+            <span className="text-gold/80 font-bold">REF //</span>
+            <span className="text-white/50">{metadata?.referencia || 'VITRO-REFRACT-01'}</span>
           </div>
         </div>
       </div>
 
       <div className="relative z-30 text-center px-4 md:px-6 max-w-5xl mx-auto flex flex-col items-center">
-        {/* Contenedor con Efecto Vidrio (Glassmorphism) para lectura perfecta */}
-        <div className="glass-panel p-8 md:p-16 lg:p-20 flex flex-col items-center max-w-4xl border-none! shadow-none!">
-          
-          {/* Etiqueta Premium */}
-          <div className="mb-8 px-6 py-2 border border-gold/40 bg-white/40 backdrop-blur-md inline-flex items-center gap-3 relative overflow-hidden">
-            <div className="w-1.5 h-1.5 bg-gold rounded-full animate-pulse shadow-[0_0_10px_rgba(201,168,76,0.8)]" />
-            <p className="label-text tracking-[0.5em] text-gold mb-0 text-[10px] font-bold uppercase">
-              JOYERÍA EN VIDRIO DE AUTOR
-            </p>
-          </div>
-
-          {/* Título Principal */}
-          <h1 
-            className="text-5xl md:text-8xl lg:text-9xl mb-6 md:mb-8 leading-tight overflow-visible text-gradient-gold text-balance"
-            style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.8rem, 10vw, 8rem)' }}
-          >
-            {title ? title.split('\n').map((line, i, arr) => (
-              <span key={i} className={i % 2 === 1 ? 'italic font-light opacity-90' : 'font-medium'}>
-                {line}
-                {i < arr.length - 1 && <br />}
-              </span>
-            )) : (
-              <>
-                <span className="font-medium">Joyas de</span>
-                <br />
-                <span className="italic font-light opacity-90">Alquimia</span>
-              </>
-            )}
-          </h1>
-
-          {/* Subtítulo */}
-          <p className="text-on-surface-variant text-lg md:text-xl lg:text-2xl max-w-2xl font-serif mb-12 text-balance leading-relaxed">
-            {subtitle || "Explorando el límite térmico del cristal."}
+        
+        {/* Floating Editorial Header */}
+        <div className="mb-10 flex items-center justify-center gap-6 opacity-90">
+          <div className="w-12 h-px bg-gold/40" />
+          <p className="text-[10px] md:text-xs tracking-[0.6em] text-white font-bold uppercase drop-shadow-lg" style={{ fontFamily: 'var(--font-label)' }}>
+            JOYERÍA EN VIDRIO DE AUTOR
           </p>
-
-          {/* High-Impact CTA Button */}
-          <Link
-            href={ctaLink || "/capsulas"}
-            className="btn-luxury group"
-          >
-            <span className="relative z-10 font-bold group-hover:text-white transition-colors flex items-center gap-6">
-              {ctaTexto || "Explorar Cápsulas"}
-              <span className="text-gold group-hover:text-white text-lg group-hover:translate-x-2 transition-all duration-300">→</span>
-            </span>
-          </Link>
+          <div className="w-12 h-px bg-gold/40" />
         </div>
+
+        {/* Main Title - Floating & High Contrast */}
+        <h1 
+          className="text-white mb-8 leading-[0.85] tracking-tighter drop-shadow-[0_15px_40px_rgba(0,0,0,0.5)]"
+          style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3.5rem, 12vw, 10rem)' }}
+        >
+          {title ? title.split('\n').map((line, i, arr) => (
+            <span key={i} className={i % 2 === 1 ? 'italic font-light text-gold/90' : 'font-medium'}>
+              {line}
+              {i < arr.length - 1 && <br />}
+            </span>
+          )) : (
+            <>
+              <span className="font-medium">Joyas de</span>
+              <br />
+              <span className="italic font-light text-gold/90">Alquimia</span>
+            </>
+          )}
+        </h1>
+
+        {/* Subtitle - Elegant & Floating */}
+        <p className="text-white/80 text-xl md:text-2xl lg:text-3xl max-w-2xl font-serif italic mb-14 text-balance leading-relaxed drop-shadow-lg">
+          {subtitle || "Explorando el límite térmico del cristal."}
+        </p>
+
+        {/* Elegant CTA */}
+        <Link
+          href={ctaLink || "/capsulas"}
+          className="group relative inline-flex items-center gap-8 px-12 py-6 text-[10px] tracking-[0.5em] text-white uppercase border border-white/20 bg-white/5 backdrop-blur-md hover:bg-gold hover:text-black hover:border-gold transition-all duration-700 overflow-hidden"
+          style={{ fontFamily: 'var(--font-label)' }}
+        >
+          <span className="relative z-10 font-bold">{ctaTexto || "Explorar Cápsulas"}</span>
+          <span className="relative z-10 text-lg group-hover:translate-x-2 transition-transform duration-500">→</span>
+          <div className="absolute inset-0 -translate-x-full group-hover:translate-x-0 bg-gold transition-transform duration-700 ease-in-out" />
+        </Link>
       </div>
 
       {/* Slide Indicators */}
