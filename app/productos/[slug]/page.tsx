@@ -69,8 +69,6 @@ export default async function ProductDetailPage({
     notFound()
   }
 
-  // Use the first image for AddToCart reference
-  const firstImageUrl = producto.imagenes?.[0] ? urlFor(producto.imagenes[0]).width(400).height(400).url() : ''
 
   return (
     <div className="min-h-screen pt-32 pb-24 px-6 lg:px-8 max-w-7xl mx-auto">
@@ -139,24 +137,8 @@ export default async function ProductDetailPage({
           <div className="space-y-4 mb-12">
             {producto.disponible ? (
               <>
-                <AddToCartButton
-                  id={producto._id}
-                  nombre={producto.nombre}
-                  slug={producto.slug}
-                  precio={producto.precio || 0}
-                  imagenUrl={firstImageUrl}
-                  numeroCertificado={producto.numeroCertificado}
-                  peso={producto.peso}
-                />
-                <BuyButton 
-                  id={producto._id}
-                  nombre={producto.nombre}
-                  precio={producto.precio || 0}
-                  slug={producto.slug}
-                  imagenUrl={firstImageUrl}
-                  numeroCertificado={producto.numeroCertificado}
-                  peso={producto.peso}
-                />
+                <AddToCartButton producto={producto} />
+                <BuyButton producto={producto} />
               </>
             ) : (
               <div className="border border-outline-variant text-on-surface-variant py-4 px-6 text-center text-sm tracking-widest uppercase line-through" style={{ fontFamily: 'var(--font-label)' }}>

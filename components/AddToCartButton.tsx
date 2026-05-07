@@ -2,35 +2,34 @@
 
 import { useState } from 'react'
 import { useCart } from '@/lib/cart-context'
+import type { Producto } from '@/types/producto'
+import { urlFor } from '@/lib/sanity'
 
 interface Props {
-  id: string
-  nombre: string
-  slug: string
-  precio: number
-  imagenUrl: string
-  numeroCertificado?: string
-  peso?: number
+  producto: Producto
+  imagen?: string
 }
 
-export default function AddToCartButton({ id, nombre, slug, precio, imagenUrl, numeroCertificado, peso }: Props) {
+export default function AddToCartButton({ producto, imagen }: Props) {
   const { addItem } = useCart()
   const [added, setAdded] = useState(false)
 
   const handleAdd = () => {
+    const imagenUrl = imagen || (producto.imagenes?.[0] ? urlFor(producto.imagenes[0]).width(400).url() : '')
+
     addItem({
-      id,
-      nombre,
-      slug,
-      precio,
+      id: producto._id,           // ← siempre el _id de Sanity (UUID)
+      nombre: producto.nombre,
+      slug: producto.slug,
+      precio: producto.precio,
       imagenUrl,
-      referencia: `Ref: SKG-${id.substring(0, 4).toUpperCase()} // Pieza Única`, // Simulated reference
-      numeroCertificado,
-      peso
+      referencia: `Ref: SKG-${producto._id.substring(0, 4).toUpperCase()} // Pieza Única`,
+      numeroCertificado: producto.numeroCertificado,
+      peso: producto.peso,
     })
-    
+
     setAdded(true)
-    setTimeout(() => setAdded(false), 2000) // Reset after 2 seconds
+    setTimeout(() => setAdded(false), 2000)
   }
 
   return (
@@ -53,7 +52,6 @@ export default function AddToCartButton({ id, nombre, slug, precio, imagenUrl, n
           'Agregar al carrito'
         )}
       </span>
-      {/* Caustic glow on hover */}
       {!added && (
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-linear-to-r from-transparent via-primary/5 to-transparent" />
       )}

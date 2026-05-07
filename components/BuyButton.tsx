@@ -3,18 +3,15 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/lib/cart-context'
+import type { Producto } from '@/types/producto'
+import { urlFor } from '@/lib/sanity'
 
 interface Props {
-  id: string
-  nombre: string
-  precio: number
-  slug: string
-  imagenUrl: string
-  numeroCertificado?: string
-  peso?: number
+  producto: Producto
+  imagen?: string
 }
 
-export default function BuyButton({ id, nombre, precio, slug, imagenUrl, numeroCertificado, peso }: Props) {
+export default function BuyButton({ producto, imagen }: Props) {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const { addItem } = useCart()
@@ -22,21 +19,20 @@ export default function BuyButton({ id, nombre, precio, slug, imagenUrl, numeroC
   const handleComprar = async () => {
     setLoading(true)
     try {
-      // 1. Agregar al carrito (si no está ya)
+      const imagenUrl = imagen || (producto.imagenes?.[0] ? urlFor(producto.imagenes[0]).width(400).url() : '')
+
       addItem({
-        id,
-        nombre,
-        slug,
-        precio,
+        id: producto._id,         // ← siempre el _id de Sanity (UUID)
+        nombre: producto.nombre,
+        slug: producto.slug,
+        precio: producto.precio,
         imagenUrl,
-        referencia: `Ref: SKG-${id.substring(0, 4).toUpperCase()} // Pieza Única de Autor`,
-        numeroCertificado,
-        peso
+        referencia: `Ref: SKG-${producto._id.substring(0, 4).toUpperCase()} // Pieza Única de Autor`,
+        numeroCertificado: producto.numeroCertificado,
+        peso: producto.peso,
       })
 
-      // 2. Redirigir al flujo de envío
       router.push('/envio')
-      
     } catch (error) {
       console.error('Error al iniciar compra directa:', error)
       setLoading(false)
@@ -51,10 +47,10 @@ export default function BuyButton({ id, nombre, precio, slug, imagenUrl, numeroC
       style={{ fontFamily: 'var(--font-label)' }}
     >
       <span className="relative z-10 tracking-wide text-sm uppercase">
-        {loading ? 'Preparando envío...' : 'Comprar ahora'}
+        {loading ? 'Preparando...' : 'Comprar ahora'}
       </span>
       {/* Caustic glow on hover */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-linear-to-r from-primary-container via-primary/5 to-primary-container" />
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-linear-to-r from-primary/5 to-primary/5 to-transparent" />
     </button>
   )
 }
