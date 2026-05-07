@@ -72,8 +72,8 @@ export default function HeroStudio({ images, metadata, title, subtitle, ctaTexto
         
         {/* Luminous Overlays: Warm Rose Gold & Transitions */}
         <div className="absolute inset-0 z-20 pointer-events-none">
-          {/* Top Protection (Subtle for Navbar) */}
-          <div className="absolute inset-x-0 top-0 h-40 bg-linear-to-b from-black/20 to-transparent" />
+          {/* Top Protection (Stronger for Navbar visibility) */}
+          <div className="absolute inset-x-0 top-0 h-40 bg-linear-to-b from-black/60 via-black/20 to-transparent" />
           
           {/* Luminous Core (Warm light from center) */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,245,245,0.2)_0%,rgba(255,245,245,1)_100%)]" />

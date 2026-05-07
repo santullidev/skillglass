@@ -84,8 +84,8 @@ export default function HeroMinimal({ images, metadata, title, subtitle, ctaText
           </div>
         )}
         
-        {/* Soft protection overlay for the Navbar */}
-        <div className="absolute inset-x-0 top-0 h-32 bg-linear-to-b from-white/30 to-transparent z-20 pointer-events-none" />
+        {/* Navbar Protection - Gradient to make white navbar links visible on light backgrounds */}
+        <div className="absolute inset-x-0 top-0 h-40 bg-linear-to-b from-black/60 via-black/20 to-transparent z-20 pointer-events-none" />
       </div>
 
       {/* Centered White Square (Glassmorphism Panel) */}
