@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import HeroSlider from './HeroSlider'
 import HeroMinimal from './HeroMinimal'
+import HeroStudio from './HeroStudio'
 import type { HeroMetadata } from '@/types/producto'
 
 interface SanityMedia {
@@ -25,20 +26,18 @@ interface Props {
 }
 
 export default function HeroComparison(props: Props) {
-  const [variant, setVariant] = useState(0) // 0: Actual, 1: Anterior
+  const [variant, setVariant] = useState(0) // 0: Actual, 1: Anterior, 2: Studio
 
-  const nextVariant = () => setVariant((prev) => (prev === 0 ? 1 : 0))
-  const prevVariant = () => setVariant((prev) => (prev === 0 ? 1 : 0))
+  const nextVariant = () => setVariant((prev) => (prev + 1) % 3)
+  const prevVariant = () => setVariant((prev) => (prev === 0 ? 2 : prev - 1))
 
   return (
     <div className="relative group/comparison">
       {/* Active Hero Variant */}
       <div className="transition-all duration-700 ease-in-out">
-        {variant === 0 ? (
-          <HeroSlider {...props} />
-        ) : (
-          <HeroMinimal {...props} />
-        )}
+        {variant === 0 && <HeroSlider {...props} />}
+        {variant === 1 && <HeroMinimal {...props} />}
+        {variant === 2 && <HeroStudio {...props} />}
       </div>
 
       {/* Manual Controls */}
@@ -63,9 +62,11 @@ export default function HeroComparison(props: Props) {
       </div>
 
       {/* Floating Info Badge */}
-      <div className="absolute top-24 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
-        <div className="bg-primary px-4 py-2 text-[10px] tracking-[0.3em] font-bold text-white uppercase shadow-2xl animate-pulse">
-          PRUEBA DE DISEÑO: {variant === 0 ? 'MODELO ACTUAL' : 'MODELO ANTERIOR'}
+      <div className="absolute top-24 left-1/2 -translate-x-1/2 z-50 pointer-events-none text-center">
+        <div className="bg-primary px-4 py-2 text-[10px] tracking-[0.3em] font-bold text-white uppercase shadow-2xl animate-pulse inline-block">
+          {variant === 0 && 'MODELO ACTUAL (Cinemático)'}
+          {variant === 1 && 'MODELO ANTERIOR (Glass)'}
+          {variant === 2 && 'MODELO STUDIO (Bordó)'}
         </div>
       </div>
 
@@ -78,6 +79,10 @@ export default function HeroComparison(props: Props) {
         <button 
           onClick={() => setVariant(1)}
           className={`h-2 transition-all duration-500 ${variant === 1 ? 'w-12 bg-primary' : 'w-4 bg-primary/30'}`}
+        />
+        <button 
+          onClick={() => setVariant(2)}
+          className={`h-2 transition-all duration-500 ${variant === 2 ? 'w-12 bg-primary' : 'w-4 bg-primary/30'}`}
         />
       </div>
     </div>
