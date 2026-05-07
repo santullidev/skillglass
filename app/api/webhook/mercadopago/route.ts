@@ -163,13 +163,18 @@ export async function POST(req: NextRequest) {
 
       const externalReference = paymentData.external_reference
 
-      // Derivar el nombre del cliente: priorizar payer de MP, luego shipping_data
-      const clienteNombre = paymentData.payer?.first_name
-        ? `${paymentData.payer.first_name} ${paymentData.payer.last_name || ''}`.trim()
-        : shippingData.nombre || 'Cliente MP'
+      // Derivar datos del cliente: PRIORIDAD el formulario del checkout (shippingData),
+      // fallback al payer de MP (puede ser email de prueba o cuenta ajena al contacto real)
+      const clienteNombre =
+        shippingData.nombre ||
+        (paymentData.payer?.first_name
+          ? `${paymentData.payer.first_name} ${paymentData.payer.last_name || ''}`.trim()
+          : 'Cliente MP')
 
-      const clienteEmail    = paymentData.payer?.email || shippingData.email
-      const clienteTelefono = String(paymentData.payer?.phone?.number || shippingData.telefono || '')
+      const clienteEmail = shippingData.email || paymentData.payer?.email || ''
+
+      const clienteTelefono =
+        shippingData.telefono || String(paymentData.payer?.phone?.number || '')
 
       // ✅ Inicializar pedido en Sanity
       const sanityOrder = await backendClient.create({
