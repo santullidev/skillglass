@@ -14,7 +14,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import ProductCard from '@/components/ProductCard'
 import CollectionCard from '@/components/CollectionCard'
-import HeroSlider from '@/components/HeroSlider'
+import HeroComparison from '@/components/HeroComparison'
 import type { Producto } from '@/types/producto'
 
 export const revalidate = 60
@@ -122,7 +122,7 @@ export default async function Home() {
     <div className="flex flex-col min-h-screen">
 
       {/* ── HERO ──────────────────────────────────────────────── */}
-      <HeroSlider
+      <HeroComparison
         images={hero?.fotosPortada}
         metadata={hero?.metadata}
         title={heroTitle}
