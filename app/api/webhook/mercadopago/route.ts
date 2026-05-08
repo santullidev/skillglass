@@ -297,51 +297,40 @@ export async function POST(req: NextRequest) {
           continue
         }
 
-        // Los _id de Sanity tienen formato de UUID (contienen letras mayúsculas y son largos)
-        // Los slugs son kebab-case lowercase. Detectamos cuál es.
-        const looksLikeSanityId = item.id.length > 20 && /[A-Z]/.test(item.id)
-
-        if (looksLikeSanityId) {
-          // Patch por _id — también buscamos el slug para poder revalidar el cache
+        // Buscar primero por _id directo (hex Sanity, sin mayúsculas)
+        let patched = false
+        try {
           const productoData = await backendClient.fetch(
-            `*[_type == "producto" && _id == $id][0]{ "slug": slug.current }`,
+            `*[_type == "producto" && _id == $id][0]{ _id, "slug": slug.current }`,
             { id: item.id }
-          ).catch(() => null)
-
-          const patchResult = await backendClient
-            .patch(item.id)
-            .set({ disponible: false })
-            .commit()
-            .catch((err) => {
-              console.error(`❌ Error al marcar producto por _id "${item.id}":`, err)
-              return null
-            })
-
-          if (patchResult) {
-            console.log(`✅ Producto "${item.title}" (${item.id}) marcado como no disponible.`)
-            if (productoData?.slug) {
-              await revalidateProductPage(productoData.slug)
-            }
-          }
-        } else {
-          // El id parece ser un slug — buscar el documento por slug y patchear
-          console.warn(`⚠️ ID "${item.id}" parece ser un slug. Buscando en Sanity por slug...`)
-          const productoDoc = await backendClient.fetch(
-            `*[_type == "producto" && slug.current == $slug][0]{ _id }`,
-            { slug: item.id }
           )
+          if (productoData?._id) {
+            await backendClient.patch(productoData._id).set({ disponible: false }).commit()
+            console.log(`✅ Producto "${item.title}" (${item.id}) marcado como no disponible.`)
+            if (productoData.slug) await revalidateProductPage(productoData.slug)
+            patched = true
+          }
+        } catch (err) {
+          console.error(`❌ Error al patchear por _id "${item.id}":`, err)
+        }
 
-          if (productoDoc?._id) {
-            await backendClient
-              .patch(productoDoc._id)
-              .set({ disponible: false })
-              .commit()
-              .catch((err) => console.error(`❌ Error al marcar producto por slug "${item.id}":`, err))
-
-            console.log(`✅ Producto "${item.title}" (slug: ${item.id} → _id: ${productoDoc._id}) marcado como no disponible.`)
-            await revalidateProductPage(item.id)
-          } else {
-            console.error(`❌ No se encontró producto con slug "${item.id}" en Sanity.`)
+        // Fallback: buscar por slug si el _id no encontró nada
+        if (!patched) {
+          console.warn(`⚠️ No se encontró producto con _id "${item.id}". Intentando por slug...`)
+          try {
+            const productoDoc = await backendClient.fetch(
+              `*[_type == "producto" && slug.current == $slug][0]{ _id, "slug": slug.current }`,
+              { slug: item.id }
+            )
+            if (productoDoc?._id) {
+              await backendClient.patch(productoDoc._id).set({ disponible: false }).commit()
+              console.log(`✅ Producto "${item.title}" (slug: ${item.id}) marcado como no disponible.`)
+              await revalidateProductPage(item.id)
+            } else {
+              console.error(`❌ No se encontró producto con _id ni slug "${item.id}". Stock NO actualizado.`)
+            }
+          } catch (err) {
+            console.error(`❌ Error fallback por slug "${item.id}":`, err)
           }
         }
       }
