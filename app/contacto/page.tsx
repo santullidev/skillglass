@@ -2,6 +2,7 @@ import { client } from "@/lib/sanity";
 import { SETTINGS_QUERY } from "@/lib/queries";
 import ContactForm from "./ContactForm";
 import * as motion from "framer-motion/client";
+import Image from "next/image";
 
 export default async function ContactoPage() {
   const settings = await client.fetch(SETTINGS_QUERY);
@@ -55,6 +56,49 @@ export default async function ContactoPage() {
 
           {/* Columna Derecha: Formulario */}
           <ContactForm />
+        </div>
+
+        {/* Nueva Sección: Puntos de Venta Físicos */}
+        <div className="mt-32 border-t border-outline-variant/20 pt-24">
+          <p className="text-[10px] tracking-[0.4em] text-primary uppercase mb-6" style={{ fontFamily: 'var(--font-label)' }}>
+            PUNTO DE VENTA FÍSICO
+          </p>
+          <h2 className="text-4xl lg:text-5xl text-on-surface mb-12" style={{ fontFamily: 'var(--font-display)' }}>
+            Visítanos en el Estudio
+          </h2>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            {/* Imagen del Showroom */}
+            <div className="lg:col-span-7 relative aspect-video lg:aspect-[4/3] overflow-hidden group">
+              <Image
+                src="/showroom_skil_glass.png"
+                alt="Showroom Skil Glass"
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-black/10 group-hover:opacity-0 transition-opacity duration-700" />
+            </div>
+            
+            {/* Detalles */}
+            <div className="lg:col-span-5 flex flex-col justify-center">
+              <div className="space-y-8 border-l border-outline-variant/30 pl-8">
+                <div>
+                  <span className="text-[10px] tracking-widest uppercase text-outline block mb-2" style={{ fontFamily: 'var(--font-label)' }}>Dirección</span>
+                  <p className="text-xl text-on-surface font-serif">Gorriti 1234, Palermo Art District</p>
+                  <p className="text-on-surface-variant font-serif">Ciudad Autónoma de Buenos Aires, Argentina</p>
+                </div>
+                <div>
+                  <span className="text-[10px] tracking-widest uppercase text-outline block mb-2" style={{ fontFamily: 'var(--font-label)' }}>Horarios de Atención</span>
+                  <p className="text-lg text-on-surface font-serif">Lunes a Viernes — 10:00 a 18:00</p>
+                  <p className="text-lg text-on-surface font-serif">Sábados — 11:00 a 14:00</p>
+                </div>
+                <div>
+                  <span className="text-[10px] tracking-widest uppercase text-outline block mb-2" style={{ fontFamily: 'var(--font-label)' }}>Citas Exclusivas</span>
+                  <p className="text-sm text-on-surface-variant font-serif">Para una experiencia personalizada o consultas sobre piezas a medida, recomendamos agendar una cita previa por email.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
