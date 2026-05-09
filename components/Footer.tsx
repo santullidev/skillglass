@@ -136,6 +136,14 @@ export default function Footer({ settings }: FooterProps) {
                   Contacto
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/contacto#puntos-de-venta"
+                  className="text-on-surface-variant text-sm hover:text-on-surface transition-colors duration-300"
+                >
+                  Punto de venta físico
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

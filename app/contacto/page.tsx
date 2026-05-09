@@ -60,7 +60,7 @@ export default async function ContactoPage() {
 
         {/* Nueva Sección: Puntos de Venta Físicos */}
         {settings?.puntosDeVenta && settings.puntosDeVenta.length > 0 && (
-          <div className="mt-32 border-t border-outline-variant/20 pt-24">
+          <div id="puntos-de-venta" className="mt-32 border-t border-outline-variant/20 pt-24">
             <p className="text-[10px] tracking-[0.4em] text-primary uppercase mb-6" style={{ fontFamily: 'var(--font-label)' }}>
               {settings.puntosDeVentaTitulo || 'PUNTO DE VENTA FÍSICO'}
             </p>
