@@ -242,6 +242,14 @@ export const SETTINGS_QUERY = defineQuery(`
     horario,
     contactoTitulo,
     contactoTexto,
+    puntosDeVentaTitulo,
+    puntosDeVenta[]{
+      nombre,
+      direccion,
+      horario,
+      imagen,
+      detalles
+    },
     "instagram": *[_type == "diarioTaller" && _id == "diarioTaller-singleton"][0].urlInstagram
   }
 `)

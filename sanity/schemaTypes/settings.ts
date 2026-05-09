@@ -61,5 +61,35 @@ export const settingsSchema = defineType({
       description: '🏠 Solo completá este campo si querés mostrar tu dirección públicamente. Podés dejarlo vacío.',
       placeholder: 'Mar del Plata, Buenos Aires',
     }),
+    
+    // ─── PUNTOS DE VENTA ────────────────────────────────────────────────
+    defineField({
+      name: 'puntosDeVentaTitulo',
+      title: 'Título de Puntos de Venta',
+      type: 'string',
+      group: 'contacto',
+      initialValue: 'Punto de Venta Físico',
+      description: 'Título de la sección de puntos de venta físicos.',
+    }),
+    defineField({
+      name: 'puntosDeVenta',
+      title: 'Puntos de Venta Físicos',
+      type: 'array',
+      group: 'contacto',
+      of: [
+        {
+          type: 'object',
+          name: 'puntoDeVenta',
+          title: 'Punto de Venta',
+          fields: [
+            { name: 'nombre', title: 'Nombre / Ciudad', type: 'string' },
+            { name: 'direccion', title: 'Dirección', type: 'string' },
+            { name: 'horario', title: 'Horario', type: 'text', rows: 2 },
+            { name: 'imagen', title: 'Foto del Local', type: 'image', options: { hotspot: true } },
+            { name: 'detalles', title: 'Detalles Adicionales (opcional)', type: 'text', rows: 3 },
+          ]
+        }
+      ]
+    }),
   ],
 })
