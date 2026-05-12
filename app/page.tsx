@@ -547,7 +547,7 @@ export default async function Home() {
             </a>
           </div>
 
-          {/* Feed Grid: cuadrícula uniforme — todas las celdas al mismo tamaño */}
+          {/* Feed Grid: cuadrícula uniforme — celdas en formato vertical 9:16 igual que un Reel */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-0 w-full">
             {diario?.posts?.map((post: any) => (
               <a
@@ -556,7 +556,7 @@ export default async function Home() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative block w-full overflow-hidden bg-surface-container-lowest border border-outline-variant/5"
-                style={{ aspectRatio: '1 / 1' }}
+                style={{ aspectRatio: '9 / 16' }}
               >
                 {post.tipo === 'video' && post.videoUrl ? (
                   <video
