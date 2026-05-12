@@ -547,8 +547,8 @@ export default async function Home() {
             </a>
           </div>
 
-          {/* Feed Grid: Masonry style para no cortar videos */}
-          <div className="columns-2 md:columns-4 gap-0 w-full">
+          {/* Feed Grid: cuadrícula uniforme — todas las celdas al mismo tamaño */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-0 w-full">
             {diario?.posts?.map((post: any) => (
               <a
                 key={post._key}
@@ -556,20 +556,21 @@ export default async function Home() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative block w-full overflow-hidden bg-surface-container-lowest border border-outline-variant/5"
+                style={{ aspectRatio: '1 / 1' }}
               >
                 {post.tipo === 'video' && post.videoUrl ? (
                   <video
                     src={post.videoUrl}
                     autoPlay muted loop playsInline
-                    className="w-full h-auto block object-cover"
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
                 ) : post.imagen?.asset?.url ? (
                   <Image
                     src={post.imagen.asset.url}
                     alt={post.descripcion || 'Diario del Taller'}
-                    width={800}
-                    height={800}
-                    className="w-full h-auto block object-cover group-hover:scale-105 transition-transform duration-1000"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-1000"
+                    sizes="(max-width: 768px) 50vw, 25vw"
                   />
                 ) : null}
 
