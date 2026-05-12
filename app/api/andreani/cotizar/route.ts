@@ -28,6 +28,11 @@ export async function POST(req: NextRequest) {
 
     // Consultar a Andreani
     const cotizaciones = await cotizarEnvio(cpDestino, pesoTotal, valorTotal);
+    
+    // TODO: ELIMINAR LUEGO DE PRUEBAS - Hardcode a 500 pesos
+    cotizaciones.forEach(c => {
+      c.tarifa = 500;
+    });
 
     return NextResponse.json({ 
       success: true, 
@@ -48,12 +53,12 @@ export async function POST(req: NextRequest) {
       cotizaciones: [
         {
           tipo: 'domicilio',
-          tarifa: zona.costoADomicilio,
+          tarifa: 500, // TODO: ELIMINAR LUEGO DE PRUEBAS zona.costoADomicilio,
           diasEntrega: zona.diasEstimados,
         },
         {
           tipo: 'sucursal',
-          tarifa: zona.costoSucursal,
+          tarifa: 500, // TODO: ELIMINAR LUEGO DE PRUEBAS zona.costoSucursal,
           diasEntrega: zona.diasEstimados,
         },
       ],

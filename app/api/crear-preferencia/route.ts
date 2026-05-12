@@ -114,6 +114,9 @@ export async function POST(req: NextRequest) {
       } catch (e) {
         montoEnvio = getCostoEnvioPorCP(cpDestino).costoADomicilio
       }
+      
+      // TODO: ELIMINAR LUEGO DE PRUEBAS - Hardcode a 500 pesos
+      montoEnvio = 500
     }
     
     if (montoEnvio > 0) {
