@@ -109,10 +109,13 @@ export async function POST(req: NextRequest) {
       console.warn(`⚠️ Firma de webhook inválida para pago ${id} (isIpn: ${isIpn}). Continuando con verificación directa de API...`)
     }
 
-    // ✅ FIX 5: Idempotencia — verificar si el pedido ya fue procesado
+    // ✅ FIX 5: Idempotencia — usar _id determinístico basado en el ID de MP
+    const orderDocId = `pedido-${id}`
+    
+    // Verificación rápida opcional, pero createIfNotExists es la verdadera barrera
     const pedidoExistente = await backendClient.fetch(
-      `*[_type == "pedido" && idMercadoPago == $id][0]`,
-      { id }
+      `*[_id == $orderDocId][0]`,
+      { orderDocId }
     )
     if (pedidoExistente) {
       console.log(`Pago ${id} ya fue procesado (duplicado ignorado).`)
@@ -125,9 +128,10 @@ export async function POST(req: NextRequest) {
     try {
       paymentData = await payment.get({ id })
     } catch (mpError) {
-      // MP puede enviar IDs de prueba inexistentes (ej: desde el simulador del panel)
-      console.warn(`⚠️ No se pudo obtener el pago ${id} de la API de MP (puede ser un ID de prueba). Error:`, mpError)
-      return NextResponse.json({ received: true })
+      // ⚠️ CRÍTICO: Si no podemos leer de MP, debemos devolver 500 para que MP reintente el webhook.
+      // Si devolvemos 200, MP cree que lo procesamos y nunca más nos avisa.
+      console.error(`❌ Error al obtener el pago ${id} de la API de MP:`, mpError)
+      return NextResponse.json({ error: 'Error getting payment data' }, { status: 500 })
     }
 
     if (paymentData.status === 'approved') {
@@ -176,8 +180,9 @@ export async function POST(req: NextRequest) {
       const clienteTelefono =
         shippingData.telefono || String(paymentData.payer?.phone?.number || '')
 
-      // ✅ Inicializar pedido en Sanity
-      const sanityOrder = await backendClient.create({
+      // ✅ Inicializar pedido en Sanity usando createIfNotExists
+      const sanityOrder = await backendClient.createIfNotExists({
+        _id: orderDocId,
         _type: 'pedido',
         idMercadoPago: id,
         referenciaExterna: externalReference || 'N/A',
