@@ -32,21 +32,37 @@ export async function generateMetadata({
 
   if (!producto) return { title: 'Producto No Encontrado' }
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.skilglass.com.ar'
+  const productUrl = `${baseUrl}/productos/${slug}`
+  const imageUrl = producto.imagenes?.[0] ? urlFor(producto.imagenes[0]).width(1200).height(630).url() : `${baseUrl}/icon.png`
+
   return {
-    title: `${producto.nombre} | SKILGLASS`,
-    description: producto.descripcion || `Adquiere ${producto.nombre}, una joya única de autor. Joyería en vidrio SKILGLASS.`,
+    title: `${producto.nombre} | SKILGLASS Joyería de Autor`,
+    description: producto.descripcion || `Adquiere ${producto.nombre}, una pieza única de joyería contemporánea en vidrio. Diseño de autor esculpido al fuego.`,
+    keywords: [
+      producto.nombre,
+      producto.categoria || 'joyería',
+      "joyería en vidrio",
+      "vitrofusión",
+      "pieza única",
+      "diseño de autor",
+      "SKILGLASS"
+    ],
+    alternates: {
+      canonical: productUrl,
+    },
     openGraph: {
       title: `${producto.nombre} | SKILGLASS`,
       description: producto.descripcion || `Pieza única de joyería artesanal esculpida al fuego.`,
-      images: producto.imagenes?.[0]
-        ? [urlFor(producto.imagenes[0]).width(1200).height(630).url()]
-        : [],
+      url: productUrl,
+      images: [imageUrl],
       type: 'article',
     },
     twitter: {
       card: 'summary_large_image',
       title: `${producto.nombre} | SKILGLASS`,
       description: producto.descripcion || `Joyas esculpidas por el fuego.`,
+      images: [imageUrl],
     },
   }
 }
@@ -69,9 +85,36 @@ export default async function ProductDetailPage({
     notFound()
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.skilglass.com.ar'
 
   return (
     <div className="min-h-screen pt-32 pb-24 px-6 lg:px-8 max-w-7xl mx-auto">
+      {/* JSON-LD Product Schema for SEO & GEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org/",
+            "@type": "Product",
+            "name": producto.nombre,
+            "image": producto.imagenes?.[0] ? urlFor(producto.imagenes[0]).url() : `${baseUrl}/icon.png`,
+            "description": producto.descripcion || `Pieza única creada mediante el proceso de joyería en vidrio a alta temperatura.`,
+            "brand": {
+              "@type": "Brand",
+              "name": "Skilglass"
+            },
+            "offers": {
+              "@type": "Offer",
+              "url": `${baseUrl}/productos/${slug}`,
+              "priceCurrency": "ARS",
+              "price": producto.precio || 0,
+              "availability": producto.disponible ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+              "itemCondition": "https://schema.org/NewCondition"
+            }
+          })
+        }}
+      />
+
       {/* Editorial Breadcrumbs */}
       <nav className="flex items-center gap-2 text-xs uppercase tracking-wider text-on-surface-variant mb-12" style={{ fontFamily: 'var(--font-label)' }}>
         <Link href="/" className="hover:text-primary transition-colors">Home</Link>
