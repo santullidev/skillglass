@@ -62,11 +62,26 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_AR",
     siteName: "SKILGLASS",
+    images: [
+      {
+        url: 'https://www.skilglass.com.ar/showroom_skil_glass.png',
+        width: 1200,
+        height: 630,
+        alt: 'Skilglass Showroom',
+      },
+      {
+        url: 'https://www.skilglass.com.ar/logo.png',
+        width: 800,
+        height: 600,
+        alt: 'Skilglass Logo',
+      }
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "SKILGLASS | Joyería de Autor en Vidrio",
     description: "Estudio de diseño experimental. Piezas únicas de joyería en vidrio.",
+    images: ['https://www.skilglass.com.ar/showroom_skil_glass.png'],
   },
   robots: {
     index: true,
