@@ -60,18 +60,18 @@ export default function ProductCard({ producto, index = 0 }: Props) {
       </div>
 
       {/* Info Container - Forced to bottom */}
-      <div className="absolute inset-0 z-20 p-5 md:p-8 flex flex-col justify-end pointer-events-none">
-        <div className="flex flex-col gap-1 md:gap-2">
+      <div className="absolute inset-0 z-20 p-4 md:p-8 flex flex-col justify-end pointer-events-none">
+        <div className="flex flex-col gap-1 md:gap-2 items-center md:items-start text-center md:text-left">
           {/* Category */}
-          <p className={`text-[10px] md:text-xs tracking-[0.3em] ${subtextColorClass} uppercase font-bold`}
+          <p className={`text-[8px] md:text-xs tracking-[0.3em] ${subtextColorClass} uppercase font-bold`}
             style={{ fontFamily: 'var(--font-label)' }}>
             {producto.categoria || 'Joyería de autor'}
           </p>
 
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 md:gap-4">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-1 md:gap-4 w-full">
             {/* Name */}
             <h2
-              className={`${textColorClass} text-2xl md:text-3xl lg:text-4xl leading-tight font-medium drop-shadow-md`}
+              className={`${textColorClass} text-xl md:text-3xl lg:text-4xl leading-tight font-medium drop-shadow-md`}
               style={{ fontFamily: 'var(--font-display)' }}
             >
               {producto.nombre}
@@ -80,7 +80,7 @@ export default function ProductCard({ producto, index = 0 }: Props) {
             {/* Price */}
             {producto.precio && (
               <span
-                className={`${textColorClass} text-sm md:text-base tracking-widest font-bold shrink-0 mb-1`}
+                className={`${textColorClass} text-xs md:text-base tracking-widest font-bold shrink-0 mb-1`}
                 style={{ fontFamily: 'var(--font-label)' }}
               >
                 ${producto.precio.toLocaleString('es-AR')}

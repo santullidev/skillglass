@@ -64,8 +64,11 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
+          {/* Mobile Spacer (to center logo) */}
+          <div className="flex-1 md:hidden" />
+
           {/* Logo */}
-          <Link href="/" className="group flex items-center">
+          <Link href="/" className="group flex items-center md:flex-initial">
             {/* Usamos un div con estilo inline para forzar el filtro, asegurando que el logo se vuelva blanco */}
             <div style={{ filter: isHome && !scrolled ? 'brightness(0) invert(1)' : 'none', transition: 'filter 0.5s ease' }}>
               <Image
@@ -73,14 +76,14 @@ export default function Navbar() {
                 alt="Skil Glass"
                 width={140}
                 height={40}
-                className="object-contain transition-opacity duration-500 group-hover:opacity-80"
+                className="object-contain transition-opacity duration-500 group-hover:opacity-80 w-[100px] md:w-[140px]"
                 priority
               />
             </div>
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-8 ml-auto">
             {links.map((link) => (
               <Link
                 key={link.label}
@@ -96,7 +99,8 @@ export default function Navbar() {
             <CartIcon isHome={isHome} scrolled={scrolled} />
           </div>
 
-          <div className="flex items-center gap-4 md:hidden">
+          {/* Mobile Icons */}
+          <div className="flex-1 flex items-center justify-end gap-4 md:hidden">
             {/* Cart Icon Mobile */}
             <CartIcon isHome={isHome} scrolled={scrolled} />
             {/* Mobile Toggle */}
@@ -105,21 +109,21 @@ export default function Navbar() {
               className={`${isHome && !scrolled ? '!text-white drop-shadow-md' : 'text-on-surface'} p-2 transition-colors duration-300`}
               aria-label="Menú"
             >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.5}
-            >
-              {mobileOpen ? (
-                <path strokeLinecap="square" d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="square" d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
-        </div>
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.5}
+              >
+                {mobileOpen ? (
+                  <path strokeLinecap="square" d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="square" d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu Overlay */}

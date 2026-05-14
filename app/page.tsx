@@ -137,7 +137,7 @@ export default async function Home() {
         
         {/* Section Header — editorial, off-center */}
         <div className="max-w-360 mx-auto px-6 lg:px-8 mb-24">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-12">
+          <div className="flex flex-col lg:flex-row items-center lg:items-end lg:justify-between gap-12 text-center lg:text-left">
             <div className="relative">
               <div className="absolute -left-6 top-2 bottom-0 w-px bg-gold/30 hidden md:block" />
               <p
@@ -153,7 +153,7 @@ export default async function Home() {
                 {tituloPiezas}
               </h2>
             </div>
-            <div className="lg:max-w-sm lg:pb-3 border-l border-outline-gold/20 pl-6">
+            <div className="lg:max-w-sm lg:pb-3 border-l-0 lg:border-l border-outline-gold/20 pl-0 lg:pl-6">
               <p className="text-on-surface-variant font-serif italic text-xl leading-relaxed mb-8">
                 {productosDescripcion}
               </p>
@@ -186,10 +186,10 @@ export default async function Home() {
         )}
 
         {/* Tagline footer */}
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 mt-12 flex items-center gap-6">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 mt-12 flex items-center gap-3 md:gap-6 overflow-hidden">
           <span className="flex-1 h-px bg-outline-variant/20" />
           <p
-            className="text-[10px] tracking-[0.4em] text-outline-variant/40 uppercase shrink-0"
+            className="text-[9px] md:text-[10px] tracking-[0.2em] md:tracking-[0.4em] text-outline-variant/40 uppercase shrink-0 whitespace-nowrap"
             style={{ fontFamily: 'var(--font-label)' }}
           >
             Joyería en Vidrio de Autor · Buenos Aires
@@ -302,8 +302,8 @@ export default async function Home() {
       {/* ── COLECCIONES ───────────────────────────────────────── */}
       {capsulas?.coleccionesDestacadas && capsulas.coleccionesDestacadas.length > 0 && (
         <section id="colecciones" className="py-24 lg:py-40 px-6 lg:px-8 max-w-360 mx-auto w-full relative bg-surface-lowest">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8 relative z-10">
-            <div>
+          <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-20 gap-8 relative z-10 text-center md:text-left">
+            <div className="flex flex-col items-center md:items-start">
               <p 
                 className={`text-[10px] tracking-[0.5em] uppercase mb-6 font-bold ${
                   capsulas.textColor === 'white' ? 'text-white/80' : 'text-gold'
@@ -391,7 +391,7 @@ export default async function Home() {
             </div>
 
             {/* Columna derecha: Narrativa editorial */}
-            <div className="flex flex-col justify-center px-10 lg:px-16 xl:px-20 py-20 lg:py-24">
+            <div className="flex flex-col justify-center items-center lg:items-start px-6 md:px-10 lg:px-16 xl:px-20 py-20 lg:py-24 text-center lg:text-left">
               {/* Etiqueta */}
               <p
                 className="text-[10px] tracking-[0.5em] text-gold font-bold uppercase mb-6"
@@ -399,8 +399,7 @@ export default async function Home() {
               >
                 {procesoEtiqueta}
               </p>
-
-              {/* Título grande */}
+...
               <h2
                 className="text-5xl lg:text-7xl xl:text-8xl text-on-surface leading-none mb-10"
                 style={{ fontFamily: 'var(--font-display)' }}
@@ -410,16 +409,16 @@ export default async function Home() {
 
               {/* Frase / Cita principal */}
               {(procesoConfig?.descripcion || true) && (
-                <p className="text-lg text-on-surface-variant font-serif italic leading-relaxed mb-12 max-w-lg border-l-2 border-primary/30 pl-6">
+                <p className="text-lg text-on-surface-variant font-serif italic leading-relaxed mb-12 max-w-lg border-l-0 lg:border-l-2 border-primary/30 pl-0 lg:pl-6">
                   {procesoConfig?.descripcion || 'Olvida la producción en masa. Cada joya de SKILGLASS es esculpida individualmente mediante la pura técnica del soplado a la flama. El artesano manipula el calor y el cristal líquido, moldeando la gota incandescente con precisión quirúrgica antes de que el aire la solidifique.'}
                 </p>
               )}
 
               {/* Lista de pilares */}
               {pilares.length > 0 && (
-                <div className="space-y-6 mb-12">
+                <div className="space-y-6 mb-12 w-full max-w-md">
                   {pilares.map((feature: any, i: number) => (
-                    <div key={i} className="flex gap-5 items-start group">
+                    <div key={i} className="flex flex-col md:flex-row gap-2 md:gap-5 items-center md:items-start group">
                       <span
                         className="text-primary/50 text-xs tracking-[0.3em] shrink-0 mt-1"
                         style={{ fontFamily: 'var(--font-label)' }}
@@ -445,7 +444,7 @@ export default async function Home() {
               {/* CTA */}
               <Link
                 href={procesoConfig?.ctaLink || DEFAULTS.procesoCtaLink}
-                className="group self-start inline-flex items-center gap-4 text-[11px] tracking-[0.4em] text-on-surface uppercase border border-outline-variant/30 px-8 py-4 hover:border-primary hover:text-primary transition-all duration-500 overflow-hidden relative"
+                className="group self-center lg:self-start inline-flex items-center gap-4 text-[11px] tracking-[0.4em] text-on-surface uppercase border border-outline-variant/30 px-8 py-4 hover:border-primary hover:text-primary transition-all duration-500 overflow-hidden relative"
                 style={{ fontFamily: 'var(--font-label)' }}
               >
                 <span className="relative z-10">{procesoConfig?.ctaTexto || DEFAULTS.procesoCtaTexto}</span>
