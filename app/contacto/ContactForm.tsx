@@ -13,16 +13,34 @@ export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
     
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (response.ok) {
+        setIsSubmitting(false)
+        setIsSuccess(true)
+        setFormData({ nombre: '', email: '', asunto: '', mensaje: '' })
+        setTimeout(() => setIsSuccess(false), 5000)
+      } else {
+        console.error('Error al enviar el formulario')
+        setIsSubmitting(false)
+        alert('Hubo un error al enviar tu mensaje. Por favor, intenta de nuevo más tarde.')
+      }
+    } catch (error) {
+      console.error('Error de red', error)
       setIsSubmitting(false)
-      setIsSuccess(true)
-      setFormData({ nombre: '', email: '', asunto: '', mensaje: '' })
-      setTimeout(() => setIsSuccess(false), 5000)
-    }, 1500)
+      alert('Hubo un error de conexión. Por favor, intenta de nuevo más tarde.')
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

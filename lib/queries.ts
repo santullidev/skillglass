@@ -240,6 +240,8 @@ export const SETTINGS_QUERY = defineQuery(`
     telefono,
     direccion,
     horario,
+    tarifaEnvioLocal,
+    tarifaEnvioInterior,
     contactoTitulo,
     contactoTexto,
     puntosDeVentaTitulo,

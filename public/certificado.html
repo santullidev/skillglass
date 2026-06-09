@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificado de Unicidad - Skilglass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Manrope:wght@400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #6b1a2a;
+            --bg-color: #f7f4f4;
+            --text-main: #111111;
+            --text-body: #4a3b3c;
+            --border-color: rgba(107, 26, 42, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .certificate-wrapper {
+            width: 210mm;
+            height: 148mm; /* A5 horizontal or similar proportions */
+            background-color: var(--bg-color);
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Dotted Background Pattern */
+        .certificate-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(circle, rgba(107, 26, 42, 0.05) 1px, transparent 1px);
+            background-size: 8px 8px;
+            pointer-events: none;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            z-index: 1;
+        }
+
+        .title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 5px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .serial {
+            font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
+            font-size: 13px;
+            letter-spacing: 3px;
+            color: var(--accent);
+        }
+
+        .content {
+            flex: 1;
+            z-index: 1;
+        }
+
+        .subtitle {
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            font-size: 32px;
+            color: var(--text-main);
+            margin-bottom: 25px;
+        }
+
+        .description {
+            font-family: 'Manrope', sans-serif;
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-body);
+            text-align: justify;
+            max-width: 100%;
+        }
+
+        .signature-section {
+            margin-top: auto;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .signature-line {
+            width: 200px;
+            border-bottom: 1px solid var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .signature-label {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent);
+            opacity: 0.7;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(107, 26, 42, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .studio-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: rgba(107, 26, 42, 0.6);
+            text-transform: uppercase;
+        }
+
+        .dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 5px;
+            height: 5px;
+            background-color: var(--accent);
+            border-radius: 1px;
+            opacity: 0.3;
+        }
+
+        .print-btn {
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 12px;
+            letter-spacing: 1px;
+            z-index: 10;
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .certificate-wrapper { box-shadow: none; border: 1px solid var(--border-color); width: 100%; height: 100vh; }
+            .print-btn { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-btn" onclick="window.print()">Imprimir Certificado</button>
+    <div class="certificate-wrapper">
+        <div class="header">
+            <div class="title">Certificado de Unicidad</div>
+            <div class="serial">N° &nbsp;__________</div>
+        </div>
+
+        <div class="content">
+            <h2 class="subtitle">Pieza Única e Irrepetible</h2>
+            <p class="description">
+                Esta obra ha sido esculpida mediante transformación térmica directa. Debido a la naturaleza orgánica del vidrio fundido, las tensiones moleculares y la gravedad han dictado una forma final que es técnicamente imposible de replicar con exactitud. Todas las piezas atraviesan un proceso de cocción en el horno para poder hacer el material más resistente y liberando cualquier tensión interna del vidrio y reposando en un enfriamiento gradual en cada pieza.
+            </p>
+        </div>
+
+        <div class="signature-section">
+            <div class="signature-line"></div>
+            <div class="signature-label">Firma de la autora</div>
+        </div>
+
+        <div class="footer">
+            <div class="studio-name">Estudio Skilglass Ar</div>
+            <div class="dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

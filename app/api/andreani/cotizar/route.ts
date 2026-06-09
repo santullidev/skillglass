@@ -29,9 +29,9 @@ export async function POST(req: NextRequest) {
     // Consultar a Andreani
     const cotizaciones = await cotizarEnvio(cpDestino, pesoTotal, valorTotal);
     
-    // TODO: ELIMINAR LUEGO DE PRUEBAS - Hardcode a 500 pesos
+    // Precio estimado al interior vía cuenta PyME de Andreani hasta que se resuelva la integración
     cotizaciones.forEach(c => {
-      c.tarifa = 500;
+      c.tarifa = 15000;
     });
 
     return NextResponse.json({ 
@@ -53,12 +53,12 @@ export async function POST(req: NextRequest) {
       cotizaciones: [
         {
           tipo: 'domicilio',
-          tarifa: 500, // TODO: ELIMINAR LUEGO DE PRUEBAS zona.costoADomicilio,
+          tarifa: 15000, // Precio estimado Andreani al interior vía cuenta PyME
           diasEntrega: zona.diasEstimados,
         },
         {
           tipo: 'sucursal',
-          tarifa: 500, // TODO: ELIMINAR LUEGO DE PRUEBAS zona.costoSucursal,
+          tarifa: 15000, // Precio estimado Andreani al interior vía cuenta PyME
           diasEntrega: zona.diasEstimados,
         },
       ],
