@@ -60,7 +60,7 @@ export const settingsSchema = defineType({
       type: 'string',
       group: 'taller',
       description: '🏠 Solo completá este campo si querés mostrar tu dirección públicamente. Podés dejarlo vacío.',
-      placeholder: 'Mar del Plata, Buenos Aires',
+      placeholder: 'La Plata, Buenos Aires',
     }),
     
     // ─── PUNTOS DE VENTA ────────────────────────────────────────────────

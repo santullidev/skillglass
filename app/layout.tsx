@@ -40,11 +40,14 @@ export const metadata: Metadata = {
     "joyas de vidrio",
     "vitrofusión",
     "SKILGLASS",
+    "Skil Glass",
     "cristal artesanal",
     "joyería contemporánea",
     "diseño argentino",
     "piezas de autor únicas",
-    "soplado a la flama"
+    "soplado a la flama",
+    "joyería La Plata",
+    "joyería Buenos Aires"
   ],
   authors: [{ name: "Skilglass" }],
   creator: "Skilglass",
@@ -53,6 +56,15 @@ export const metadata: Metadata = {
     email: false,
     address: false,
     telephone: false,
+  },
+  icons: {
+    icon: [
+      { url: '/icon.png', type: 'image/png', sizes: '1024x1024' },
+    ],
+    apple: [
+      { url: '/apple-icon.png', type: 'image/png', sizes: '1024x1024' },
+    ],
+    shortcut: '/icon.png',
   },
   openGraph: {
     title: "SKILGLASS | Joyería de Autor Contemporánea en Vidrio",
@@ -64,24 +76,18 @@ export const metadata: Metadata = {
     siteName: "SKILGLASS",
     images: [
       {
-        url: 'https://www.skilglass.com.ar/showroom_skil_glass.png',
-        width: 1200,
-        height: 630,
-        alt: 'Skilglass Showroom',
-      },
-      {
         url: 'https://www.skilglass.com.ar/logo.png',
-        width: 800,
-        height: 600,
-        alt: 'Skilglass Logo',
+        width: 1333,
+        height: 1000,
+        alt: 'SKILGLASS – Joyería de Autor en Vidrio',
       }
     ],
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: "SKILGLASS | Joyería de Autor en Vidrio",
     description: "Estudio de diseño experimental. Piezas únicas de joyería en vidrio.",
-    images: ['https://www.skilglass.com.ar/showroom_skil_glass.png'],
+    images: ['https://www.skilglass.com.ar/logo.png'],
   },
   robots: {
     index: true,
@@ -93,6 +99,10 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
+  },
+  other: {
+    'geo.region': 'AR',
+    'geo.placename': 'Argentina',
   },
 };
 
