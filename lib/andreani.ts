@@ -438,17 +438,42 @@ export async function crearOrdenEnvio(input: CrearOrdenInput): Promise<AndreaniO
   return { numeroDeEnvio, estado: data?.estado, raw: data }
 }
 
-/** Devuelve la URL del PDF de la etiqueta, o '' si todavía no está disponible. */
-export async function obtenerEtiqueta(numeroEnvio: string): Promise<string> {
-  const response = await fetchConToken(`${ORDENES_BASE_URL}/v2/ordenes-de-envio/${numeroEnvio}/etiquetas`)
-  if (!response.ok) return ''
+/**
+ * Descarga el PDF de la etiqueta. Devuelve null si todavía no está disponible.
+ *
+ * La respuesta de Andreani llega como PDF binario; algunas cuentas devuelven
+ * un JSON con la URL, que en ese caso se sigue.
+ */
+export async function obtenerEtiquetaPdf(numeroEnvio: string): Promise<ArrayBuffer | null> {
+  const response = await fetchConToken(
+    `${ORDENES_BASE_URL}/v2/ordenes-de-envio/${numeroEnvio}/etiquetas`
+  )
+  if (!response.ok) return null
 
   const contentType = response.headers.get('content-type') || ''
+
   if (contentType.includes('application/json')) {
     const data = await response.json()
-    return data?.url || data?.etiquetaPdf || ''
+    const url: string | undefined = data?.url || data?.etiquetaPdf
+    if (!url) return null
+
+    const pdf = await fetchConToken(url)
+    return pdf.ok ? await pdf.arrayBuffer() : null
   }
 
-  // Algunas cuentas devuelven el PDF directo; en ese caso servimos el endpoint.
-  return `${ORDENES_BASE_URL}/v2/ordenes-de-envio/${numeroEnvio}/etiquetas`
+  return await response.arrayBuffer()
+}
+
+/**
+ * URL interna para ver la etiqueta desde el panel de pedidos.
+ *
+ * No se guarda la URL de Andreani porque exige el token de la cuenta: abrirla
+ * desde Sanity devuelve 401. Esta apunta a nuestra ruta proxy, que valida el
+ * token y adjunta el de Andreani del lado del servidor.
+ */
+export function urlEtiquetaInterna(numeroEnvio: string): string {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || ''
+  const token = process.env.ETIQUETAS_ACCESS_TOKEN
+  if (!baseUrl || !token) return ''
+  return `${baseUrl}/api/andreani/etiqueta/${numeroEnvio}?token=${encodeURIComponent(token)}`
 }

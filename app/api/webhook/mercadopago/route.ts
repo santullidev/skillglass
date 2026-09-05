@@ -4,7 +4,7 @@ import { backendClient } from '@/lib/sanity'
 import { createHmac, timingSafeEqual } from 'crypto'
 import { revalidatePath } from 'next/cache'
 import { sendOrderEmails } from '@/lib/email-service'
-import { crearOrdenEnvio, obtenerEtiqueta, type TipoEnvio } from '@/lib/andreani'
+import { crearOrdenEnvio, urlEtiquetaInterna, type TipoEnvio } from '@/lib/andreani'
 
 const accessToken = process.env.MP_ACCESS_TOKEN
 const webhookSecret = process.env.MP_WEBHOOK_SECRET
@@ -332,7 +332,9 @@ export async function POST(req: NextRequest) {
 
         if (andreaniResult.numeroDeEnvio) {
           const numeroEnvio = andreaniResult.numeroDeEnvio
-          const urlEtiqueta = await obtenerEtiqueta(numeroEnvio).catch(() => '')
+          // Link a nuestra ruta proxy: la URL de Andreani exige su token y
+          // desde el panel de Sanity daria 401.
+          const urlEtiqueta = urlEtiquetaInterna(numeroEnvio)
 
           await backendClient.patch(sanityOrder._id).set({
             estadoEnvio: 'despachado',
