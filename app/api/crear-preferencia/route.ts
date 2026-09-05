@@ -4,6 +4,7 @@ import { backendClient } from '@/lib/sanity'
 import { cotizarEnvio, construirBulto, type TipoEnvio } from '@/lib/andreani'
 import { getCostoEnvioPorCP } from '@/lib/shipping-fallback'
 import { validarCarrito } from '@/lib/cart-validation'
+import { errorInterno } from '@/lib/api-errors'
 
 const accessToken = process.env.MP_ACCESS_TOKEN
 
@@ -212,13 +213,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ url: response.init_point, id: response.id })
 
   } catch (error) {
-  console.error('MP Error al crear preferencia:', error)
-  return NextResponse.json(
-    { 
-      error: 'Error al crear la preferencia de pago',
-      detail: error instanceof Error ? error.message : String(error)  // 👈 agregar esto
-    },
-    { status: 500 }
-  )
-}
+    return errorInterno(
+      'crear-preferencia',
+      error,
+      'No pudimos iniciar el pago. Intentá de nuevo en unos minutos.'
+    )
+  }
 }
