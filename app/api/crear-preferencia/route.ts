@@ -3,31 +3,22 @@ import MercadoPagoConfig, { Preference } from 'mercadopago'
 import { backendClient } from '@/lib/sanity'
 import { cotizarEnvio, construirBulto, type TipoEnvio } from '@/lib/andreani'
 import { getCostoEnvioPorCP } from '@/lib/shipping-fallback'
+import { validarCarrito } from '@/lib/cart-validation'
 
-// ✅ FIX 1: Validar env var al inicio, falla claro si no está configurada
 const accessToken = process.env.MP_ACCESS_TOKEN
-if (!accessToken) {
-  throw new Error('MP_ACCESS_TOKEN no está configurado en las variables de entorno')
+
+// El cliente se crea perezosamente: lanzar en el módulo tumba toda la ruta
+// (y el build) en vez de devolver un error manejable.
+let mpClient: MercadoPagoConfig | null = null
+function getMpClient(): MercadoPagoConfig {
+  if (!accessToken) {
+    throw new Error('MP_ACCESS_TOKEN no está configurado en las variables de entorno')
+  }
+  mpClient ??= new MercadoPagoConfig({ accessToken })
+  return mpClient
 }
 
-const client = new MercadoPagoConfig({ accessToken })
-
-// ✅ FIX 2: Interface limpia con un solo nombre por campo (estandarizado a MP)
-interface CartItem {
-  id?: string
-  slug?: string
-  nombre?: string       // legacy — se sigue soportando
-  title?: string
-  precio?: number       // legacy — se sigue soportando
-  unit_price?: number
-  cantidad?: number
-  imagenUrl?: string    // legacy — se sigue soportando
-  picture_url?: string
-  numeroCertificado?: string
-  peso?: number         // ✅ FIX 3: Agregar campo peso
-}
-
-// ✅ FIX 2b: Tipo del item ya normalizado para MP (evita el `any` en el webhook)
+// Tipo del item ya normalizado para MP (evita el `any` en el webhook)
 interface MpItem {
   id: string
   title: string
@@ -39,55 +30,69 @@ interface MpItem {
   peso?: number
 }
 
+interface ProductoSanity {
+  _id: string
+  precio?: number
+  disponible?: boolean
+  peso?: number
+  nombre?: string
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
 
-    const requestItems: CartItem[] = body.items || [
-      {
-        nombre: body.nombre,
-        precio: body.precio,
-        slug: body.slug,
-        cantidad: 1,
-      }
-    ]
+    // ✅ Del cliente sólo se acepta el id y la cantidad, ya validados.
+    const validacion = validarCarrito(body.items)
+    if (!validacion.ok) {
+      return NextResponse.json({ error: validacion.error }, { status: 400 })
+    }
+    const lineas = validacion.lineas
 
-    // ✅ FIX 3: Usar NEXT_PUBLIC_BASE_URL con fallback explícito y log de advertencia
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
     if (!baseUrl) {
       console.warn('⚠️ NEXT_PUBLIC_BASE_URL no está configurado. El webhook no funcionará en producción.')
     }
     const resolvedBaseUrl = baseUrl || 'http://localhost:3000'
 
-    // ✅ FIX: Verificar precios reales y disponibilidad contra Sanity (CRIT-2)
-    const productIds = requestItems.map(item => item.id).filter(Boolean) as string[]
-    const realProducts = await backendClient.fetch(
+    // ✅ Precio, peso y disponibilidad SIEMPRE desde Sanity (CRIT-2)
+    const realProducts: ProductoSanity[] = await backendClient.fetch(
       `*[_type == "producto" && _id in $ids]{ _id, precio, disponible, peso, nombre }`,
-      { ids: productIds }
+      { ids: lineas.map((l) => l.id) }
     )
 
-    const mpItems: MpItem[] = requestItems.map((item) => {
-      const realProduct = realProducts.find((p: any) => p._id === item.id)
-      
+    const mpItems: MpItem[] = []
+
+    for (const linea of lineas) {
+      const realProduct = realProducts.find((p) => p._id === linea.id)
+
       if (!realProduct) {
-        throw new Error(`Producto no encontrado: ${item.id}`)
+        return NextResponse.json({ error: 'Una de las piezas ya no está disponible' }, { status: 409 })
       }
-      
       if (!realProduct.disponible) {
-        throw new Error(`Producto no disponible: ${realProduct.nombre}`)
+        return NextResponse.json(
+          { error: `"${realProduct.nombre?.trim() || 'La pieza elegida'}" ya no está disponible` },
+          { status: 409 }
+        )
       }
 
-      return {
-        id: realProduct._id,
-        title: realProduct.nombre || 'Producto SKILLGLASS',
-        quantity: Number(item.cantidad || 1),
-        unit_price: Number(realProduct.precio || 0), // PRECIO REAL, NO DEL CLIENTE
-        currency_id: 'ARS',
-        picture_url: item.imagenUrl || item.picture_url,
-        numeroCertificado: item.numeroCertificado,
-        peso: realProduct.peso || 300
+      const precio = Number(realProduct.precio)
+      if (!Number.isFinite(precio) || precio <= 0) {
+        console.error(`Producto ${realProduct._id} tiene un precio inválido en Sanity:`, realProduct.precio)
+        return NextResponse.json({ error: 'Una de las piezas tiene un precio inválido' }, { status: 409 })
       }
-    })
+
+      mpItems.push({
+        id: realProduct._id,
+        title: realProduct.nombre?.trim() || 'Producto SKILGLASS',
+        quantity: linea.cantidad,
+        unit_price: precio, // PRECIO REAL, NO DEL CLIENTE
+        currency_id: 'ARS',
+        picture_url: linea.imagenUrl,
+        numeroCertificado: linea.numeroCertificado,
+        peso: Number(realProduct.peso) > 0 ? Number(realProduct.peso) : 300,
+      })
+    }
 
     // ✅ El costo de envío SIEMPRE se recalcula acá (CRIT-1): lo que manda el
     // cliente es sólo informativo, nunca se usa para cobrar.
@@ -161,7 +166,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const preference = new Preference(client)
+    const preference = new Preference(getMpClient())
     const response = await preference.create({
       body: {
         items: mpItems,
