@@ -141,7 +141,7 @@ export async function POST(req: NextRequest) {
     }
 
     // ✅ FIX 5: Validación robusta del lado servidor
-    const validateServerField = (name: string, value: any) => {
+    const validateServerField = (name: string, value: unknown) => {
       const v = String(value || '').trim()
       if (name === 'nombre') return v.split(' ').filter(Boolean).length >= 2
       if (name === 'email') return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
@@ -167,6 +167,10 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    /** Lee un campo del envío como texto acotado, para no mandar basura a MP. */
+    const campo = (nombre: string, maxLargo = 200): string =>
+      String(shippingData[nombre] ?? '').trim().slice(0, maxLargo)
+
     const preference = new Preference(getMpClient())
     const response = await preference.create({
       body: {
@@ -187,11 +191,27 @@ export async function POST(req: NextRequest) {
             number: shippingData.telefono,
           },
         },
-        // ✅ Metadata completo con items y datos de envío
+        // ✅ Metadata con los datos de envío. Se enumeran los campos uno por uno
+        // en vez de hacer spread del objeto del cliente: así no viaja a MP
+        // ninguna clave arbitraria que alguien haya inyectado en el request.
         // ⚠️ MP pasa todas las keys a snake_case: el webhook las lee así.
         metadata: {
           shipping_data: {
-            ...shippingData,
+            nombre: campo('nombre'),
+            email: campo('email'),
+            telefono: campo('telefono'),
+            dni: campo('dni').replace(/\D/g, ''),
+            provincia: campo('provincia'),
+            ciudad: campo('ciudad'),
+            calle: campo('calle'),
+            numero: campo('numero'),
+            piso: campo('piso'),
+            departamento: campo('departamento'),
+            codigo_postal: cpDestino,
+            notas: campo('notas', 500),
+            sucursal_id: campo('sucursalId'),
+            sucursal_nombre: campo('sucursalNombre'),
+            sucursal_nomenclatura: campo('sucursalNomenclatura'),
             tipo_envio: tipoEnvio,
             monto_envio: montoEnvio,
             cotizacion_fallback: cotizacionEsFallback,

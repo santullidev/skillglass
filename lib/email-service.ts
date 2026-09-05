@@ -1,5 +1,22 @@
 import { Resend } from 'resend';
 
+/**
+ * Escapa HTML antes de interpolarlo en el cuerpo del mail.
+ *
+ * El nombre y la direccion los escribe el comprador en el checkout, y la
+ * validacion del servidor no restringe caracteres. Sin escapar, alguien puede
+ * inyectar markup arbitrario en el mail de confirmacion y, sobre todo, en la
+ * notificacion de venta que recibe Skilglass.
+ */
+function escaparHtml(valor: unknown): string {
+  return String(valor ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 interface OrderEmailData {
   orderId: string;
   customerName: string;
@@ -37,15 +54,15 @@ export async function sendOrderEmails(data: OrderEmailData) {
       html: `
         <div style="font-family: serif; max-width: 600px; margin: 0 auto; color: #1a1a1a;">
           <h1 style="text-align: center; color: #c9a84c;">SKILGLASS</h1>
-          <p>Hola ${customerName},</p>
+          <p>Hola ${escaparHtml(customerName)},</p>
           <p>Gracias por tu compra. Tu pedido ha sido confirmado y pronto comenzaremos a preparar tu pieza de autor.</p>
           
           <div style="background: #f9f9f9; padding: 20px; border: 1px solid #eee; margin: 20px 0;">
             <h3 style="margin-top: 0;">Resumen del Pedido</h3>
             <ul style="list-style: none; padding: 0;">
-              ${items.map((item: any) => `
+              ${items.map((item) => `
                 <li style="margin-bottom: 10px;">
-                  ${item.nombre} x ${item.cantidad} - $${(item.precio * item.cantidad).toLocaleString('es-AR')}
+                  ${escaparHtml(item.nombre)} x ${Number(item.cantidad)} - $${(Number(item.precio) * Number(item.cantidad)).toLocaleString('es-AR')}
                 </li>
               `).join('')}
             </ul>
@@ -54,9 +71,9 @@ export async function sendOrderEmails(data: OrderEmailData) {
 
           <div style="margin: 20px 0;">
             <h3>Datos de Envío</h3>
-            <p>${shippingData.direccion}<br>
-            ${shippingData.ciudad}, ${shippingData.provincia}<br>
-            CP: ${shippingData.codigoPostal}</p>
+            <p>${escaparHtml(shippingData.direccion)}<br>
+            ${escaparHtml(shippingData.ciudad)}, ${escaparHtml(shippingData.provincia)}<br>
+            CP: ${escaparHtml(shippingData.codigoPostal)}</p>
           </div>
 
           <p style="font-size: 12px; color: #666; text-align: center; margin-top: 40px;">
@@ -73,9 +90,9 @@ export async function sendOrderEmails(data: OrderEmailData) {
       subject: `🚨 NUEVA VENTA #${orderId} - $${totalAmount}`,
       html: `
         <h2>Nueva venta realizada</h2>
-        <p><strong>Cliente:</strong> ${customerName} (${customerEmail})</p>
+        <p><strong>Cliente:</strong> ${escaparHtml(customerName)} (${escaparHtml(customerEmail)})</p>
         <p><strong>Total:</strong> $${totalAmount.toLocaleString('es-AR')}</p>
-        <p><strong>ID MP:</strong> ${orderId}</p>
+        <p><strong>ID MP:</strong> ${escaparHtml(orderId)}</p>
         <hr>
         <p>Entra al Studio de Sanity para procesar el envío.</p>
       `,

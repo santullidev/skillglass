@@ -264,7 +264,7 @@ export async function POST(req: NextRequest) {
           nombre: item.title,
           cantidad: item.quantity ?? 1,
           precio: item.unit_price ?? 0,
-          numeroCertificado: (item as any).numeroCertificado || null,
+          numeroCertificado: item.numeroCertificado || null,
         })),
         cliente: {
           nombre:   clienteNombre,
