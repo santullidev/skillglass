@@ -1,68 +1,61 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { cotizarEnvio } from '@/lib/andreani';
+import { NextRequest, NextResponse } from 'next/server'
+import { cotizarEnvio, construirBulto, type TipoEnvio } from '@/lib/andreani'
+import { getCostoEnvioPorCP } from '@/lib/shipping-fallback'
 
+/**
+ * Cotiza el envío para el carrito actual.
+ * Devuelve una opción por tipo de envío (domicilio y sucursal).
+ */
 export async function POST(req: NextRequest) {
   let cpDestino = ''
+
   try {
     const body = await req.json()
-    cpDestino = body.cpDestino || ''
+    cpDestino = String(body.cpDestino || '').trim()
     const { items } = body
 
-    if (!cpDestino || !items || !Array.isArray(items)) {
-      return NextResponse.json({ error: 'CP y productos son requeridos' }, { status: 400 });
+    if (!/^\d{4}([A-Za-z]{3})?$/.test(cpDestino)) {
+      return NextResponse.json({ error: 'Código postal inválido' }, { status: 400 })
+    }
+    if (!Array.isArray(items) || items.length === 0) {
+      return NextResponse.json({ error: 'El carrito está vacío' }, { status: 400 })
     }
 
-    // Calcular peso total (usando el campo 'peso' o un default de 300g)
-    // El 'valorDeclarado' es la suma de los precios para el seguro
-    let pesoTotal = 0;
-    let valorTotal = 0;
+    const bulto = construirBulto(items)
+    const cotizaciones = await cotizarEnvio(cpDestino.replace(/\D/g, ''), bulto)
 
-    items.forEach((item: any) => {
-      const cantidad = Number(item.cantidad || 1);
-      const pesoUnidad = Number(item.peso || 300); // Fallback a 300g
-      const precioUnidad = Number(item.precio || item.unit_price || 0);
-      
-      pesoTotal += pesoUnidad * cantidad;
-      valorTotal += precioUnidad * cantidad;
-    });
+    if (cotizaciones.length === 0) {
+      throw new Error('Andreani no devolvió ninguna tarifa')
+    }
 
-    // Consultar a Andreani
-    const cotizaciones = await cotizarEnvio(cpDestino, pesoTotal, valorTotal);
-    
-    // Precio estimado al interior vía cuenta PyME de Andreani hasta que se resuelva la integración
-    cotizaciones.forEach(c => {
-      c.tarifa = 15000;
-    });
-
-    return NextResponse.json({ 
-      success: true, 
-      cotizaciones,
-      detalles: { pesoTotal, valorTotal }
-    });
-
-  } catch (error) {
-    console.warn('Andreani no disponible, usando tabla de costos fija:', error instanceof Error ? error.message : String(error));
-    
-    // Fallback: tabla estática de costos por CP
-    const { getCostoEnvioPorCP } = await import('@/lib/shipping-fallback');
-    const zona = getCostoEnvioPorCP(cpDestino || '1000');
-    
     return NextResponse.json({
       success: true,
-      fallback: true, // indica que se usó la tabla fija
-      cotizaciones: [
-        {
-          tipo: 'domicilio',
-          tarifa: 15000, // Precio estimado Andreani al interior vía cuenta PyME
-          diasEntrega: zona.diasEstimados,
-        },
-        {
-          tipo: 'sucursal',
-          tarifa: 15000, // Precio estimado Andreani al interior vía cuenta PyME
-          diasEntrega: zona.diasEstimados,
-        },
-      ],
-      detalles: { zona: zona.zona, mensaje: 'Costo estimado por zona. El costo final puede variar.' }
-    });
+      cotizaciones,
+      detalles: { kilos: bulto.kilos, valorDeclarado: bulto.valorDeclarado },
+    })
+  } catch (error) {
+    console.warn(
+      'Andreani no disponible, usando tabla de costos fija:',
+      error instanceof Error ? error.message : String(error)
+    )
+
+    // Fallback: sólo si la API de Andreani está caída. Los valores de la tabla son
+    // estimaciones conservadoras para no cobrar de menos.
+    const zona = getCostoEnvioPorCP(cpDestino || '1000')
+
+    const opciones: { tipo: TipoEnvio; tarifa: number }[] = [
+      { tipo: 'domicilio', tarifa: zona.costoADomicilio },
+      { tipo: 'sucursal', tarifa: zona.costoSucursal },
+    ]
+
+    return NextResponse.json({
+      success: true,
+      fallback: true,
+      cotizaciones: opciones.map((o) => ({ ...o, contrato: '', distribucion: 0, seguro: 0, pesoAforado: 0 })),
+      detalles: {
+        zona: zona.zona,
+        mensaje: 'Costo estimado por zona. El costo final puede variar.',
+      },
+    })
   }
 }

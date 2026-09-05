@@ -167,6 +167,12 @@ export const orderSchema = defineType({
         { name: 'sucursalId', type: 'string', title: 'ID Sucursal Andreani (si aplica)' },
         { name: 'sucursalNombre', type: 'string', title: 'Nombre de Sucursal' },
         {
+          name: 'dniReceptor',
+          type: 'string',
+          title: 'DNI de quien recibe',
+          description: '🪪 Andreani lo exige para la entrega. Lo ingresa el cliente en el checkout.',
+        },
+        {
           name: 'notas',
           type: 'text',
           title: 'Notas adicionales del cliente',

@@ -96,20 +96,24 @@ export const settingsSchema = defineType({
     // ─── ENVÍOS ─────────────────────────────────────────────────────────
     defineField({
       name: 'tarifaEnvioLocal',
-      title: 'Tarifa de envío — CABA y Buenos Aires',
+      title: 'Tarifa de envío — CABA y Buenos Aires (en desuso)',
       type: 'number',
       group: 'envios',
       initialValue: 7000,
-      description: '🏙️ Costo del envío Andreani para CABA y Provincia de Buenos Aires (en pesos). Por defecto: $7.000.',
+      description:
+        '⚠️ Este valor YA NO se cobra. El costo del envío se cotiza en tiempo real contra Andreani según el código postal, el peso y el valor de la pieza. Se conserva sólo como referencia histórica.',
+      readOnly: true,
       validation: (Rule) => Rule.min(0),
     }),
     defineField({
       name: 'tarifaEnvioInterior',
-      title: 'Tarifa de envío — Interior del país',
+      title: 'Tarifa de envío — Interior del país (en desuso)',
       type: 'number',
       group: 'envios',
       initialValue: 15000,
-      description: '📦 Costo del envío Andreani para el resto de las provincias (en pesos). Por defecto: $15.000.',
+      description:
+        '⚠️ Este valor YA NO se cobra. El costo del envío se cotiza en tiempo real contra Andreani según el código postal, el peso y el valor de la pieza. Se conserva sólo como referencia histórica.',
+      readOnly: true,
       validation: (Rule) => Rule.min(0),
     }),
   ],

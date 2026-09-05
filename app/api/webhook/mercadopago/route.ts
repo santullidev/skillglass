@@ -3,7 +3,7 @@ import MercadoPagoConfig, { Payment } from 'mercadopago'
 import { backendClient } from '@/lib/sanity'
 import { createHmac } from 'crypto'
 import { sendOrderEmails } from '@/lib/email-service'
-import { crearOrdenEnvio, obtenerEtiqueta } from '@/lib/andreani'
+import { crearOrdenEnvio, obtenerEtiqueta, type TipoEnvio } from '@/lib/andreani'
 
 // ✅ FIX 1: Validar env vars al inicio
 const accessToken = process.env.MP_ACCESS_TOKEN
@@ -36,13 +36,22 @@ interface ShippingData {
   nombre: string
   email: string
   telefono: string
+  dni: string
   provincia: string
   ciudad: string
-  direccion: string
+  calle: string
+  numero: string
+  piso?: string
+  departamento?: string
   codigoPostal: string
   notas?: string
-  tipoEnvio: 'domicilio'
+  tipoEnvio: TipoEnvio
   montoEnvio: number
+  kilos: number
+  valorDeclarado: number
+  sucursalId?: string
+  sucursalNombre?: string
+  sucursalNomenclatura?: string
 }
 
 // ✅ FIX 2b: Función para validar la firma de MP
@@ -146,13 +155,22 @@ export async function POST(req: NextRequest) {
         nombre:       raw.nombre       || '',
         email:        raw.email        || '',
         telefono:     raw.telefono     || '',
+        dni:          raw.dni          || '',
         provincia:    raw.provincia    || '',
         ciudad:       raw.ciudad       || '',
-        direccion:    raw.direccion    || '',
+        calle:        raw.calle        || '',
+        numero:       raw.numero       || '',
+        piso:         raw.piso         || '',
+        departamento: raw.departamento || '',
         codigoPostal: raw.codigo_postal || raw.codigoPostal || '',
         notas:        raw.notas        || '',
-        tipoEnvio:    'domicilio',
+        tipoEnvio:    (raw.tipo_envio || raw.tipoEnvio) === 'sucursal' ? 'sucursal' : 'domicilio',
         montoEnvio:   Number(raw.monto_envio || 0),
+        kilos:        Number(raw.kilos || 0.3),
+        valorDeclarado: Number(raw.valor_declarado || 0),
+        sucursalId:            raw.sucursal_id            || '',
+        sucursalNombre:        raw.sucursal_nombre        || '',
+        sucursalNomenclatura:  raw.sucursal_nomenclatura  || '',
       }
 
       // Items también llegan en snake_case desde el metadata de MP
@@ -180,6 +198,18 @@ export async function POST(req: NextRequest) {
       const clienteTelefono =
         shippingData.telefono || String(paymentData.payer?.phone?.number || '')
 
+      // Dirección en una línea, para mostrar en Sanity y en los emails
+      const direccionLegible =
+        shippingData.tipoEnvio === 'sucursal'
+          ? `Retira en sucursal Andreani: ${shippingData.sucursalNombre || shippingData.sucursalId}`
+          : [
+              `${shippingData.calle} ${shippingData.numero}`.trim(),
+              shippingData.piso && `Piso ${shippingData.piso}`,
+              shippingData.departamento && `Depto ${shippingData.departamento}`,
+            ]
+              .filter(Boolean)
+              .join(', ')
+
       // ✅ Inicializar pedido en Sanity usando createIfNotExists
       const sanityOrder = await backendClient.createIfNotExists({
         _id: orderDocId,
@@ -205,10 +235,13 @@ export async function POST(req: NextRequest) {
           tipo:         shippingData.tipoEnvio,
           provincia:    shippingData.provincia    || 'N/A',
           ciudad:       shippingData.ciudad       || 'N/A',
-          direccion:    shippingData.direccion    || 'N/A',
+          direccion:    direccionLegible          || 'N/A',
           codigoPostal: shippingData.codigoPostal || 'N/A',
           costo:        shippingData.montoEnvio,
-          notas:        shippingData.notas        || '',
+          notas:          shippingData.notas          || '',
+          sucursalId:     shippingData.sucursalId     || '',
+          sucursalNombre: shippingData.sucursalNombre || '',
+          dniReceptor:    shippingData.dni            || '',
         },
         estadoEnvio: 'pendiente',
         fecha: new Date().toISOString(),
@@ -217,49 +250,66 @@ export async function POST(req: NextRequest) {
       // 📦 INTEGRACIÓN ANDREANI: Crear Envío
       try {
         console.log(`Iniciando creación de envío Andreani para pedido ${sanityOrder._id}...`)
-        
-        // Calcular peso total de los items
-        const pesoTotal = meta.items?.reduce((acc: number, item: any) => acc + (Number(item.peso || 300) * Number(item.quantity || 1)), 0) || 300
 
-        const andreaniPayload = {
-          contrato: process.env.ANDREANI_CONTRATO_DOMICILIO,
-          cliente: process.env.ANDREANI_CLIENTE,
-          sucursalDeEnvio: process.env.ANDREANI_CP_ORIGEN || '7600',
-          bultos: [{
-            peso: pesoTotal,
-            valorDeclarado: paymentData.transaction_amount - shippingData.montoEnvio, // Valor de la mercadería
-          }],
-          receptor: {
+        // El valor declarado es el de la mercadería, sin el costo del envío.
+        const valorDeclarado =
+          shippingData.valorDeclarado ||
+          Math.max((paymentData.transaction_amount || 0) - shippingData.montoEnvio, 0)
+
+        const andreaniResult = await crearOrdenEnvio({
+          tipoEnvio: shippingData.tipoEnvio,
+          idPedido: sanityOrder._id,
+          destinatario: {
             nombreCompleto: clienteNombre,
             email: clienteEmail,
             telefono: clienteTelefono,
-            documentoTipo: "DNI",
-            documentoNumero: "0", // Fallback si no lo pedimos
+            documentoNumero: shippingData.dni,
           },
-          destino: {
-            postal: {
-              codigoPostal: shippingData.codigoPostal,
-              provincia: shippingData.provincia,
-              localidad: shippingData.ciudad,
-              calle: shippingData.direccion,
-              numero: "0" // Andreani suele requerir separar calle de número, pero si viene todo junto pasamos 0
-            }
-          }
-        }
+          bulto: {
+            kilos: shippingData.kilos,
+            volumenCm: Number(process.env.ANDREANI_VOLUMEN_ITEM_CM3 || 1000),
+            valorDeclarado,
+          },
+          destinoPostal:
+            shippingData.tipoEnvio === 'domicilio'
+              ? {
+                  codigoPostal: shippingData.codigoPostal,
+                  calle: shippingData.calle,
+                  numero: shippingData.numero,
+                  piso: shippingData.piso,
+                  departamento: shippingData.departamento,
+                  localidad: shippingData.ciudad,
+                  provincia: shippingData.provincia,
+                }
+              : undefined,
+          sucursal:
+            shippingData.tipoEnvio === 'sucursal'
+              ? {
+                  id: Number(shippingData.sucursalId),
+                  nomenclatura: shippingData.sucursalNomenclatura,
+                  descripcion: shippingData.sucursalNombre || '',
+                }
+              : undefined,
+        })
 
-        const andreaniResult = await crearOrdenEnvio(andreaniPayload)
-        
-        if (andreaniResult && andreaniResult.numeroDeEnvio) {
+        if (andreaniResult.numeroDeEnvio) {
           const numeroEnvio = andreaniResult.numeroDeEnvio
           const urlEtiqueta = await obtenerEtiqueta(numeroEnvio).catch(() => '')
-          
+
           await backendClient.patch(sanityOrder._id).set({
             estadoEnvio: 'despachado',
             numeroAndreani: numeroEnvio,
             urlEtiqueta: urlEtiqueta,
           }).commit()
-          
+
           console.log(`✅ Envío Andreani creado: ${numeroEnvio}`)
+        } else {
+          // La orden se creó pero no vino el número de seguimiento: hay que
+          // buscarlo a mano en el panel de Andreani.
+          console.warn('⚠️ Andreani aceptó la orden pero no devolvió número de envío:', andreaniResult.raw)
+          await backendClient.patch(sanityOrder._id).set({
+            estadoEnvio: 'generando_etiqueta',
+          }).commit()
         }
       } catch (andreaniError) {
         console.error('❌ Error vinculando Andreani:', andreaniError)
@@ -276,7 +326,7 @@ export async function POST(req: NextRequest) {
         totalAmount:   paymentData.transaction_amount || 0,
         items: items.map(i => ({ nombre: i.title, cantidad: i.quantity, precio: i.unit_price })),
         shippingData: {
-          direccion:    shippingData.direccion    || 'N/A',
+          direccion:    direccionLegible          || 'N/A',
           ciudad:       shippingData.ciudad       || 'N/A',
           provincia:    shippingData.provincia    || 'N/A',
           codigoPostal: shippingData.codigoPostal || 'N/A',

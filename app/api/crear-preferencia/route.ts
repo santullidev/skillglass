@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import MercadoPagoConfig, { Preference } from 'mercadopago'
 import { backendClient } from '@/lib/sanity'
-import { cotizarEnvio } from '@/lib/andreani'
+import { cotizarEnvio, construirBulto, type TipoEnvio } from '@/lib/andreani'
 import { getCostoEnvioPorCP } from '@/lib/shipping-fallback'
 
 // ✅ FIX 1: Validar env var al inicio, falla claro si no está configurada
@@ -89,40 +89,45 @@ export async function POST(req: NextRequest) {
       }
     })
 
-    // ✅ FIX: Recalcular costo de envío en el servidor (CRIT-1)
-    let pesoTotal = 0
-    let valorTotalMercaderia = 0
-    mpItems.forEach(item => {
-      pesoTotal += (item.peso || 300) * item.quantity
-      valorTotalMercaderia += item.unit_price * item.quantity
-    })
-
+    // ✅ El costo de envío SIEMPRE se recalcula acá (CRIT-1): lo que manda el
+    // cliente es sólo informativo, nunca se usa para cobrar.
     const shippingData = body.shippingData || {}
-    const cpDestino = shippingData.codigoPostal || ''
-    
-    let montoEnvio = 0
-    if (cpDestino) {
-      try {
-        const cotizaciones = await cotizarEnvio(cpDestino, pesoTotal, valorTotalMercaderia)
-        const quote = cotizaciones.find(c => c.tipo === 'domicilio')
-        if (quote) {
-          montoEnvio = quote.tarifa
-        } else {
-          // Fallback a tabla estática si Andreani no devuelve cotización específica
-          montoEnvio = getCostoEnvioPorCP(cpDestino).costoADomicilio
-        }
-      } catch (e) {
-        montoEnvio = getCostoEnvioPorCP(cpDestino).costoADomicilio
-      }
-      
-      // TODO: ELIMINAR LUEGO DE PRUEBAS - Hardcode a 500 pesos
-      montoEnvio = 500
+    const cpDestino = String(shippingData.codigoPostal || '').replace(/\D/g, '')
+    const tipoEnvio: TipoEnvio = shippingData.tipoEnvio === 'sucursal' ? 'sucursal' : 'domicilio'
+
+    if (!cpDestino) {
+      return NextResponse.json({ error: 'Campo inválido o faltante: codigoPostal' }, { status: 400 })
     }
-    
+
+    const bulto = construirBulto(
+      mpItems.map((item) => ({
+        peso: item.peso,
+        cantidad: item.quantity,
+        precio: item.unit_price,
+      }))
+    )
+
+    let montoEnvio: number
+    let cotizacionEsFallback = false
+
+    try {
+      const [cotizacion] = await cotizarEnvio(cpDestino, bulto, [tipoEnvio])
+      if (!cotizacion) throw new Error(`Andreani no devolvió tarifa para envío a ${tipoEnvio}`)
+      montoEnvio = cotizacion.tarifa
+    } catch (e) {
+      console.warn(
+        `⚠️ Cotización de Andreani falló, se usa la tabla fija:`,
+        e instanceof Error ? e.message : String(e)
+      )
+      const zona = getCostoEnvioPorCP(cpDestino)
+      montoEnvio = tipoEnvio === 'sucursal' ? zona.costoSucursal : zona.costoADomicilio
+      cotizacionEsFallback = true
+    }
+
     if (montoEnvio > 0) {
       mpItems.push({
         id: 'shipping_andreani',
-        title: 'Envío Andreani a domicilio',
+        title: tipoEnvio === 'sucursal' ? 'Envío Andreani a sucursal' : 'Envío Andreani a domicilio',
         quantity: 1,
         unit_price: montoEnvio,
         currency_id: 'ARS',
@@ -135,13 +140,20 @@ export async function POST(req: NextRequest) {
       if (name === 'nombre') return v.split(' ').filter(Boolean).length >= 2
       if (name === 'email') return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
       if (name === 'telefono') return v.replace(/\D/g, '').length >= 10
-      if (name === 'codigoPostal') return /^\d{4}([A-Z]{3})?$/.test(v)
-      if (name === 'provincia' || name === 'ciudad' || name === 'direccion') return v.length >= 2
-      return true
+      if (name === 'codigoPostal') return /^\d{4}([A-Za-z]{3})?$/.test(v)
+      // Andreani exige el DNI del receptor para entregas B2C
+      if (name === 'dni') return /^\d{7,8}$/.test(v.replace(/\D/g, ''))
+      if (name === 'numero') return v.length >= 1
+      if (name === 'sucursalId') return v.length >= 1
+      return v.length >= 2
     }
 
-    // ✅ FIX 2: Validación requerida (siempre domicilio)
-    const requiredFields = ['nombre', 'email', 'telefono', 'provincia', 'ciudad', 'codigoPostal', 'direccion']
+    // Los campos requeridos dependen del tipo de envío: a sucursal no hace falta
+    // la dirección del cliente, pero sí la sucursal elegida.
+    const requiredFields =
+      tipoEnvio === 'sucursal'
+        ? ['nombre', 'email', 'telefono', 'dni', 'provincia', 'ciudad', 'codigoPostal', 'sucursalId']
+        : ['nombre', 'email', 'telefono', 'dni', 'provincia', 'ciudad', 'codigoPostal', 'calle', 'numero']
 
     for (const field of requiredFields) {
       if (!validateServerField(field, shippingData[field])) {
@@ -170,10 +182,15 @@ export async function POST(req: NextRequest) {
           },
         },
         // ✅ Metadata completo con items y datos de envío
+        // ⚠️ MP pasa todas las keys a snake_case: el webhook las lee así.
         metadata: {
           shipping_data: {
             ...shippingData,
+            tipo_envio: tipoEnvio,
             monto_envio: montoEnvio,
+            cotizacion_fallback: cotizacionEsFallback,
+            kilos: bulto.kilos,
+            valor_declarado: bulto.valorDeclarado,
           },
           items: mpItems.map((item) => ({
             id: item.id,
