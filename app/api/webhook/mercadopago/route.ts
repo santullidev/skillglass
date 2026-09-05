@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import MercadoPagoConfig, { Payment } from 'mercadopago'
 import { backendClient } from '@/lib/sanity'
 import { createHmac, timingSafeEqual } from 'crypto'
+import { revalidatePath } from 'next/cache'
 import { sendOrderEmails } from '@/lib/email-service'
 import { crearOrdenEnvio, obtenerEtiqueta, type TipoEnvio } from '@/lib/andreani'
 
@@ -371,14 +372,18 @@ export async function POST(req: NextRequest) {
       }).catch(err => console.error('Error al enviar emails después del pedido:', err))
 
       // Helper para invalidar cache de Next.js de una página de producto
-      const revalidateProductPage = async (slug: string) => {
-        const revalidateToken = process.env.REVALIDATE_SECRET || process.env.MP_ACCESS_TOKEN?.slice(-12)
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
-        await fetch(`${baseUrl}/api/revalidar-producto`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ slug, token: revalidateToken }),
-        }).catch(err => console.error(`⚠️ Error al revalidar cache de /productos/${slug}:`, err))
+      // Se invalida el cache en proceso. Antes esto salía por HTTP contra la
+      // propia app autenticándose con REVALIDATE_SECRET o, si faltaba, con los
+      // últimos 12 caracteres del token de MercadoPago: nunca hay que derivar
+      // un secreto de otro, menos del de cobros. Llamando directo no hace falta
+      // secreto, ni salto de red, ni que NEXT_PUBLIC_BASE_URL esté bien puesto.
+      const revalidateProductPage = (slug: string) => {
+        try {
+          revalidatePath(`/productos/${slug}`)
+          revalidatePath('/productos')
+        } catch (err) {
+          console.error(`⚠️ Error al revalidar cache de /productos/${slug}:`, err)
+        }
       }
 
       // ✅ Marcar productos como no disponibles + invalidar cache del frontend
@@ -399,7 +404,7 @@ export async function POST(req: NextRequest) {
           if (productoData?._id) {
             await backendClient.patch(productoData._id).set({ disponible: false }).commit()
             console.log(`✅ Producto "${item.title}" (${item.id}) marcado como no disponible.`)
-            if (productoData.slug) await revalidateProductPage(productoData.slug)
+            if (productoData.slug) revalidateProductPage(productoData.slug)
             patched = true
           }
         } catch (err) {
@@ -417,7 +422,7 @@ export async function POST(req: NextRequest) {
             if (productoDoc?._id) {
               await backendClient.patch(productoDoc._id).set({ disponible: false }).commit()
               console.log(`✅ Producto "${item.title}" (slug: ${item.id}) marcado como no disponible.`)
-              await revalidateProductPage(item.id)
+              revalidateProductPage(item.id)
             } else {
               console.error(`❌ No se encontró producto con _id ni slug "${item.id}". Stock NO actualizado.`)
             }
