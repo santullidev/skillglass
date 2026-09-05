@@ -1,19 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import MercadoPagoConfig, { Payment } from 'mercadopago'
 import { backendClient } from '@/lib/sanity'
-import { createHmac } from 'crypto'
+import { createHmac, timingSafeEqual } from 'crypto'
 import { sendOrderEmails } from '@/lib/email-service'
 import { crearOrdenEnvio, obtenerEtiqueta, type TipoEnvio } from '@/lib/andreani'
 
-// ✅ FIX 1: Validar env vars al inicio
 const accessToken = process.env.MP_ACCESS_TOKEN
 const webhookSecret = process.env.MP_WEBHOOK_SECRET
+const esProduccion = process.env.NODE_ENV === 'production'
 
-if (!accessToken) {
-  throw new Error('MP_ACCESS_TOKEN no está configurado')
+// Cliente perezoso: lanzar en el módulo deja la ruta entera fuera de servicio
+// y hace que MercadoPago no pueda notificar ningún pago.
+let mpClient: MercadoPagoConfig | null = null
+function getMpClient(): MercadoPagoConfig {
+  if (!accessToken) throw new Error('MP_ACCESS_TOKEN no está configurado')
+  mpClient ??= new MercadoPagoConfig({ accessToken })
+  return mpClient
 }
-
-const client = new MercadoPagoConfig({ accessToken })
 
 // ✅ FIX 2: Tipo para los items del metadata (reemplaza 'any')
 interface MetadataItem {
@@ -54,25 +57,39 @@ interface ShippingData {
   sucursalNomenclatura?: string
 }
 
-// ✅ FIX 2b: Función para validar la firma de MP
+/** Tolerancia de antigüedad de la firma, para acotar la ventana de replay. */
+const MAX_ANTIGUEDAD_FIRMA_MS = 10 * 60 * 1000
+
+/** Comparación en tiempo constante: `===` sobre un hash filtra información por timing. */
+function hashesIguales(a: string, b: string): boolean {
+  const bufA = Buffer.from(a, 'utf8')
+  const bufB = Buffer.from(b, 'utf8')
+  if (bufA.length !== bufB.length) return false
+  return timingSafeEqual(bufA, bufB)
+}
+
+type ResultadoFirma = 'valida' | 'invalida' | 'sin-secreto'
+
+/**
+ * Valida la firma HMAC que envía MercadoPago.
+ *
+ * Devuelve 'sin-secreto' en vez de dar por válida la firma cuando falta
+ * MP_WEBHOOK_SECRET: quien llama decide, y en producción eso se rechaza.
+ */
 function validateMpSignature(
   req: NextRequest,
   rawBody: string,
   id: string,
   isIpn: boolean
-): boolean {
-  // Si no hay secret configurado, salteamos en desarrollo pero advertimos
-  if (!webhookSecret) {
-    console.warn('⚠️ MP_WEBHOOK_SECRET no configurado. Saltando validación de firma (solo OK en desarrollo).')
-    return true
-  }
+): ResultadoFirma {
+  if (!webhookSecret) return 'sin-secreto'
 
   const xSignature = req.headers.get('x-signature')
   const xRequestId = req.headers.get('x-request-id')
 
   if (!xSignature || !xRequestId) {
     console.error('Webhook rechazado: faltan headers de firma')
-    return false
+    return 'invalida'
   }
 
   // Parsear ts y v1 del header x-signature
@@ -82,18 +99,24 @@ function validateMpSignature(
   const ts = parts['ts']
   const receivedHash = parts['v1']
 
-  if (!ts || !receivedHash) return false
+  if (!ts || !receivedHash) return 'invalida'
+
+  // Rechazar firmas viejas: acota la ventana para reenviar una notificación
+  // interceptada. MP manda el ts en milisegundos.
+  const antiguedad = Date.now() - Number(ts)
+  if (!Number.isFinite(antiguedad) || antiguedad > MAX_ANTIGUEDAD_FIRMA_MS) {
+    console.error(`Webhook rechazado: firma vencida (${Math.round(antiguedad / 1000)}s)`)
+    return 'invalida'
+  }
 
   // ✅ El manifest cambia según si es IPN (lo que envía notification_url) o Webhook
-  const manifest = isIpn 
-    ? `id:${id};request-id:${xRequestId};ts:${ts};` 
+  const manifest = isIpn
+    ? `id:${id};request-id:${xRequestId};ts:${ts};`
     : `ts:${ts};request-id:${xRequestId};${rawBody}`
 
-  const expectedHash = createHmac('sha256', webhookSecret)
-    .update(manifest)
-    .digest('hex')
+  const expectedHash = createHmac('sha256', webhookSecret).update(manifest).digest('hex')
 
-  return expectedHash === receivedHash
+  return hashesIguales(expectedHash, receivedHash) ? 'valida' : 'invalida'
 }
 
 export async function POST(req: NextRequest) {
@@ -111,11 +134,25 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ received: true })
     }
 
-    // Validar firma de MP (No bloqueante para evitar fallos por formato, la seguridad real es la consulta a la API de MP)
+    // ✅ La firma se valida de forma BLOQUEANTE en producción. Antes sólo se
+    // logueaba una advertencia y se seguía adelante, lo que dejaba la ruta
+    // abierta a notificaciones falsificadas.
     const rawBody = await req.text()
-    const signatureValid = validateMpSignature(req, rawBody, id, isIpn)
-    if (!signatureValid) {
-      console.warn(`⚠️ Firma de webhook inválida para pago ${id} (isIpn: ${isIpn}). Continuando con verificación directa de API...`)
+    const firma = validateMpSignature(req, rawBody, id, isIpn)
+
+    if (firma === 'invalida') {
+      console.error(`❌ Webhook rechazado: firma inválida para el pago ${id} (isIpn: ${isIpn})`)
+      return NextResponse.json({ error: 'Firma inválida' }, { status: 401 })
+    }
+
+    if (firma === 'sin-secreto') {
+      if (esProduccion) {
+        // Fail closed: sin secreto en producción no hay forma de distinguir
+        // una notificación legítima de una falsificada.
+        console.error('❌ MP_WEBHOOK_SECRET no está configurado en producción. Webhook rechazado.')
+        return NextResponse.json({ error: 'Webhook no configurado' }, { status: 503 })
+      }
+      console.warn('⚠️ MP_WEBHOOK_SECRET no configurado. Validación de firma omitida (sólo en desarrollo).')
     }
 
     // ✅ FIX 5: Idempotencia — usar _id determinístico basado en el ID de MP
@@ -132,7 +169,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Consultar el pago a la API de MP
-    const payment = new Payment(client)
+    const payment = new Payment(getMpClient())
     let paymentData
     try {
       paymentData = await payment.get({ id })
