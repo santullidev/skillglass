@@ -17,6 +17,12 @@ import CollectionCard from '@/components/CollectionCard'
 import HeroSlider from '@/components/HeroSlider'
 import type { Producto } from '@/types/producto'
 
+/** Ficha técnica de la sección Alquimia, tal como llega de Sanity. */
+interface AlquimiaSpec {
+  label?: string
+  valor?: string
+}
+
 export const revalidate = 60
 
 // ─── Fallbacks por defecto (si no hay nada configurado en el Studio) ───
@@ -106,15 +112,17 @@ export default async function Home() {
 
   // Alquimia
   const alquimiaEtiqueta = alquimia?.etiqueta || DEFAULTS.alquimiaEtiqueta
-  const alquimiaSpecs = (alquimia?.specs && alquimia.specs.length > 0) 
-    ? alquimia.specs 
+  // Los datos vienen de Sanity sin tipo generado, así que se anota acá para
+  // que el mapeo no quede en `any` implícito.
+  const alquimiaSpecs: AlquimiaSpec[] = (alquimia?.specs && alquimia.specs.length > 0)
+    ? alquimia.specs
     : DEFAULTS.alquimiaSpecs
 
   // Pilares / Pasos
   const pilares = procesoPasos
 
   // Productos (Mapeo robusto)
-  const productos = (productosConfig?.productosDestacados && productosConfig.productosDestacados.length > 0)
+  const productos: Producto[] = (productosConfig?.productosDestacados && productosConfig.productosDestacados.length > 0)
     ? productosConfig.productosDestacados
     : (fallbackProductos || [])
 

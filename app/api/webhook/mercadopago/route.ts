@@ -23,9 +23,9 @@ function getMpClient(): MercadoPagoConfig {
 interface MetadataItem {
   id: string
   title: string
-  quantity?: number
-  unit_price?: number
-  numero_certificado?: string | null
+  quantity: number
+  unit_price: number
+  numeroCertificado: string | null
 }
 
 // Tipo para items crudos del metadata de MP (pueden llegar con campos opcionales en snake_case)
@@ -34,6 +34,8 @@ interface RawMetadataItem {
   title?: string
   quantity?: number
   unit_price?: number
+  /** MP pasa las keys del metadata a snake_case. */
+  numero_certificado?: string | null
 }
 
 interface ShippingData {
