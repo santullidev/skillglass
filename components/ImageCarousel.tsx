@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { urlFor } from '@/lib/sanity'
+import { urlFor } from '@/lib/sanity-image'
 
 interface SanityImage {
   _key?: string

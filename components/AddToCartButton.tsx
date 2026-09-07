@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useCart } from '@/lib/cart-context'
 import type { Producto } from '@/types/producto'
-import { urlFor } from '@/lib/sanity'
+import { urlFor } from '@/lib/sanity-image'
 
 interface Props {
   producto: Producto

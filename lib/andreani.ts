@@ -326,11 +326,19 @@ export interface AndreaniOrdenResult {
   raw: unknown
 }
 
+/**
+ * Domicilio desde donde se despacha. Es lo que sale como REMITENTE en la
+ * etiqueta, así que tiene que coincidir con la dirección real del taller.
+ *
+ * ⚠️ Los valores de acá son sólo el fallback: en producción mandan las
+ * variables de entorno de Vercel. Si se cambia la dirección, hay que
+ * actualizarlas ahí también.
+ */
 const ORIGEN = {
-  codigoPostal: process.env.ANDREANI_CP_ORIGEN || '1896',
-  calle: process.env.ANDREANI_CALLE_ORIGEN || 'Calle 21A',
-  numero: process.env.ANDREANI_NUMERO_ORIGEN || '1460',
-  localidad: process.env.ANDREANI_LOCALIDAD_ORIGEN || 'City Bell',
+  codigoPostal: process.env.ANDREANI_CP_ORIGEN || '1897',
+  calle: process.env.ANDREANI_CALLE_ORIGEN || 'Calle 14',
+  numero: process.env.ANDREANI_NUMERO_ORIGEN || '3027',
+  localidad: process.env.ANDREANI_LOCALIDAD_ORIGEN || 'Gonnet',
   provincia: process.env.ANDREANI_PROVINCIA_ORIGEN || 'Buenos Aires',
   pais: 'Argentina',
 }
