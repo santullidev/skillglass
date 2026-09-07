@@ -83,10 +83,12 @@ function validateMpSignature(req: NextRequest, id: string): ResultadoFirma {
   if (!webhookSecret) return 'sin-secreto'
 
   const xSignature = req.headers.get('x-signature')
+  // x-request-id es OPCIONAL: la plantilla de MercadoPago omite los segmentos
+  // cuyo valor no viene. Exigirlo rechazaba firmas legítimas que no lo traen.
   const xRequestId = req.headers.get('x-request-id')
 
-  if (!xSignature || !xRequestId) {
-    console.error('Webhook rechazado: faltan headers de firma')
+  if (!xSignature) {
+    console.error('Webhook rechazado: falta el header x-signature')
     return 'invalida'
   }
 
@@ -97,13 +99,26 @@ function validateMpSignature(req: NextRequest, id: string): ResultadoFirma {
   const ts = parts['ts']
   const receivedHash = parts['v1']
 
-  if (!ts || !receivedHash) return 'invalida'
+  if (!ts || !receivedHash) {
+    console.error('Webhook rechazado: x-signature no trae ts y v1')
+    return 'invalida'
+  }
 
   // Rechazar firmas viejas: acota la ventana para reenviar una notificación
-  // interceptada. MP manda el ts en milisegundos.
-  const antiguedad = Date.now() - Number(ts)
-  if (!Number.isFinite(antiguedad) || antiguedad > MAX_ANTIGUEDAD_FIRMA_MS) {
-    console.error(`Webhook rechazado: firma vencida (${Math.round(antiguedad / 1000)}s)`)
+  // interceptada.
+  //
+  // ⚠️ MercadoPago manda el ts en SEGUNDOS (Unix, 10 dígitos), no en
+  // milisegundos. Tratarlo como ms daba una antigüedad de ~56 años y rechazaba
+  // todas las notificaciones legítimas. Se acepta cualquiera de las dos
+  // unidades por las dudas.
+  const tsNumero = Number(ts)
+  const tsEnMs = tsNumero < 1e12 ? tsNumero * 1000 : tsNumero
+  const desfasaje = Date.now() - tsEnMs
+
+  // Se compara en valor absoluto: un reloj adelantado del lado de MP daría
+  // negativo, y eso no debería invalidar una firma legítima.
+  if (!Number.isFinite(desfasaje) || Math.abs(desfasaje) > MAX_ANTIGUEDAD_FIRMA_MS) {
+    console.error(`Webhook rechazado: firma fuera de la ventana (${Math.round(desfasaje / 1000)}s)`)
     return 'invalida'
   }
 
