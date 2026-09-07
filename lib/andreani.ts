@@ -312,6 +312,12 @@ export interface CrearOrdenInput {
   /** Para envío a sucursal. */
   sucursal?: Pick<Sucursal, 'id' | 'nomenclatura' | 'descripcion'>
   productoAEntregar?: string
+  /**
+   * Notas que dejó el cliente en el checkout (timbre, referencias, horarios).
+   * Se imprimen en el campo "Observaciones" de la etiqueta, que es lo que lee
+   * quien hace la entrega.
+   */
+  notas?: string
 }
 
 export interface AndreaniOrdenResult {
@@ -374,6 +380,10 @@ export async function crearOrdenEnvio(input: CrearOrdenInput): Promise<AndreaniO
           },
         }
 
+  // La etiqueta tiene poco espacio y es una linea sola: se recorta y se
+  // aplanan los saltos de linea.
+  const notasLimpias = (input.notas || '').replace(/\s+/g, ' ').trim().slice(0, 120)
+
   const payload = {
     contrato,
     idPedido: input.idPedido,
@@ -412,6 +422,9 @@ export async function crearOrdenEnvio(input: CrearOrdenInput): Promise<AndreaniO
         valorDeclaradoSinImpuestos: input.bulto.valorDeclarado,
         valorDeclaradoConImpuestos: input.bulto.valorDeclarado,
         descripcion: input.productoAEntregar || 'Joyería en vidrio',
+        // `referencias` con meta "observaciones" es lo que Andreani imprime en
+        // el campo Observaciones de la etiqueta. Verificado contra QA.
+        ...(notasLimpias ? { referencias: [{ meta: 'observaciones', contenido: notasLimpias }] } : {}),
       },
     ],
   }

@@ -346,6 +346,7 @@ export async function POST(req: NextRequest) {
                   provincia: shippingData.provincia,
                 }
               : undefined,
+          notas: shippingData.notas,
           sucursal:
             shippingData.tipoEnvio === 'sucursal'
               ? {
