@@ -299,8 +299,12 @@ export async function POST(req: NextRequest) {
           codigoPostal: shippingData.codigoPostal || 'N/A',
           costo:        shippingData.montoEnvio,
           notas:          shippingData.notas          || '',
-          sucursalId:     shippingData.sucursalId     || '',
-          sucursalNombre: shippingData.sucursalNombre || '',
+          // Sólo se guarda la sucursal si el envío es a sucursal. El checkout
+          // preselecciona la del CP aunque el cliente elija domicilio, y
+          // guardarla igual hacía que el panel mostrara una sucursal de retiro
+          // en pedidos que van a la puerta.
+          sucursalId:     shippingData.tipoEnvio === 'sucursal' ? shippingData.sucursalId || '' : '',
+          sucursalNombre: shippingData.tipoEnvio === 'sucursal' ? shippingData.sucursalNombre || '' : '',
           dniReceptor:    shippingData.dni            || '',
         },
         estadoEnvio: 'pendiente',
