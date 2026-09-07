@@ -1,4 +1,6 @@
 import { Resend } from 'resend';
+import { client } from '@/lib/sanity';
+import { SETTINGS_QUERY } from '@/lib/queries';
 
 /**
  * Escapa HTML antes de interpolarlo en el cuerpo del mail.
@@ -35,6 +37,35 @@ interface OrderEmailData {
   };
 }
 
+/**
+ * Remitente de los correos de pedido.
+ *
+ * El dominio estaba hardcodeado como `skilglass.art`, que no es el del sitio
+ * (`skilglass.com.ar`). Si el dominio del remitente no está verificado en
+ * Resend el envío falla, y como el error queda capturado los mails
+ * desaparecían en silencio.
+ *
+ * ⚠️ El dominio que se use acá tiene que estar verificado en Resend.
+ */
+const REMITENTE = process.env.RESEND_FROM_EMAIL || 'hola@skilglass.com.ar'
+
+/** Fallback del aviso de venta, si Sanity no tiene email cargado. */
+const EMAIL_VENTAS_FALLBACK = process.env.VENTAS_EMAIL || 'hola@skilglass.com.ar'
+
+/**
+ * Casilla que recibe el aviso de venta nueva.
+ * Sale de Sanity para que se pueda cambiar sin tocar código.
+ */
+async function obtenerEmailDeVentas(): Promise<string> {
+  try {
+    const settings = await client.fetch(SETTINGS_QUERY)
+    return settings?.email || EMAIL_VENTAS_FALLBACK
+  } catch (error) {
+    console.error('No se pudo leer el email de contacto de Sanity:', error)
+    return EMAIL_VENTAS_FALLBACK
+  }
+}
+
 export async function sendOrderEmails(data: OrderEmailData) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -48,7 +79,7 @@ export async function sendOrderEmails(data: OrderEmailData) {
   try {
     // 1. Email al Comprador
     await resend.emails.send({
-      from: 'SKILGLASS <ventas@skilglass.art>',
+      from: `SKILGLASS <${REMITENTE}>`,
       to: customerEmail,
       subject: `Confirmación de compra #${orderId} - SKILGLASS`,
       html: `
@@ -85,8 +116,8 @@ export async function sendOrderEmails(data: OrderEmailData) {
 
     // 2. Notificación al Vendedor
     await resend.emails.send({
-      from: 'Sistema SKILGLASS <novedades@skilglass.art>',
-      to: 'ventas@skilglass.art',
+      from: `Sistema SKILGLASS <${REMITENTE}>`,
+      to: await obtenerEmailDeVentas(),
       subject: `🚨 NUEVA VENTA #${orderId} - $${totalAmount}`,
       html: `
         <h2>Nueva venta realizada</h2>
