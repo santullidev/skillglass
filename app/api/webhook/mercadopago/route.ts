@@ -1,27 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server'
 import MercadoPagoConfig, { Payment } from 'mercadopago'
 import { backendClient } from '@/lib/sanity'
-import { createHmac } from 'crypto'
+import { createHmac, timingSafeEqual } from 'crypto'
+import { revalidatePath } from 'next/cache'
 import { sendOrderEmails } from '@/lib/email-service'
-import { crearOrdenEnvio, obtenerEtiqueta } from '@/lib/andreani'
+import { crearOrdenEnvio, urlEtiquetaInterna, type TipoEnvio } from '@/lib/andreani'
 
-// ✅ FIX 1: Validar env vars al inicio
 const accessToken = process.env.MP_ACCESS_TOKEN
 const webhookSecret = process.env.MP_WEBHOOK_SECRET
+const esProduccion = process.env.NODE_ENV === 'production'
 
-if (!accessToken) {
-  throw new Error('MP_ACCESS_TOKEN no está configurado')
+// Cliente perezoso: lanzar en el módulo deja la ruta entera fuera de servicio
+// y hace que MercadoPago no pueda notificar ningún pago.
+let mpClient: MercadoPagoConfig | null = null
+function getMpClient(): MercadoPagoConfig {
+  if (!accessToken) throw new Error('MP_ACCESS_TOKEN no está configurado')
+  mpClient ??= new MercadoPagoConfig({ accessToken })
+  return mpClient
 }
-
-const client = new MercadoPagoConfig({ accessToken })
 
 // ✅ FIX 2: Tipo para los items del metadata (reemplaza 'any')
 interface MetadataItem {
   id: string
   title: string
-  quantity?: number
-  unit_price?: number
-  numero_certificado?: string | null
+  quantity: number
+  unit_price: number
+  numeroCertificado: string | null
 }
 
 // Tipo para items crudos del metadata de MP (pueden llegar con campos opcionales en snake_case)
@@ -30,40 +34,62 @@ interface RawMetadataItem {
   title?: string
   quantity?: number
   unit_price?: number
+  /** MP pasa las keys del metadata a snake_case. */
+  numero_certificado?: string | null
 }
 
 interface ShippingData {
   nombre: string
   email: string
   telefono: string
+  dni: string
   provincia: string
   ciudad: string
-  direccion: string
+  calle: string
+  numero: string
+  piso?: string
+  departamento?: string
   codigoPostal: string
   notas?: string
-  tipoEnvio: 'domicilio'
+  tipoEnvio: TipoEnvio
   montoEnvio: number
+  kilos: number
+  valorDeclarado: number
+  sucursalId?: string
+  sucursalNombre?: string
+  sucursalNomenclatura?: string
 }
 
-// ✅ FIX 2b: Función para validar la firma de MP
-function validateMpSignature(
-  req: NextRequest,
-  rawBody: string,
-  id: string,
-  isIpn: boolean
-): boolean {
-  // Si no hay secret configurado, salteamos en desarrollo pero advertimos
-  if (!webhookSecret) {
-    console.warn('⚠️ MP_WEBHOOK_SECRET no configurado. Saltando validación de firma (solo OK en desarrollo).')
-    return true
-  }
+/** Tolerancia de antigüedad de la firma, para acotar la ventana de replay. */
+const MAX_ANTIGUEDAD_FIRMA_MS = 10 * 60 * 1000
+
+/** Comparación en tiempo constante: `===` sobre un hash filtra información por timing. */
+function hashesIguales(a: string, b: string): boolean {
+  const bufA = Buffer.from(a, 'utf8')
+  const bufB = Buffer.from(b, 'utf8')
+  if (bufA.length !== bufB.length) return false
+  return timingSafeEqual(bufA, bufB)
+}
+
+type ResultadoFirma = 'valida' | 'invalida' | 'sin-secreto'
+
+/**
+ * Valida la firma HMAC que envía MercadoPago.
+ *
+ * Devuelve 'sin-secreto' en vez de dar por válida la firma cuando falta
+ * MP_WEBHOOK_SECRET: quien llama decide, y en producción eso se rechaza.
+ */
+function validateMpSignature(req: NextRequest, id: string): ResultadoFirma {
+  if (!webhookSecret) return 'sin-secreto'
 
   const xSignature = req.headers.get('x-signature')
+  // x-request-id es OPCIONAL: la plantilla de MercadoPago omite los segmentos
+  // cuyo valor no viene. Exigirlo rechazaba firmas legítimas que no lo traen.
   const xRequestId = req.headers.get('x-request-id')
 
-  if (!xSignature || !xRequestId) {
-    console.error('Webhook rechazado: faltan headers de firma')
-    return false
+  if (!xSignature) {
+    console.error('Webhook rechazado: falta el header x-signature')
+    return 'invalida'
   }
 
   // Parsear ts y v1 del header x-signature
@@ -73,18 +99,48 @@ function validateMpSignature(
   const ts = parts['ts']
   const receivedHash = parts['v1']
 
-  if (!ts || !receivedHash) return false
+  if (!ts || !receivedHash) {
+    console.error('Webhook rechazado: x-signature no trae ts y v1')
+    return 'invalida'
+  }
 
-  // ✅ El manifest cambia según si es IPN (lo que envía notification_url) o Webhook
-  const manifest = isIpn 
-    ? `id:${id};request-id:${xRequestId};ts:${ts};` 
-    : `ts:${ts};request-id:${xRequestId};${rawBody}`
+  // Rechazar firmas viejas: acota la ventana para reenviar una notificación
+  // interceptada.
+  //
+  // ⚠️ MercadoPago manda el ts en SEGUNDOS (Unix, 10 dígitos), no en
+  // milisegundos. Tratarlo como ms daba una antigüedad de ~56 años y rechazaba
+  // todas las notificaciones legítimas. Se acepta cualquiera de las dos
+  // unidades por las dudas.
+  const tsNumero = Number(ts)
+  const tsEnMs = tsNumero < 1e12 ? tsNumero * 1000 : tsNumero
+  const desfasaje = Date.now() - tsEnMs
 
-  const expectedHash = createHmac('sha256', webhookSecret)
-    .update(manifest)
-    .digest('hex')
+  // Se compara en valor absoluto: un reloj adelantado del lado de MP daría
+  // negativo, y eso no debería invalidar una firma legítima.
+  if (!Number.isFinite(desfasaje) || Math.abs(desfasaje) > MAX_ANTIGUEDAD_FIRMA_MS) {
+    console.error(`Webhook rechazado: firma fuera de la ventana (${Math.round(desfasaje / 1000)}s)`)
+    return 'invalida'
+  }
 
-  return expectedHash === receivedHash
+  // El manifest es el MISMO para IPN y para Webhook: MercadoPago siempre firma
+  // `id:<data.id>;request-id:<x-request-id>;ts:<ts>;`.
+  // Antes la rama de Webhook usaba un formato con el body crudo que MP no emite,
+  // así que toda notificación configurada desde el panel fallaba la validación.
+  // Los segmentos cuyo valor falta se omiten, según la documentación.
+  // Si el id es alfanumérico va en minúsculas.
+  const idNormalizado = /[a-zA-Z]/.test(id) ? id.toLowerCase() : id
+
+  const manifest = [
+    idNormalizado && `id:${idNormalizado};`,
+    xRequestId && `request-id:${xRequestId};`,
+    `ts:${ts};`,
+  ]
+    .filter(Boolean)
+    .join('')
+
+  const expectedHash = createHmac('sha256', webhookSecret).update(manifest).digest('hex')
+
+  return hashesIguales(expectedHash, receivedHash) ? 'valida' : 'invalida'
 }
 
 export async function POST(req: NextRequest) {
@@ -102,11 +158,24 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ received: true })
     }
 
-    // Validar firma de MP (No bloqueante para evitar fallos por formato, la seguridad real es la consulta a la API de MP)
-    const rawBody = await req.text()
-    const signatureValid = validateMpSignature(req, rawBody, id, isIpn)
-    if (!signatureValid) {
-      console.warn(`⚠️ Firma de webhook inválida para pago ${id} (isIpn: ${isIpn}). Continuando con verificación directa de API...`)
+    // ✅ La firma se valida de forma BLOQUEANTE en producción. Antes sólo se
+    // logueaba una advertencia y se seguía adelante, lo que dejaba la ruta
+    // abierta a notificaciones falsificadas.
+    const firma = validateMpSignature(req, id)
+
+    if (firma === 'invalida') {
+      console.error(`❌ Webhook rechazado: firma inválida para el pago ${id} (isIpn: ${isIpn})`)
+      return NextResponse.json({ error: 'Firma inválida' }, { status: 401 })
+    }
+
+    if (firma === 'sin-secreto') {
+      if (esProduccion) {
+        // Fail closed: sin secreto en producción no hay forma de distinguir
+        // una notificación legítima de una falsificada.
+        console.error('❌ MP_WEBHOOK_SECRET no está configurado en producción. Webhook rechazado.')
+        return NextResponse.json({ error: 'Webhook no configurado' }, { status: 503 })
+      }
+      console.warn('⚠️ MP_WEBHOOK_SECRET no configurado. Validación de firma omitida (sólo en desarrollo).')
     }
 
     // ✅ FIX 5: Idempotencia — usar _id determinístico basado en el ID de MP
@@ -123,7 +192,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Consultar el pago a la API de MP
-    const payment = new Payment(client)
+    const payment = new Payment(getMpClient())
     let paymentData
     try {
       paymentData = await payment.get({ id })
@@ -146,13 +215,22 @@ export async function POST(req: NextRequest) {
         nombre:       raw.nombre       || '',
         email:        raw.email        || '',
         telefono:     raw.telefono     || '',
+        dni:          raw.dni          || '',
         provincia:    raw.provincia    || '',
         ciudad:       raw.ciudad       || '',
-        direccion:    raw.direccion    || '',
+        calle:        raw.calle        || '',
+        numero:       raw.numero       || '',
+        piso:         raw.piso         || '',
+        departamento: raw.departamento || '',
         codigoPostal: raw.codigo_postal || raw.codigoPostal || '',
         notas:        raw.notas        || '',
-        tipoEnvio:    'domicilio',
+        tipoEnvio:    (raw.tipo_envio || raw.tipoEnvio) === 'sucursal' ? 'sucursal' : 'domicilio',
         montoEnvio:   Number(raw.monto_envio || 0),
+        kilos:        Number(raw.kilos || 0.3),
+        valorDeclarado: Number(raw.valor_declarado || 0),
+        sucursalId:            raw.sucursal_id            || '',
+        sucursalNombre:        raw.sucursal_nombre        || '',
+        sucursalNomenclatura:  raw.sucursal_nomenclatura  || '',
       }
 
       // Items también llegan en snake_case desde el metadata de MP
@@ -180,6 +258,18 @@ export async function POST(req: NextRequest) {
       const clienteTelefono =
         shippingData.telefono || String(paymentData.payer?.phone?.number || '')
 
+      // Dirección en una línea, para mostrar en Sanity y en los emails
+      const direccionLegible =
+        shippingData.tipoEnvio === 'sucursal'
+          ? `Retira en sucursal Andreani: ${shippingData.sucursalNombre || shippingData.sucursalId}`
+          : [
+              `${shippingData.calle} ${shippingData.numero}`.trim(),
+              shippingData.piso && `Piso ${shippingData.piso}`,
+              shippingData.departamento && `Depto ${shippingData.departamento}`,
+            ]
+              .filter(Boolean)
+              .join(', ')
+
       // ✅ Inicializar pedido en Sanity usando createIfNotExists
       const sanityOrder = await backendClient.createIfNotExists({
         _id: orderDocId,
@@ -194,7 +284,7 @@ export async function POST(req: NextRequest) {
           nombre: item.title,
           cantidad: item.quantity ?? 1,
           precio: item.unit_price ?? 0,
-          numeroCertificado: (item as any).numeroCertificado || null,
+          numeroCertificado: item.numeroCertificado || null,
         })),
         cliente: {
           nombre:   clienteNombre,
@@ -205,10 +295,17 @@ export async function POST(req: NextRequest) {
           tipo:         shippingData.tipoEnvio,
           provincia:    shippingData.provincia    || 'N/A',
           ciudad:       shippingData.ciudad       || 'N/A',
-          direccion:    shippingData.direccion    || 'N/A',
+          direccion:    direccionLegible          || 'N/A',
           codigoPostal: shippingData.codigoPostal || 'N/A',
           costo:        shippingData.montoEnvio,
-          notas:        shippingData.notas        || '',
+          notas:          shippingData.notas          || '',
+          // Sólo se guarda la sucursal si el envío es a sucursal. El checkout
+          // preselecciona la del CP aunque el cliente elija domicilio, y
+          // guardarla igual hacía que el panel mostrara una sucursal de retiro
+          // en pedidos que van a la puerta.
+          sucursalId:     shippingData.tipoEnvio === 'sucursal' ? shippingData.sucursalId || '' : '',
+          sucursalNombre: shippingData.tipoEnvio === 'sucursal' ? shippingData.sucursalNombre || '' : '',
+          dniReceptor:    shippingData.dni            || '',
         },
         estadoEnvio: 'pendiente',
         fecha: new Date().toISOString(),
@@ -217,49 +314,69 @@ export async function POST(req: NextRequest) {
       // 📦 INTEGRACIÓN ANDREANI: Crear Envío
       try {
         console.log(`Iniciando creación de envío Andreani para pedido ${sanityOrder._id}...`)
-        
-        // Calcular peso total de los items
-        const pesoTotal = meta.items?.reduce((acc: number, item: any) => acc + (Number(item.peso || 300) * Number(item.quantity || 1)), 0) || 300
 
-        const andreaniPayload = {
-          contrato: process.env.ANDREANI_CONTRATO_DOMICILIO,
-          cliente: process.env.ANDREANI_CLIENTE,
-          sucursalDeEnvio: process.env.ANDREANI_CP_ORIGEN || '7600',
-          bultos: [{
-            peso: pesoTotal,
-            valorDeclarado: paymentData.transaction_amount - shippingData.montoEnvio, // Valor de la mercadería
-          }],
-          receptor: {
+        // El valor declarado es el de la mercadería, sin el costo del envío.
+        const valorDeclarado =
+          shippingData.valorDeclarado ||
+          Math.max((paymentData.transaction_amount || 0) - shippingData.montoEnvio, 0)
+
+        const andreaniResult = await crearOrdenEnvio({
+          tipoEnvio: shippingData.tipoEnvio,
+          idPedido: sanityOrder._id,
+          destinatario: {
             nombreCompleto: clienteNombre,
             email: clienteEmail,
             telefono: clienteTelefono,
-            documentoTipo: "DNI",
-            documentoNumero: "0", // Fallback si no lo pedimos
+            documentoNumero: shippingData.dni,
           },
-          destino: {
-            postal: {
-              codigoPostal: shippingData.codigoPostal,
-              provincia: shippingData.provincia,
-              localidad: shippingData.ciudad,
-              calle: shippingData.direccion,
-              numero: "0" // Andreani suele requerir separar calle de número, pero si viene todo junto pasamos 0
-            }
-          }
-        }
+          bulto: {
+            kilos: shippingData.kilos,
+            volumenCm: Number(process.env.ANDREANI_VOLUMEN_ITEM_CM3 || 1000),
+            valorDeclarado,
+          },
+          destinoPostal:
+            shippingData.tipoEnvio === 'domicilio'
+              ? {
+                  codigoPostal: shippingData.codigoPostal,
+                  calle: shippingData.calle,
+                  numero: shippingData.numero,
+                  piso: shippingData.piso,
+                  departamento: shippingData.departamento,
+                  localidad: shippingData.ciudad,
+                  provincia: shippingData.provincia,
+                }
+              : undefined,
+          notas: shippingData.notas,
+          sucursal:
+            shippingData.tipoEnvio === 'sucursal'
+              ? {
+                  id: Number(shippingData.sucursalId),
+                  nomenclatura: shippingData.sucursalNomenclatura,
+                  descripcion: shippingData.sucursalNombre || '',
+                }
+              : undefined,
+        })
 
-        const andreaniResult = await crearOrdenEnvio(andreaniPayload)
-        
-        if (andreaniResult && andreaniResult.numeroDeEnvio) {
+        if (andreaniResult.numeroDeEnvio) {
           const numeroEnvio = andreaniResult.numeroDeEnvio
-          const urlEtiqueta = await obtenerEtiqueta(numeroEnvio).catch(() => '')
-          
+          // Link a nuestra ruta proxy: la URL de Andreani exige su token y
+          // desde el panel de Sanity daria 401.
+          const urlEtiqueta = urlEtiquetaInterna(numeroEnvio)
+
           await backendClient.patch(sanityOrder._id).set({
             estadoEnvio: 'despachado',
             numeroAndreani: numeroEnvio,
             urlEtiqueta: urlEtiqueta,
           }).commit()
-          
+
           console.log(`✅ Envío Andreani creado: ${numeroEnvio}`)
+        } else {
+          // La orden se creó pero no vino el número de seguimiento: hay que
+          // buscarlo a mano en el panel de Andreani.
+          console.warn('⚠️ Andreani aceptó la orden pero no devolvió número de envío:', andreaniResult.raw)
+          await backendClient.patch(sanityOrder._id).set({
+            estadoEnvio: 'generando_etiqueta',
+          }).commit()
         }
       } catch (andreaniError) {
         console.error('❌ Error vinculando Andreani:', andreaniError)
@@ -276,7 +393,7 @@ export async function POST(req: NextRequest) {
         totalAmount:   paymentData.transaction_amount || 0,
         items: items.map(i => ({ nombre: i.title, cantidad: i.quantity, precio: i.unit_price })),
         shippingData: {
-          direccion:    shippingData.direccion    || 'N/A',
+          direccion:    direccionLegible          || 'N/A',
           ciudad:       shippingData.ciudad       || 'N/A',
           provincia:    shippingData.provincia    || 'N/A',
           codigoPostal: shippingData.codigoPostal || 'N/A',
@@ -284,14 +401,18 @@ export async function POST(req: NextRequest) {
       }).catch(err => console.error('Error al enviar emails después del pedido:', err))
 
       // Helper para invalidar cache de Next.js de una página de producto
-      const revalidateProductPage = async (slug: string) => {
-        const revalidateToken = process.env.REVALIDATE_SECRET || process.env.MP_ACCESS_TOKEN?.slice(-12)
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
-        await fetch(`${baseUrl}/api/revalidar-producto`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ slug, token: revalidateToken }),
-        }).catch(err => console.error(`⚠️ Error al revalidar cache de /productos/${slug}:`, err))
+      // Se invalida el cache en proceso. Antes esto salía por HTTP contra la
+      // propia app autenticándose con REVALIDATE_SECRET o, si faltaba, con los
+      // últimos 12 caracteres del token de MercadoPago: nunca hay que derivar
+      // un secreto de otro, menos del de cobros. Llamando directo no hace falta
+      // secreto, ni salto de red, ni que NEXT_PUBLIC_BASE_URL esté bien puesto.
+      const revalidateProductPage = (slug: string) => {
+        try {
+          revalidatePath(`/productos/${slug}`)
+          revalidatePath('/productos')
+        } catch (err) {
+          console.error(`⚠️ Error al revalidar cache de /productos/${slug}:`, err)
+        }
       }
 
       // ✅ Marcar productos como no disponibles + invalidar cache del frontend
@@ -312,7 +433,7 @@ export async function POST(req: NextRequest) {
           if (productoData?._id) {
             await backendClient.patch(productoData._id).set({ disponible: false }).commit()
             console.log(`✅ Producto "${item.title}" (${item.id}) marcado como no disponible.`)
-            if (productoData.slug) await revalidateProductPage(productoData.slug)
+            if (productoData.slug) revalidateProductPage(productoData.slug)
             patched = true
           }
         } catch (err) {
@@ -330,7 +451,7 @@ export async function POST(req: NextRequest) {
             if (productoDoc?._id) {
               await backendClient.patch(productoDoc._id).set({ disponible: false }).commit()
               console.log(`✅ Producto "${item.title}" (slug: ${item.id}) marcado como no disponible.`)
-              await revalidateProductPage(item.id)
+              revalidateProductPage(item.id)
             } else {
               console.error(`❌ No se encontró producto con _id ni slug "${item.id}". Stock NO actualizado.`)
             }

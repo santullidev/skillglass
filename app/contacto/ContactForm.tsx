@@ -32,9 +32,11 @@ export default function ContactForm() {
         setFormData({ nombre: '', email: '', asunto: '', mensaje: '' })
         setTimeout(() => setIsSuccess(false), 5000)
       } else {
-        console.error('Error al enviar el formulario')
+        // El servidor explica el motivo (campos faltantes, demasiados envíos
+        // seguidos); mostrarlo evita que el usuario reintente a ciegas.
+        const data = await response.json().catch(() => null)
         setIsSubmitting(false)
-        alert('Hubo un error al enviar tu mensaje. Por favor, intenta de nuevo más tarde.')
+        alert(data?.error || 'Hubo un error al enviar tu mensaje. Por favor, intenta de nuevo más tarde.')
       }
     } catch (error) {
       console.error('Error de red', error)
