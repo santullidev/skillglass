@@ -79,12 +79,7 @@ type ResultadoFirma = 'valida' | 'invalida' | 'sin-secreto'
  * Devuelve 'sin-secreto' en vez de dar por válida la firma cuando falta
  * MP_WEBHOOK_SECRET: quien llama decide, y en producción eso se rechaza.
  */
-function validateMpSignature(
-  req: NextRequest,
-  rawBody: string,
-  id: string,
-  isIpn: boolean
-): ResultadoFirma {
+function validateMpSignature(req: NextRequest, id: string): ResultadoFirma {
   if (!webhookSecret) return 'sin-secreto'
 
   const xSignature = req.headers.get('x-signature')
@@ -112,10 +107,21 @@ function validateMpSignature(
     return 'invalida'
   }
 
-  // ✅ El manifest cambia según si es IPN (lo que envía notification_url) o Webhook
-  const manifest = isIpn
-    ? `id:${id};request-id:${xRequestId};ts:${ts};`
-    : `ts:${ts};request-id:${xRequestId};${rawBody}`
+  // El manifest es el MISMO para IPN y para Webhook: MercadoPago siempre firma
+  // `id:<data.id>;request-id:<x-request-id>;ts:<ts>;`.
+  // Antes la rama de Webhook usaba un formato con el body crudo que MP no emite,
+  // así que toda notificación configurada desde el panel fallaba la validación.
+  // Los segmentos cuyo valor falta se omiten, según la documentación.
+  // Si el id es alfanumérico va en minúsculas.
+  const idNormalizado = /[a-zA-Z]/.test(id) ? id.toLowerCase() : id
+
+  const manifest = [
+    idNormalizado && `id:${idNormalizado};`,
+    xRequestId && `request-id:${xRequestId};`,
+    `ts:${ts};`,
+  ]
+    .filter(Boolean)
+    .join('')
 
   const expectedHash = createHmac('sha256', webhookSecret).update(manifest).digest('hex')
 
@@ -140,8 +146,7 @@ export async function POST(req: NextRequest) {
     // ✅ La firma se valida de forma BLOQUEANTE en producción. Antes sólo se
     // logueaba una advertencia y se seguía adelante, lo que dejaba la ruta
     // abierta a notificaciones falsificadas.
-    const rawBody = await req.text()
-    const firma = validateMpSignature(req, rawBody, id, isIpn)
+    const firma = validateMpSignature(req, id)
 
     if (firma === 'invalida') {
       console.error(`❌ Webhook rechazado: firma inválida para el pago ${id} (isIpn: ${isIpn})`)
